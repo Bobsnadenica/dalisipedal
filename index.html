@@ -2,237 +2,315 @@
 <html lang="bg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>P.E.D.A.L. | Граждански контрол на пътя</title>
-    <meta name="description" content="Докладвай нарушения. Направи пътищата по-безопасни.">
+    <meta name="description" content="Снимай нарушителите. Направи пътищата по-безопасни. Публичен регистър за пътни нарушения.">
+    <meta name="theme-color" content="#000000">
     
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
 
-    <div class="bg-grid"></div>
-    <div class="bg-glow"></div>
+    <div class="bg-noise"></div>
+    <div class="bg-gradient"></div>
 
     <nav class="navbar">
         <div class="container nav-container">
             <a href="#" class="logo">
-                <span class="logo-icon">🚨</span> P.E.D.A.L.
+                <span class="logo-icon">🚨</span>
+                <span class="logo-text">P.E.D.A.L.</span>
             </a>
+            
             <div class="nav-links">
-                <a href="#features">Възможности</a>
-                <a href="#demo">Демо</a>
+                <a href="#features">Функции</a>
+                <a href="#demo">Демонстрация</a>
                 <a href="privacy_policy.html">Поверителност</a>
                 <a href="#download" class="btn-nav">Изтегли</a>
             </div>
-            <button class="mobile-menu-btn" aria-label="Menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+
+            <button class="mobile-menu-btn" aria-label="Toggle Menu">
+                <span class="bar top"></span>
+                <span class="bar mid"></span>
+                <span class="bar bot"></span>
             </button>
         </div>
     </nav>
 
-    <div class="mobile-menu">
-        <a href="#features">Възможности</a>
-        <a href="#demo">Демо</a>
-        <a href="privacy_policy.html">Поверителност</a>
-        <a href="#download">Изтегли</a>
+    <div class="mobile-menu-overlay">
+        <div class="mobile-menu-content">
+            <a href="#features" class="mm-link">Функции</a>
+            <a href="#demo" class="mm-link">Демонстрация</a>
+            <a href="privacy_policy.html" class="mm-link">Поверителност</a>
+            <a href="#download" class="btn-primary full-width">Свали Приложението</a>
+        </div>
     </div>
 
     <header class="hero">
-        <div class="container hero-content">
-            <div class="hero-text fade-in-up">
-                <div class="badge-container">
-                 
+        <div class="container hero-layout">
+            
+            <div class="hero-text fade-in">
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    <span>Live v1.0</span>
                 </div>
-                <h1>Шофирането е отговорност. <br><span class="text-gradient">Контролът е в теб.</span></h1>
-                <p>Платформата, която превръща всеки смартфон в инструмент за пътна безопасност. Снимай, докладвай и помогни да изчистим улиците от нарушители.</p>
+                <h1>Превърни телефона в <br><span class="text-highlight">оръжие за ред.</span></h1>
+                <p>
+                    Виждаш нарушение? Не го подминавай. Снимай, качи и нека цяла България види кой паркира на инвалидно място или кара в насрещното.
+                </p>
                 
-                <div class="store-buttons">
-                    <a href="#" class="store-btn">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Apple_logo_white.svg" alt="Apple" width="20">
-                        <div class="btn-text">
-                            <span>Свали от</span>
-                            <span class="store-name">App Store</span>
+                <div class="app-store-grid">
+                    <a href="#" class="store-badge apple">
+                        <svg viewBox="0 0 384 512" width="20"><path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z"/></svg>
+                        <div class="badge-text">
+                            <small>Download on the</small>
+                            <span>App Store</span>
                         </div>
                     </a>
-                    <a href="#" class="store-btn">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Android_robot.svg" alt="Android" width="22">
-                        <div class="btn-text">
-                            <span>Свали от</span>
-                            <span class="store-name">Google Play</span>
+                    <a href="#" class="store-badge google">
+                        <svg viewBox="0 0 512 512" width="20"><path fill="currentColor" d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3-60.1-60.1L47 512z"/></svg>
+                        <div class="badge-text">
+                            <small>Get it on</small>
+                            <span>Google Play</span>
                         </div>
                     </a>
                 </div>
-                
-                <div class="hero-links">
-                    <a href="privacy_policy.html" class="link-secondary">Политика за поверителност &rarr;</a>
+
+                <div class="trust-indicator">
+                    <span>🛡️ 100% Анонимно подаване на сигнали</span>
                 </div>
             </div>
 
-            <div id="demo" class="hero-image fade-in-up delay-200">
-                <div class="phone-mockup">
-                    <div class="phone-notch"></div>
-                    <div class="phone-screen-container">
+            <div id="demo" class="hero-phone fade-in delay-200">
+                <div class="phone-chassis">
+                    <div class="phone-notch">
+                        <div class="camera"></div>
+                        <div class="speaker"></div>
+                    </div>
+                    <div class="phone-buttons-side"></div>
+                    
+                    <div class="phone-screen">
                         
-                        <div class="app-screen active" id="screen-home">
-                            <div class="app-header">
-                                <span>P.E.D.A.L. Feed</span>
-                                <span class="material-icons-round">notifications</span>
+                        <div class="status-bar">
+                            <span id="clock">09:41</span>
+                            <div class="status-icons">
+                                <span class="material-icons-round" style="font-size: 14px;">signal_cellular_4_bar</span>
+                                <span class="material-icons-round" style="font-size: 14px;">wifi</span>
+                                <span class="material-icons-round" style="font-size: 14px;">battery_full</span>
                             </div>
-                            <div class="app-feed">
-                                <div class="feed-card">
-                                    <div class="feed-img" style="background: linear-gradient(45deg, #333, #444);"></div>
-                                    <div class="feed-info">
-                                        <div class="plate-tag">CB 1234 XX</div>
-                                        <div class="status-tag pending">Чака одобрение</div>
+                        </div>
+
+                        <div class="app-view active" id="view-home">
+                            <div class="app-top-bar">
+                                <div class="app-logo">P.E.D.A.L.</div>
+                                <div class="user-avatar">Guest</div>
+                            </div>
+                            <div class="app-content-scroll">
+                                <div class="report-card">
+                                    <div class="report-header">
+                                        <span class="user-name">Анонимен</span>
+                                        <span class="time-ago">преди 10 мин</span>
+                                    </div>
+                                    <div class="report-image" style="background-image: linear-gradient(135deg, #333 0%, #1a1a1a 100%); position: relative;">
+                                        <div class="plate-overlay">CB 1934 KK</div>
+                                    </div>
+                                    <div class="report-footer">
+                                        <div class="status-pill pending">
+                                            <span class="dot"></span> Чака одобрение
+                                        </div>
+                                        <span class="location-text">📍 София, Младост 4</span>
                                     </div>
                                 </div>
-                                <div class="feed-card">
-                                    <div class="feed-img" style="background: linear-gradient(45deg, #222, #333);"></div>
-                                    <div class="feed-info">
-                                        <div class="plate-tag">PB 9876 AC</div>
-                                        <div class="status-tag approved">Одобрен</div>
+                                <div class="report-card">
+                                    <div class="report-header">
+                                        <span class="user-name">Batman_Bg</span>
+                                        <span class="time-ago">преди 2 часа</span>
+                                    </div>
+                                    <div class="report-image" style="background-image: linear-gradient(135deg, #222 0%, #111 100%);">
+                                        <div class="plate-overlay">PB 0001 AA</div>
+                                    </div>
+                                    <div class="report-footer">
+                                        <div class="status-pill approved">
+                                            <span class="dot"></span> Одобрен
+                                        </div>
+                                        <span class="location-text">📍 Пловдив, Център</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="app-screen" id="screen-upload">
-                            <div class="camera-view">
-                                <div class="focus-ring"></div>
-                                <div class="camera-ui-top">
-                                    <span class="material-icons-round">flash_off</span>
-                                    <span class="material-icons-round">hdr_auto</span>
+                        <div class="app-view" id="view-upload">
+                            <div class="camera-interface">
+                                <div class="camera-grid">
+                                    <div class="focus-square"></div>
                                 </div>
-                                <div class="shutter-btn"></div>
-                                <p class="camera-hint">Натисни за снимка</p>
+                                <div class="camera-controls">
+                                    <div class="shutter-button-outer">
+                                        <div class="shutter-button-inner"></div>
+                                    </div>
+                                    <p class="camera-instruction">Докосни за снимка</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="app-screen" id="screen-rank">
-                            <div class="app-header">
-                                <span>Зала на срама</span>
-                                <span class="material-icons-round">emoji_events</span>
+                        <div class="app-view" id="view-rank">
+                            <div class="app-top-bar">
+                                <div class="app-title">Зала на срама</div>
                             </div>
                             <div class="rank-list">
-                                <div class="rank-item gold">
-                                    <span class="rank-pos">1</span>
-                                    <div class="rank-avatar">🤡</div>
-                                    <div class="rank-details">
-                                        <span>Майстор Паркиране</span>
-                                        <small>56 нарушения</small>
+                                <div class="rank-row gold">
+                                    <div class="rank-num">1</div>
+                                    <div class="rank-info">
+                                        <div class="rank-name">Бързи и Яростни</div>
+                                        <div class="rank-score">62 нарушения</div>
                                     </div>
+                                    <div class="medal">🏆</div>
                                 </div>
-                                <div class="rank-item silver">
-                                    <span class="rank-pos">2</span>
-                                    <div class="rank-avatar">🚗</div>
-                                    <div class="rank-details">
-                                        <span>Бързи и яростни</span>
-                                        <small>32 нарушения</small>
+                                <div class="rank-row silver">
+                                    <div class="rank-num">2</div>
+                                    <div class="rank-info">
+                                        <div class="rank-name">Паркирам където искам</div>
+                                        <div class="rank-score">45 нарушения</div>
                                     </div>
+                                    <div class="medal">🥈</div>
+                                </div>
+                                <div class="rank-row bronze">
+                                    <div class="rank-num">3</div>
+                                    <div class="rank-info">
+                                        <div class="rank-name">Голф 3 Перник</div>
+                                        <div class="rank-score">31 нарушения</div>
+                                    </div>
+                                    <div class="medal">🥉</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="app-nav">
-                            <button class="nav-item active" onclick="switchScreen('home', this)">
-                                <span class="material-icons-round">home</span>
-                            </button>
-                            <button class="nav-item fab" onclick="switchScreen('upload', this)">
-                                <span class="material-icons-round">add_a_photo</span>
-                            </button>
-                            <button class="nav-item" onclick="switchScreen('rank', this)">
-                                <span class="material-icons-round">leaderboard</span>
-                            </button>
+                        <div class="toast-notification">
+                            <span class="material-icons-round">check_circle</span>
+                            Успешно качване!
                         </div>
 
+                        <div class="bottom-nav">
+                            <div class="nav-item active" onclick="setScreen('home', this)">
+                                <span class="material-icons-round">home</span>
+                                <span>Начало</span>
+                            </div>
+                            <div class="nav-item fab-wrapper" onclick="setScreen('upload', this)">
+                                <div class="fab-btn">
+                                    <span class="material-icons-round">add_camera</span>
+                                </div>
+                            </div>
+                            <div class="nav-item" onclick="setScreen('rank', this)">
+                                <span class="material-icons-round">emoji_events</span>
+                                <span>Топ</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="phone-shadow"></div>
-                <p class="demo-hint">👆 Интерактивно демо: Натисни бутоните</p>
+                <div class="phone-reflection"></div>
             </div>
         </div>
     </header>
 
-    <section id="features" class="features">
+    <section id="features" class="section-dark">
         <div class="container">
-            <h2 class="section-title fade-in-up">Професионален инструмент</h2>
-            <div class="grid-3">
-                <div class="feature-card fade-in-up">
-                    <div class="icon-circle">☁️</div>
-                    <h3>AWS Cloud Native</h3>
-                    <p>Използваме силата на облака за сигурно съхранение на доказателствата и незабавна обработка на сигналите.</p>
-                </div>
-                <div class="feature-card fade-in-up delay-100">
-                    <div class="icon-circle">🔒</div>
-                    <h3>Сигурност и Анонимност</h3>
-                    <p>Данните са криптирани. Твоята самоличност е защитена, освен ако не решиш да я споделиш за официален сигнал.</p>
-                </div>
-                <div class="feature-card fade-in-up delay-200">
-                    <div class="icon-circle">⚡</div>
-                    <h3>Smart Upload</h3>
-                    <p>Интелигентно компресиране и качване на заден фон. Приложението работи дори при слаб обхват.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="mission">
-        <div class="container">
-            <div class="mission-content fade-in-up">
-                <h2>Нашата Мисия</h2>
-                <p>Ние вярваме, че пътната безопасност не е задължение само на институциите, а на цялото общество. P.E.D.A.L. дава гласност на нетърпимостта към нарушителите.</p>
-                <div class="tags">
-                    <span class="tag">#ГражданскоОбщество</span>
-                    <span class="tag">#Безопасност</span>
-                    <span class="tag">#Отговорност</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="download" class="cta">
-        <div class="container">
-            <div class="cta-box fade-in-up">
-                <div class="cta-content">
-                    <h2>Стани част от промяната</h2>
-                    <p>Не подминавай следващото нарушение. Бъди подготвен.</p>
-                    <div class="cta-actions">
-                        <a href="#" class="btn-primary">Свали за iOS</a>
-                        <a href="#" class="btn-secondary">Свали за Android</a>
+            <h2 class="section-heading text-center">Професионални инструменти</h2>
+            <div class="feature-grid">
+                <div class="feature-box fade-in">
+                    <div class="icon-holder amber">
+                        <span class="material-icons-round">cloud_upload</span>
                     </div>
-                    <a href="privacy_policy.html" class="cta-link-small">Политика за поверителност</a>
+                    <h3>Незабавно качване</h3>
+                    <p>Доказателствата се качват в сигурен AWS Cloud в реално време, дори при слаба връзка.</p>
+                </div>
+                <div class="feature-box fade-in delay-100">
+                    <div class="icon-holder blue">
+                        <span class="material-icons-round">security</span>
+                    </div>
+                    <h3>Криптирана защита</h3>
+                    <p>Твоята самоличност е скрита. Метаданните се изчистват автоматично за максимална анонимност.</p>
+                </div>
+                <div class="feature-box fade-in delay-200">
+                    <div class="icon-holder red">
+                        <span class="material-icons-round">gavel</span>
+                    </div>
+                    <h3>Ефективен контрол</h3>
+                    <p>Снимките преминават модерация. Валидните сигнали са готови за изпращане към КАТ с един клик.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-steps">
+        <div class="container">
+            <div class="steps-wrapper">
+                <div class="step fade-in">
+                    <div class="step-num">01</div>
+                    <h4>Снимай</h4>
+                    <p>Отвори P.E.D.A.L. и направи снимка на нарушението.</p>
+                </div>
+                <div class="connector"></div>
+                <div class="step fade-in delay-100">
+                    <div class="step-num">02</div>
+                    <h4>Докладвай</h4>
+                    <p>Добави регистрационния номер. Локацията е автоматична.</p>
+                </div>
+                <div class="connector"></div>
+                <div class="step fade-in delay-200">
+                    <div class="step-num">03</div>
+                    <h4>Накажи</h4>
+                    <p>Сигналът става публичен и влиза в досието на нарушителя.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="section-cta">
+        <div class="container">
+            <div class="cta-card fade-in">
+                <div class="cta-content">
+                    <h2>Готов ли си за промяна?</h2>
+                    <p>Изтегли приложението и стани част от решението днес.</p>
+                    <div class="app-store-grid center">
+                        <a href="#" class="store-badge apple">
+                            <svg viewBox="0 0 384 512" width="20"><path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z"/></svg>
+                            <div class="badge-text">
+                                <small>Свали от</small>
+                                <span>App Store</span>
+                            </div>
+                        </a>
+                        <a href="#" class="store-badge google">
+                            <svg viewBox="0 0 512 512" width="20"><path fill="currentColor" d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l220.7-221.3-60.1-60.1L47 512z"/></svg>
+                            <div class="badge-text">
+                                <small>Свали от</small>
+                                <span>Google Play</span>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <div class="footer-logo">🚨 P.E.D.A.L.</div>
-                    <p class="footer-desc">Публичен Електронен Дневник за Анализ на Левашките шофьори.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Връзки</h4>
-                    <a href="#features">Възможности</a>
-                    <a href="#download">Изтегли</a>
-                </div>
-                <div class="footer-col">
-                    <h4>Правна информация</h4>
-                    <a href="privacy_policy.html">Политика за поверителност</a>
-                    <a href="#">Общи условия</a>
-                </div>
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <span class="logo-icon">🚨</span> P.E.D.A.L.
+                <p>Технология за активно гражданско общество.</p>
             </div>
-            <div class="copyright">
-                &copy; <span id="year"></span> P.E.D.A.L. Dev Team. Built with Flutter & AWS.
+            <div class="footer-links">
+                <a href="privacy_policy.html">Политика за поверителност</a>
+                <a href="#">Общи условия</a>
+                <a href="mailto:contact@pedal.bg">Контакт</a>
             </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; <span id="year"></span> P.E.D.A.L. Team. Всички права запазени.
         </div>
     </footer>
 
