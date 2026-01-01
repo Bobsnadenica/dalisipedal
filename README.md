@@ -1,2 +1,2 @@
 # dalisipedal
-A website for the app P.E.D.A.L.
+A website for P.E.D.A.L. app
