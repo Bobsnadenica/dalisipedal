@@ -21,7 +21,7 @@
   <header class="header">
     <div class="container nav">
       <div class="logo">
-        <span class="logo-short">П.Е.Д.А.Л.🤫</span>
+        <span class="logo-short">П.Е.Д.А.Л.</span>
         <span class="logo-long">Публичен Електронен Достъп за Анализ на Лоши шофьори</span>
       </div>
       <nav>
@@ -30,7 +30,6 @@
         <a href="#features">Функции</a>
         <a href="#trust">Доверие</a>
         <a href="#future">Развитие</a>
-        <a href="privacy_policy.html">Поверителност</a>
       </nav>
     </div>
   </header>
@@ -39,22 +38,22 @@
     <div class="container hero-grid">
       <div class="hero-copy">
         <h1>
-          Публичен Електронен Дневник<br>
-          за Анализ на Лоши шофьори
+          Публичен електронен достъп<br>
+          за анализ на пътно поведение
         </h1>
         <p class="lead">
-          P.E.D.A.L.🤫 е професионално мобилно приложение за
+          P.E.D.A.L. е професионално мобилно приложение за
           сигурно заснемане и съхранение на пътни ситуации,
           с фокус върху яснота, проследимост и доверие.
         </p>
         <div class="store-buttons">
           <a href="#" class="store-btn ios">
             <span class="store-small">Изтегли за</span>
-            <span class="store-big">iPhone</span>
+            <span class="store-big">App Store</span>
           </a>
           <a href="#" class="store-btn android">
             <span class="store-small">Изтегли за</span>
-            <span class="store-big">Android</span>
+            <span class="store-big">Google Play</span>
           </a>
         </div>
       </div>
@@ -159,32 +158,11 @@
     </div>
   </section>
 
-  <section class="cta">
-    <div class="container narrow">
-      <h2>Готови ли сте да използвате П.Е.Д.А.Л.?</h2>
-      <p>
-        Присъединете се към модерния стандарт за яснота, сигурност и
-        отговорно пътно поведение.
-      </p>
-      <div class="store-buttons center">
-        <a href="#" class="store-btn ios glow">
-          <span class="store-small">Скоро в</span>
-          <span class="store-big">App Store</span>
-        </a>
-        <a href="#" class="store-btn android glow">
-          <span class="store-small">Скоро в</span>
-          <span class="store-big">Google Play</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
   <footer class="footer">
     <div class="container footer-grid">
       <div>
-        <strong><a href="/">P.E.D.A.L.🤫</a></strong><br>
-        Публичен Електронен Дневник за Анализ на Лоши шофьори<br>
-        <a href="privacy_policy.html" class="footer-link">Политика за поверителност</a>
+        <strong>P.E.D.A.L.</strong><br>
+        Публичен електронен дневник
       </div>
       <div class="footer-muted">
         © 2026 Всички права запазени
