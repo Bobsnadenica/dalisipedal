@@ -1,184 +1,64 @@
-<!DOCTYPE html>
-<html lang="bg">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>P.E.D.A.L. – Публичен електронен дневник</title>
-  <link rel="icon" type="image/png" href="app_icon.png">
-  <link rel="apple-touch-icon" href="app_icon.png">
+// Function called by the phone buttons
+function switchScreen(screenName, btnElement) {
+    // 1. Remove active class from all screens
+    document.querySelectorAll('.app-screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
 
-  <meta name="description" content="P.E.D.A.L. е модерно мобилно приложение за сигурно документиране и анализ на пътни ситуации. Създадено за прозрачност, надеждност и дългосрочна стойност." />
+    // 2. Add active class to target screen
+    const targetScreen = document.getElementById('screen-' + screenName);
+    if (targetScreen) {
+        targetScreen.classList.add('active');
+    }
 
-  <meta property="og:title" content="P.E.D.A.L. – Публичен електронен дневник" />
-  <meta property="og:description" content="Модерно решение за документиране и анализ на пътни ситуации." />
-  <meta property="og:type" content="website" />
+    // 3. Update Nav Buttons
+    document.querySelectorAll('.nav-item').forEach(nav => {
+        nav.classList.remove('active');
+    });
+    if (btnElement) {
+        btnElement.classList.add('active');
+    }
+}
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
-</head>
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Dynamic Year
+    const yearSpan = document.getElementById('year');
+    if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+    }
 
-<body>
-  <header class="header">
-    <div class="container nav">
-      <div class="logo">
-        <img src="app_icon.png" alt="П.Е.Д.А.Л. икона" class="logo-icon">
-        <div class="logo-text">
-          <span class="logo-short">П.Е.Д.А.Л.🤫</span>
-          <span class="logo-long">Публичен Електронен Достъп за Анализ на Лоши шофьори</span>
-        </div>
-      </div>
-      <nav>
-        <a href="#vision">Визия</a>
-        <a href="#how">Как работи</a>
-        <a href="#features">Функции</a>
-        <a href="#trust">Доверие</a>
-        <a href="#future">Развитие</a>
-      </nav>
-    </div>
-  </header>
+    // Mobile Menu
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (menuBtn) {
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
+    }
 
-  <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <div class="hero-badge">
-          <img src="app_icon.png" alt="П.Е.Д.А.Л." />
-          <span>Официално мобилно приложение</span>
-        </div>
-        <h1>
-          Публичен електронен достъп<br>
-          за анализ на пътно поведение
-        </h1>
-        <p class="lead">
-          P.E.D.A.L. е професионално мобилно приложение за
-          сигурно заснемане и съхранение на пътни ситуации,
-          с фокус върху яснота, проследимост и доверие.
-        </p>
-        <div class="store-buttons">
-          <a href="#" class="store-btn ios">
-            <span class="store-small">Изтегли за</span>
-            <span class="store-big">App Store</span>
-          </a>
-          <a href="#" class="store-btn android">
-            <span class="store-small">Изтегли за</span>
-            <span class="store-big">Google Play</span>
-          </a>
-        </div>
-      </div>
-      <div class="hero-image">
-        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400&auto=format&fit=crop" alt="Road at night">
-      </div>
-    </div>
-  </section>
+    // Scroll Animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
 
-  <section class="metrics">
-    <div class="container metrics-grid">
-      <div class="metric">
-        <strong>100%</strong>
-        <span>Проследимост</span>
-      </div>
-      <div class="metric">
-        <strong>24/7</strong>
-        <span>Достъпност</span>
-      </div>
-      <div class="metric">
-        <strong>∞</strong>
-        <span>Дългосрочен архив</span>
-      </div>
-    </div>
-  </section>
+    document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
-  <section id="vision" class="section">
-    <div class="container narrow">
-      <h2>Нашата визия</h2>
-      <p>
-        В свят с нарастваща нужда от прозрачност и обективност,
-        P.E.D.A.L. предоставя надежден цифров дневник,
-        в който информацията се съхранява сигурно и остава непроменена.
-      </p>
-    </div>
-  </section>
-
-  <section id="how" class="section alt">
-    <div class="container">
-      <h2>Как работи</h2>
-      <div class="steps">
-        <div class="step">
-          <span>1</span>
-          <p>Заснемате пътна ситуация чрез приложението</p>
-        </div>
-        <div class="step">
-          <span>2</span>
-          <p>Файлът се запазва сигурно с автоматични метаданни</p>
-        </div>
-        <div class="step">
-          <span>3</span>
-          <p>Информацията остава достъпна за бъдещ анализ</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="features" class="section">
-    <div class="container">
-      <h2>Основни възможности</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>Интуитивен интерфейс</h3>
-          <p>Създаден за бърза и лесна работа дори в движение.</p>
-        </div>
-        <div class="card">
-          <h3>Автоматични метаданни</h3>
-          <p>Дата, час, регион и автор се запазват автоматично.</p>
-        </div>
-        <div class="card">
-          <h3>Облачно съхранение</h3>
-          <p>Сигурна и мащабируема инфраструктура в облака.</p>
-        </div>
-        <div class="card">
-          <h3>Дългосрочен архив</h3>
-          <p>Информацията остава достъпна и непроменена във времето.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="trust" class="section alt">
-    <div class="container narrow">
-      <h2>Доверие и сигурност</h2>
-      <p>
-        P.E.D.A.L. е изграден върху утвърдени технологии и
-        следва добрите практики за защита на данните.
-        Всички операции са защитени, проследими и контролирани.
-      </p>
-    </div>
-  </section>
-
-  <section id="future" class="section">
-    <div class="container">
-      <h2>Поглед напред</h2>
-      <ul class="list">
-        <li>Интелигентни анализи и статистика</li>
-        <li>Подобрена визуализация на данните</li>
-        <li>Разширени възможности за търсене</li>
-        <li>Дългосрочно архивиране и експорт</li>
-      </ul>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="container footer-grid">
-      <div>
-        <strong>P.E.D.A.L.</strong><br>
-        Публичен електронен дневник
-      </div>
-      <div class="footer-muted">
-        © 2026 Всички права запазени
-      </div>
-    </div>
-  </footer>
-
-  <script src="style.js"></script>
-</body>
-</html>
+    // Smooth Scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            mobileMenu.classList.remove('active');
+            
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+});

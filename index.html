@@ -1,203 +1,241 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>P.E.D.A.L. – Публичен електронен дневник</title>
-  <link rel="icon" type="image/png" href="app_icon.png">
-  <link rel="apple-touch-icon" href="app_icon.png">
-
-  <meta name="description" content="P.E.D.A.L. е модерно мобилно приложение за сигурно документиране и анализ на пътни ситуации. Създадено за прозрачност, надеждност и дългосрочна стойност." />
-
-  <meta property="og:title" content="P.E.D.A.L. – Публичен електронен дневник" />
-  <meta property="og:description" content="Модерно решение за документиране и анализ на пътни ситуации." />
-  <meta property="og:type" content="website" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-  <header class="header">
-    <div class="container nav">
-      <div class="logo">
-        <img src="app_icon.png" alt="П.Е.Д.А.Л. икона" class="logo-icon">
-        <div class="logo-text">
-          <span class="logo-short">П.Е.Д.А.Л.🤫</span>
-          <span class="logo-long">Публичен Електронен Достъп за Анализ на Лоши шофьори</span>
-        </div>
-      </div>
-      <nav>
-        <a href="#vision">Визия</a>
-        <a href="#how">Как работи</a>
-        <a href="#features">Функции</a>
-        <a href="#trust">Доверие</a>
-        <a href="#future">Развитие</a>
-        <a href="privacy_policy.html">Поверителност</a>
-      </nav>
-    </div>
-  </header>
-
-  <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-copy">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P.E.D.A.L. | Граждански контрол на пътя</title>
+    <meta name="description" content="Докладвай нарушения. Направи пътищата по-безопасни.">
     
-        <h1>
-          Публичен Електронен Дневник<br>
-          за Анализ на Лоши шофьори
-        </h1>
-        <p class="lead">
-          P.E.D.A.L.🤫 е професионално мобилно приложение за
-          сигурно заснемане и съхранение на пътни ситуации,
-          с фокус върху яснота, проследимост и доверие.
-        </p>
-        <div class="store-buttons">
-          <a href="#" class="store-btn ios">
-            <span class="store-small">Изтегли за</span>
-            <span class="store-big">iPhone</span>
-          </a>
-          <a href="#" class="store-btn android">
-            <span class="store-small">Изтегли за</span>
-            <span class="store-big">Android</span>
-          </a>
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">🚨</span> P.E.D.A.L.
+            </a>
+            <div class="nav-links">
+                <a href="#features">Възможности</a>
+                <a href="#demo">Демо</a>
+                <a href="privacy_policy.html">Поверителност</a>
+                <a href="#download" class="btn-nav">Изтегли</a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
         </div>
-      </div>
-      <div class="hero-image">
-        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400&auto=format&fit=crop" alt="Road at night">
-      </div>
-    </div>
-  </section>
+    </nav>
 
-  <section class="metrics">
-    <div class="container metrics-grid">
-      <div class="metric">
-        <strong>100%</strong>
-        <span>Проследимост</span>
-      </div>
-      <div class="metric">
-        <strong>24/7</strong>
-        <span>Достъпност</span>
-      </div>
-      <div class="metric">
-        <strong>∞</strong>
-        <span>Дългосрочен архив</span>
-      </div>
+    <div class="mobile-menu">
+        <a href="#features">Възможности</a>
+        <a href="#demo">Демо</a>
+        <a href="privacy_policy.html">Поверителност</a>
+        <a href="#download">Изтегли</a>
     </div>
-  </section>
 
-  <section id="vision" class="section">
-    <div class="container narrow">
-      <h2>Нашата визия</h2>
-      <p>
-        В свят с нарастваща нужда от прозрачност и обективност,
-        P.E.D.A.L. предоставя надежден цифров дневник,
-        в който информацията се съхранява сигурно и остава непроменена.
-      </p>
-    </div>
-  </section>
+    <header class="hero">
+        <div class="container hero-content">
+            <div class="hero-text fade-in-up">
+                <div class="badge-container">
+                 
+                </div>
+                <h1>Шофирането е отговорност. <br><span class="text-gradient">Контролът е в теб.</span></h1>
+                <p>Платформата, която превръща всеки смартфон в инструмент за пътна безопасност. Снимай, докладвай и помогни да изчистим улиците от нарушители.</p>
+                
+                <div class="store-buttons">
+                    <a href="#" class="store-btn">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Apple_logo_white.svg" alt="Apple" width="20">
+                        <div class="btn-text">
+                            <span>Свали от</span>
+                            <span class="store-name">App Store</span>
+                        </div>
+                    </a>
+                    <a href="#" class="store-btn">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Android_robot.svg" alt="Android" width="22">
+                        <div class="btn-text">
+                            <span>Свали от</span>
+                            <span class="store-name">Google Play</span>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="hero-links">
+                    <a href="privacy_policy.html" class="link-secondary">Политика за поверителност &rarr;</a>
+                </div>
+            </div>
 
-  <section id="how" class="section alt">
-    <div class="container">
-      <h2>Как работи</h2>
-      <div class="steps">
-        <div class="step">
-          <span>1</span>
-          <p>Заснемате пътна ситуация чрез приложението</p>
+            <div id="demo" class="hero-image fade-in-up delay-200">
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen-container">
+                        
+                        <div class="app-screen active" id="screen-home">
+                            <div class="app-header">
+                                <span>P.E.D.A.L. Feed</span>
+                                <span class="material-icons-round">notifications</span>
+                            </div>
+                            <div class="app-feed">
+                                <div class="feed-card">
+                                    <div class="feed-img" style="background: linear-gradient(45deg, #333, #444);"></div>
+                                    <div class="feed-info">
+                                        <div class="plate-tag">CB 1234 XX</div>
+                                        <div class="status-tag pending">Чака одобрение</div>
+                                    </div>
+                                </div>
+                                <div class="feed-card">
+                                    <div class="feed-img" style="background: linear-gradient(45deg, #222, #333);"></div>
+                                    <div class="feed-info">
+                                        <div class="plate-tag">PB 9876 AC</div>
+                                        <div class="status-tag approved">Одобрен</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="app-screen" id="screen-upload">
+                            <div class="camera-view">
+                                <div class="focus-ring"></div>
+                                <div class="camera-ui-top">
+                                    <span class="material-icons-round">flash_off</span>
+                                    <span class="material-icons-round">hdr_auto</span>
+                                </div>
+                                <div class="shutter-btn"></div>
+                                <p class="camera-hint">Натисни за снимка</p>
+                            </div>
+                        </div>
+
+                        <div class="app-screen" id="screen-rank">
+                            <div class="app-header">
+                                <span>Зала на срама</span>
+                                <span class="material-icons-round">emoji_events</span>
+                            </div>
+                            <div class="rank-list">
+                                <div class="rank-item gold">
+                                    <span class="rank-pos">1</span>
+                                    <div class="rank-avatar">🤡</div>
+                                    <div class="rank-details">
+                                        <span>Майстор Паркиране</span>
+                                        <small>56 нарушения</small>
+                                    </div>
+                                </div>
+                                <div class="rank-item silver">
+                                    <span class="rank-pos">2</span>
+                                    <div class="rank-avatar">🚗</div>
+                                    <div class="rank-details">
+                                        <span>Бързи и яростни</span>
+                                        <small>32 нарушения</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="app-nav">
+                            <button class="nav-item active" onclick="switchScreen('home', this)">
+                                <span class="material-icons-round">home</span>
+                            </button>
+                            <button class="nav-item fab" onclick="switchScreen('upload', this)">
+                                <span class="material-icons-round">add_a_photo</span>
+                            </button>
+                            <button class="nav-item" onclick="switchScreen('rank', this)">
+                                <span class="material-icons-round">leaderboard</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="phone-shadow"></div>
+                <p class="demo-hint">👆 Интерактивно демо: Натисни бутоните</p>
+            </div>
         </div>
-        <div class="step">
-          <span>2</span>
-          <p>Файлът се запазва сигурно с автоматични метаданни</p>
-        </div>
-        <div class="step">
-          <span>3</span>
-          <p>Информацията остава достъпна за бъдещ анализ</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    </header>
 
-  <section id="features" class="section">
-    <div class="container">
-      <h2>Основни възможности</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>Интуитивен интерфейс</h3>
-          <p>Създаден за бърза и лесна работа дори в движение.</p>
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title fade-in-up">Професионален инструмент</h2>
+            <div class="grid-3">
+                <div class="feature-card fade-in-up">
+                    <div class="icon-circle">☁️</div>
+                    <h3>AWS Cloud Native</h3>
+                    <p>Използваме силата на облака за сигурно съхранение на доказателствата и незабавна обработка на сигналите.</p>
+                </div>
+                <div class="feature-card fade-in-up delay-100">
+                    <div class="icon-circle">🔒</div>
+                    <h3>Сигурност и Анонимност</h3>
+                    <p>Данните са криптирани. Твоята самоличност е защитена, освен ако не решиш да я споделиш за официален сигнал.</p>
+                </div>
+                <div class="feature-card fade-in-up delay-200">
+                    <div class="icon-circle">⚡</div>
+                    <h3>Smart Upload</h3>
+                    <p>Интелигентно компресиране и качване на заден фон. Приложението работи дори при слаб обхват.</p>
+                </div>
+            </div>
         </div>
-        <div class="card">
-          <h3>Автоматични метаданни</h3>
-          <p>Дата, час, регион и автор се запазват автоматично.</p>
+    </section>
+
+    <section class="mission">
+        <div class="container">
+            <div class="mission-content fade-in-up">
+                <h2>Нашата Мисия</h2>
+                <p>Ние вярваме, че пътната безопасност не е задължение само на институциите, а на цялото общество. P.E.D.A.L. дава гласност на нетърпимостта към нарушителите.</p>
+                <div class="tags">
+                    <span class="tag">#ГражданскоОбщество</span>
+                    <span class="tag">#Безопасност</span>
+                    <span class="tag">#Отговорност</span>
+                </div>
+            </div>
         </div>
-        <div class="card">
-          <h3>Облачно съхранение</h3>
-          <p>Сигурна и мащабируема инфраструктура в облака.</p>
+    </section>
+
+    <section id="download" class="cta">
+        <div class="container">
+            <div class="cta-box fade-in-up">
+                <div class="cta-content">
+                    <h2>Стани част от промяната</h2>
+                    <p>Не подминавай следващото нарушение. Бъди подготвен.</p>
+                    <div class="cta-actions">
+                        <a href="#" class="btn-primary">Свали за iOS</a>
+                        <a href="#" class="btn-secondary">Свали за Android</a>
+                    </div>
+                    <a href="privacy_policy.html" class="cta-link-small">Политика за поверителност</a>
+                </div>
+            </div>
         </div>
-        <div class="card">
-          <h3>Дългосрочен архив</h3>
-          <p>Информацията остава достъпна и непроменена във времето.</p>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">🚨 P.E.D.A.L.</div>
+                    <p class="footer-desc">Публичен Електронен Дневник за Анализ на Левашките шофьори.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Връзки</h4>
+                    <a href="#features">Възможности</a>
+                    <a href="#download">Изтегли</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Правна информация</h4>
+                    <a href="privacy_policy.html">Политика за поверителност</a>
+                    <a href="#">Общи условия</a>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; <span id="year"></span> P.E.D.A.L. Dev Team. Built with Flutter & AWS.
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </footer>
 
-  <section id="trust" class="section alt">
-    <div class="container narrow">
-      <h2>Доверие и сигурност</h2>
-      <p>
-        P.E.D.A.L. е изграден върху утвърдени технологии и
-        следва добрите практики за защита на данните.
-        Всички операции са защитени, проследими и контролирани.
-      </p>
-    </div>
-  </section>
-
-  <section id="future" class="section">
-    <div class="container">
-      <h2>Поглед напред</h2>
-      <ul class="list">
-        <li>Интелигентни анализи и статистика</li>
-        <li>Подобрена визуализация на данните</li>
-        <li>Разширени възможности за търсене</li>
-        <li>Дългосрочно архивиране и експорт</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="cta">
-    <div class="container narrow">
-      <h2>Готови ли сте да използвате П.Е.Д.А.Л.?</h2>
-      <p>
-        Присъединете се към модерния стандарт за яснота, сигурност и
-        отговорно пътно поведение.
-      </p>
-      <div class="store-buttons center">
-        <a href="#" class="store-btn ios glow">
-          <span class="store-small">Изтегли за</span>
-          <span class="store-big">iPhone</span>
-        </a>
-        <a href="#" class="store-btn android glow">
-          <span class="store-small">Изтегли за</span>
-          <span class="store-big">Android</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="container footer-grid">
-      <div>
-        <strong><a href="/">P.E.D.A.L.🤫</a></strong><br>
-        Публичен Електронен Дневник за Анализ на Лоши шофьори<br>
-        <a href="privacy_policy.html" class="footer-link">Политика за поверителност</a>
-      </div>
-      <div class="footer-muted">
-        © 2026 Всички права запазени
-      </div>
-    </div>
-  </footer>
-
-  <script src="style.js"></script>
+    <script src="style.js"></script>
 </body>
 </html>
