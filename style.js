@@ -9,6 +9,10 @@ function setScreen(screenId, btnElement) {
     if (isAutoRotating && btnElement) {
         clearInterval(autoRotateInterval);
         isAutoRotating = false;
+        
+        // Hide hint
+        const hint = document.querySelector('.phone-hint');
+        if (hint) hint.style.opacity = '0';
     }
 
     // 2. Hide all screens
@@ -23,7 +27,7 @@ function setScreen(screenId, btnElement) {
     // 4. Update Nav Buttons
     document.querySelectorAll('.nav-item').forEach(nav => {
         nav.classList.remove('active');
-        // Handle FAB separately
+        // Handle FAB separately color change
         if (nav.classList.contains('fab-wrapper')) {
             nav.querySelector('.fab-btn').style.background = (screenId === 'upload') ? '#fff' : '#FFC107';
         }
@@ -33,7 +37,7 @@ function setScreen(screenId, btnElement) {
     if (btnElement) {
         btnElement.classList.add('active');
     } else {
-        // Find button by onclick attribute if simulated
+        // Find button by onclick attribute if simulated (auto-rotate)
         const btns = document.querySelectorAll(`.nav-item[onclick*="'${screenId}'"]`);
         if (btns.length > 0) btns[0].classList.add('active');
     }
@@ -63,7 +67,7 @@ function startAutoRotate() {
         if (screens[currentIdx] === 'upload') {
             setTimeout(showToast, 1500);
         }
-    }, 4000); // Switch every 4 seconds
+    }, 4500); // Switch every 4.5 seconds
 }
 
 function showToast() {
@@ -90,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         menuBtn.addEventListener('click', () => {
             menuBtn.classList.toggle('active');
             menuOverlay.classList.toggle('active');
+            // Prevent scrolling when menu is open
             document.body.style.overflow = menuOverlay.classList.contains('active') ? 'hidden' : 'auto';
         });
     }
@@ -136,6 +141,11 @@ document.addEventListener('DOMContentLoaded', () => {
              clearInterval(autoRotateInterval);
              isAutoRotating = false;
              showToast();
+             
+             // Visual feedback
+             const inner = document.querySelector('.shutter-button-inner');
+             inner.style.transform = "scale(0.8)";
+             setTimeout(() => inner.style.transform = "scale(1)", 100);
         });
     }
 });
