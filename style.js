@@ -1,4 +1,4 @@
-/* P.E.D.A.L. Interactive Demo Logic v2.4 */
+/* P.E.D.A.L. Interactive Demo Logic v2.6 */
 
 const DB = [
     { id: 1, img: "car1.jpeg", plate: "CB 4816 TM", status: "approved", date: "02.01.2026" },
@@ -8,6 +8,11 @@ const DB = [
     { id: 5, img: "car5.jpeg", plate: "TX 5502 PB", status: "approved", date: "15.12.2025" },
     { id: 6, img: "car6.JPG", plate: "PB 1188 MX", status: "pending", date: "06.01.2026" }
 ];
+
+// Global State
+let map = null;
+let userMarker = null;
+let signalsGenerated = false; // Prevents duplicate simulation
 
 function setView(viewId) {
     document.querySelectorAll('.app-view').forEach(el => {
@@ -70,35 +75,74 @@ function openMySignals() {
     setView('mysignals');
 }
 
-// 3. Green Button (Map)
+// 3. Green Button (Map) - Fixed Logic
 function openMap() {
     showLoader(() => {
-        const container = document.getElementById('map-container');
-        const oldPins = container.querySelectorAll('.dynamic-pin');
-        oldPins.forEach(p => p.remove());
-
-        // Approximated map percentages for the new map SVG
-        const coords = [
-            {top: '45%', left: '25%'}, // Sofia
-            {top: '60%', left: '80%'}, // Burgas
-            {top: '30%', left: '85%'}, // Varna
-            {top: '65%', left: '50%'}, // Plovdiv
-            {top: '55%', left: '15%'}, // Kyustendil
-            {top: '20%', left: '80%'}  // Dobrich
-        ];
-
-        DB.forEach((item, index) => {
-            const pos = coords[index % coords.length];
-            const pin = document.createElement('div');
-            pin.className = 'map-pin dynamic-pin';
-            pin.style.top = pos.top;
-            pin.style.left = pos.left;
-            pin.innerHTML = `<img src="${item.img}">`;
-            pin.onclick = () => openViewer(item.id);
-            container.appendChild(pin);
-        });
-
         setView('map');
+        
+        // Ensure the view transition is complete before initializing Leaflet
+        setTimeout(() => {
+            // 1. Initialize Map Object (Only Once)
+            if (!map) {
+                map = L.map('map-container', { zoomControl: false }).setView([42.6977, 23.3219], 13);
+                
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+                }).addTo(map);
+            }
+
+            // 2. Get User Location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    // Center map on user
+                    map.setView([lat, lng], 15);
+
+                    // Update or Create User Marker (Green Dot)
+                    if (userMarker) {
+                        userMarker.setLatLng([lat, lng]);
+                    } else {
+                        userMarker = L.circleMarker([lat, lng], {
+                            radius: 8,
+                            fillColor: "#34C759",
+                            color: "#fff",
+                            weight: 2,
+                            opacity: 1,
+                            fillOpacity: 0.8
+                        }).addTo(map).bindPopup("Ти си тук");
+                    }
+
+                    // 3. Simulate Signals (Only Once per Session)
+                    // This check prevents duplicate markers when reopening the map
+                    if (!signalsGenerated) {
+                        DB.forEach(item => {
+                            // Generate random offset ~500m around user
+                            const latOffset = (Math.random() - 0.5) * 0.01;
+                            const lngOffset = (Math.random() - 0.5) * 0.01;
+                            
+                            const icon = L.divIcon({
+                                className: 'custom-pin',
+                                html: `<div style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"><img src="${item.img}" style="width: 100%; height: 100%; object-fit: cover;"></div>`,
+                                iconSize: [32, 32],
+                                iconAnchor: [16, 16]
+                            });
+
+                            L.marker([lat + latOffset, lng + lngOffset], { icon: icon })
+                                .addTo(map)
+                                .on('click', () => openViewer(item.id));
+                        });
+                        
+                        signalsGenerated = true; // Flag to stop regeneration
+                    }
+
+                }, (error) => {
+                    console.warn("GPS Access Denied:", error);
+                    // Fallback if no GPS: just initialize simulation around default center if needed
+                });
+            }
+        }, 300);
     });
 }
 
