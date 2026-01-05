@@ -38,7 +38,7 @@
             <div class="hero-text fade-in">
                 <div class="status-pill-live">
                     <span class="pulsing-dot"></span>
-                    <span>Системата е активна v2.1</span>
+                    <span>Системата е активна v2.4</span>
                 </div>
                 <h1>Твоят град.<br><span class="text-gradient">Твоите правила.</span></h1>
                 <p>
@@ -92,6 +92,14 @@
                                         <span class="material-icons-round icon-lg">shuffle</span>
                                         <span class="card-label">Рандъм</span>
                                     </div>
+                                    <div class="dash-card blue" onclick="openAchievements()">
+                                        <span class="material-icons-round icon-lg">emoji_events</span>
+                                        <span class="card-label">Постижения</span>
+                                    </div>
+                                    <div class="dash-card orange" onclick="openLeaderboard()">
+                                        <span class="material-icons-round icon-lg">leaderboard</span>
+                                        <span class="card-label">Класация</span>
+                                    </div>
                                 </div>
 
                                 <div class="widget-pod" onclick="openRandom()">
@@ -116,28 +124,8 @@
                                 <span class="view-title">Моите сигнали</span>
                             </div>
                             <div class="app-content">
-                                <div class="signal-list">
-                                    <div class="signal-item">
-                                        <img src="car1.jpeg" alt="signal">
-                                        <div class="signal-info">
-                                            <div class="signal-top">
-                                                <span class="plate-badge">CB 4816 TM</span>
-                                                <span class="status-text approved">Одобрен</span>
-                                            </div>
-                                            <div class="signal-date">02.01.2026 • 14:30</div>
-                                        </div>
+                                <div class="signal-list" id="signal-list-container">
                                     </div>
-                                    <div class="signal-item">
-                                        <img src="car2.JPG" alt="signal">
-                                        <div class="signal-info">
-                                            <div class="signal-top">
-                                                <span class="plate-badge">CO 3708 CX</span>
-                                                <span class="status-text pending">Обработка</span>
-                                            </div>
-                                            <div class="signal-date">05.01.2026 • 09:15</div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -146,17 +134,39 @@
                                 <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
                                 <span class="view-title">Карта</span>
                             </div>
-                            <div class="map-container">
-                                <div class="map-pin" style="top: 40%; left: 30%;">
-                                    <img src="car1.jpeg">
-                                </div>
-                                <div class="map-pin" style="top: 60%; left: 70%;">
-                                    <img src="car2.JPG">
-                                </div>
-                                <div class="map-pin pulse" style="top: 50%; left: 50%;"></div>
+                            <div class="map-container" id="map-container">
+                                <div class="map-label">🇧🇬 България</div>
+                                
+                                <svg class="bg-map-svg" viewBox="0 0 512 334" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M142.4,19.3 c13.6-2.5,28.7-2.9,41.9-0.8 c14.1,2.2,27.5,6.5,41.4,7.8 c18.3,1.7,36.5-1.9,54.7-3.9 c12.8-1.4,25.6-3.3,38.5-3.3 c12.9,0,25.6,3.6,38.3,6.4 c10.3,2.2,20.8,3.6,31.4,3.1 c13.1-0.6,26.4-3.6,39.2-1.7 c10.6,1.7,19.7,8.6,29.4,12.8 c9.7,4.2,20.8,5.6,30.8,9.4 c6.1,2.5,11.7,6.4,16.7,10.6 c8.1,6.7,13.6,16.4,16.7,26.4 c3.9,13.1,1.9,27.2-2.5,40.3 c-4.2,12.5-10.8,24.2-13.6,37.2 c-1.4,6.7-1.1,13.9-3.9,20.3 c-3.3,7.8-10.3,13.3-15.6,20.3 c-6.4,8.3-11.4,18.1-13.9,28.3 c-1.7,7.2-1.9,15-4.4,21.9 c-3.1,8.3-9.4,15-16.1,21.1 c-8.1,7.5-17.5,13.6-28.1,16.7 c-12.8,3.9-26.7,2.8-39.7,4.2 c-11.4,1.1-22.5,5-33.1,9.2 c-11.7,4.7-23.6,9.2-36.1,8.9 c-12.2-0.3-24.2-4.2-35.8-8.1 c-11.4-3.9-23.1-6.9-35.3-6.9 c-11.1,0-22.2,2.8-32.8,6.4 c-8.6,2.8-16.7,6.9-25.3,9.7 c-9.4,3.1-19.4,4.2-29.2,2.5 c-11.1-1.9-21.4-7.2-31.9-11.1 c-11.7-4.4-24.2-7.5-36.7-6.1 c-10,1.1-19.7,4.7-29.4,7.5 c-9.7,2.8-19.7,4.7-29.7,2.8 c-8.6-1.7-16.4-6.4-23.6-11.7 c-6.7-5-12.5-11.4-19.7-15.3 c-9.4-5-20.8-5.8-31.4-8.3 c-8.6-1.9-16.9-5.6-24.2-11.1 c-6.4-4.7-11.4-11.1-15-18.3 c-3.6-7.2-5-15.6-4.7-23.6 c0.3-10.3,4.2-19.7,8.6-28.9 c3.6-7.8,6.7-16.1,6.7-24.7 c0-7.2-2.2-14.4-1.1-21.7 c1.4-8.6,6.9-15.8,12.2-22.5 c6.4-8.1,13.3-15.6,18.3-24.7 c3.6-6.4,5.3-13.9,5.3-21.1 c0-9.2-2.8-18.1-1.7-27.2 c0.8-6.9,4.4-13.1,8.9-18.3 c6.1-7.2,13.6-13.1,21.9-16.7 C96.7,19.9,109.2,17.1,121.7,17 C128.9,16.9,135.8,18.1,142.4,19.3 z" fill="#2E3B4E" stroke="#4A5A70" stroke-width="3"/>
+                                </svg>
+
+                                <div class="map-pin pulse" style="top: 50%; left: 45%;"></div>
                             </div>
                             <div class="map-controls">
                                 <button class="btn-map">📍 Твоята локация</button>
+                            </div>
+                        </div>
+
+                        <div class="app-view" id="view-achievements">
+                            <div class="view-nav">
+                                <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                <span class="view-title">Постижения</span>
+                            </div>
+                            <div class="app-content">
+                                <div class="ach-grid" id="ach-list">
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div class="app-view" id="view-leaderboard">
+                            <div class="view-nav">
+                                <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                <span class="view-title">Топ Граждани</span>
+                            </div>
+                            <div class="app-content">
+                                <div class="lb-list" id="lb-list">
+                                    </div>
                             </div>
                         </div>
 
@@ -183,7 +193,7 @@
                             </div>
                         </div>
 
-                         <div class="app-view" id="view-viewer">
+                        <div class="app-view" id="view-viewer">
                             <div class="view-nav">
                                 <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
                                 <span class="view-title">Преглед</span>

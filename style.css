@@ -77,6 +77,8 @@ h1 { font-size: 3.5rem; line-height: 1.1; font-weight: 800; margin-bottom: 24px;
 .dash-card.yellow { background: var(--primary); color: black; }
 .dash-card.green { background: #34C759; color: white; }
 .dash-card.purple { background: #AF52DE; color: white; }
+.dash-card.blue { background: #2196F3; color: white; }
+.dash-card.orange { background: #FF9800; color: white; }
 .icon-lg { font-size: 28px; margin-bottom: 6px; }
 .card-label { font-size: 12px; font-weight: 700; }
 
@@ -97,8 +99,9 @@ h1 { font-size: 3.5rem; line-height: 1.1; font-weight: 800; margin-bottom: 24px;
 .view-title { font-weight: 700; font-size: 1.1rem; }
 
 /* My Signals List */
-.signal-list { display: flex; flex-direction: column; gap: 12px; }
-.signal-item { display: flex; gap: 12px; background: #1C1C1E; padding: 10px; border-radius: 12px; border: 1px solid #333; }
+.signal-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 80px; }
+.signal-item { display: flex; gap: 12px; background: #1C1C1E; padding: 10px; border-radius: 12px; border: 1px solid #333; cursor: pointer; transition: 0.2s; }
+.signal-item:active { transform: scale(0.98); }
 .signal-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
 .signal-info { display: flex; flex-direction: column; justify-content: center; width: 100%; }
 .signal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
@@ -109,14 +112,35 @@ h1 { font-size: 3.5rem; line-height: 1.1; font-weight: 800; margin-bottom: 24px;
 .signal-date { font-size: 0.75rem; color: #888; }
 
 /* Map */
-.map-container { flex: 1; background: #242f3e; position: relative; overflow: hidden; margin: 0 16px 16px; border-radius: 16px; border: 1px solid #333; }
-.map-container::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(#333 1px, transparent 1px); background-size: 20px 20px; opacity: 0.2; }
-.map-pin { position: absolute; width: 32px; height: 32px; border: 2px solid white; border-radius: 50%; overflow: hidden; transform: translate(-50%, -50%); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+.map-container { flex: 1; background: #1a2332; position: relative; overflow: hidden; margin: 0 16px 16px; border-radius: 16px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; }
+.bg-map-svg { width: 100%; height: 100%; object-fit: contain; opacity: 0.5; transform: scale(1.1); }
+
+.map-label { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); z-index: 5; }
+
+.map-pin { position: absolute; width: 32px; height: 32px; border: 2px solid white; border-radius: 50%; overflow: hidden; transform: translate(-50%, -50%); box-shadow: 0 4px 10px rgba(0,0,0,0.5); cursor: pointer; transition: 0.2s; z-index: 10; }
+.map-pin:hover { transform: translate(-50%, -50%) scale(1.2); z-index: 20; }
 .map-pin img { width: 100%; height: 100%; object-fit: cover; }
-.map-pin.pulse { background: #007AFF; border: 2px solid white; width: 16px; height: 16px; box-shadow: 0 0 0 rgba(0, 122, 255, 0.4); animation: mapPulse 2s infinite; }
+.map-pin.pulse { background: #007AFF; border: 2px solid white; width: 16px; height: 16px; box-shadow: 0 0 0 rgba(0, 122, 255, 0.4); animation: mapPulse 2s infinite; pointer-events: none; z-index: 1; }
 @keyframes mapPulse { 0% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(0, 122, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); } }
-.map-controls { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: center; padding: 0 30px; }
-.btn-map { background: white; color: black; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+.map-controls { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: center; padding: 0 30px; pointer-events: none; }
+.btn-map { background: white; color: black; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); pointer-events: all; cursor: pointer; }
+
+/* Achievements */
+.ach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding-bottom: 80px; }
+.ach-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; opacity: 0.4; filter: grayscale(1); }
+.ach-item.unlocked { opacity: 1; filter: grayscale(0); }
+.ach-icon { width: 60px; height: 60px; background: #222; border-radius: 50%; display: grid; place-items: center; border: 2px solid #333; font-size: 24px; color: var(--primary); }
+.ach-item.unlocked .ach-icon { background: rgba(255, 193, 7, 0.1); border-color: var(--primary); }
+.ach-title { font-size: 0.7rem; font-weight: 700; }
+
+/* Leaderboard */
+.lb-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 80px; }
+.lb-item { display: flex; align-items: center; gap: 12px; background: #1C1C1E; padding: 12px; border-radius: 12px; border: 1px solid #333; }
+.lb-rank { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: #888; width: 24px; text-align: center; }
+.lb-item.top .lb-rank { color: var(--primary); }
+.lb-avatar { width: 40px; height: 40px; border-radius: 50%; background: #333; display: grid; place-items: center; font-weight: 700; }
+.lb-name { flex: 1; font-weight: 600; font-size: 0.9rem; }
+.lb-score { font-family: var(--font-mono); color: var(--primary); font-weight: 700; }
 
 /* Report / Viewer */
 .report-preview { height: 200px; background: #222; margin: 0 16px 20px; border-radius: 16px; overflow: hidden; border: 1px solid #333; }
