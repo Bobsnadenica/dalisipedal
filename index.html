@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>P.E.D.A.L.🤫 | Граждански контрол на пътя</title>
+    <title>P.E.D.A.L. | Граждански контрол</title>
     <meta name="description" content="Снимай нарушителите. Направи пътищата по-безопасни.">
     <meta name="theme-color" content="#000000">
-    
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="stylesheet" href="style.css">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -27,7 +25,6 @@
                 <div class="logo-box">🤫</div>
                 <span class="logo-text">P.E.D.A.L.</span>
             </a>
-            
             <div class="nav-links">
                 <a href="#demo">Демонстрация</a>
                 <a href="#features">Функции</a>
@@ -38,17 +35,15 @@
 
     <header class="hero">
         <div class="container hero-layout">
-            
             <div class="hero-text fade-in">
                 <div class="status-pill-live">
                     <span class="pulsing-dot"></span>
-                    <span>Системата е активна v2.0</span>
+                    <span>Системата е активна v2.1</span>
                 </div>
                 <h1>Твоят град.<br><span class="text-gradient">Твоите правила.</span></h1>
                 <p>
                     Превърни телефона си в инструмент за ред. Снимай нарушенията, ние се грижим за останалото. Анонимно. Бързо. Ефективно.
                 </p>
-                
                 <div class="hero-actions">
                     <a href="#download" class="btn-primary-hero">Свали сега</a>
                     <a href="#demo" class="btn-secondary-hero">Виж как работи 👇</a>
@@ -71,33 +66,35 @@
                             </div>
                         </div>
 
+                        <div class="loading-overlay" id="global-loader">
+                            <div class="spinner"></div>
+                        </div>
+
                         <div class="app-view active" id="view-dashboard">
                             <div class="app-header">
-                                <div class="app-logo-text">P.E.D.A.L.🤫</div>
+                                <div class="app-logo-text">P.E.D.A.L.</div>
                             </div>
-                            
                             <div class="app-content">
                                 <div class="dash-grid">
-                                    <div class="dash-card red" onclick="goToGallery()">
+                                    <div class="dash-card red" onclick="simulateUpload()">
                                         <span class="material-icons-round icon-lg">add_a_photo</span>
-                                        <span class="card-label">Сигнал</span>
-                                        <span class="card-limit">5/5</span>
+                                        <span class="card-label">Снимай</span>
                                     </div>
-                                    <div class="dash-card yellow">
+                                    <div class="dash-card yellow" onclick="openMySignals()">
                                         <span class="material-icons-round icon-lg">folder_shared</span>
                                         <span class="card-label">Моите</span>
                                     </div>
-                                    <div class="dash-card green">
-                                        <span class="material-icons-round icon-lg">search</span>
-                                        <span class="card-label">Търси</span>
+                                    <div class="dash-card green" onclick="openMap()">
+                                        <span class="material-icons-round icon-lg">map</span>
+                                        <span class="card-label">Карта</span>
                                     </div>
-                                    <div class="dash-card purple">
-                                        <span class="material-icons-round icon-lg">casino</span>
+                                    <div class="dash-card purple" onclick="openRandom()">
+                                        <span class="material-icons-round icon-lg">shuffle</span>
                                         <span class="card-label">Рандъм</span>
                                     </div>
                                 </div>
 
-                                <div class="widget-pod">
+                                <div class="widget-pod" onclick="openRandom()">
                                     <div class="widget-img-holder">
                                         <img src="car1.jpeg" alt="Pedal of Day">
                                         <div class="pod-badge">☀️ Днес</div>
@@ -108,49 +105,111 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="fab-main" onclick="goToGallery()">
+                            <div class="fab-main" onclick="simulateUpload()">
                                 <span class="material-icons-round">camera_alt</span>
                             </div>
                         </div>
 
-                        <div class="app-view" id="view-gallery">
+                        <div class="app-view" id="view-mysignals">
                             <div class="view-nav">
                                 <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
-                                <span class="view-title">Избери снимка</span>
+                                <span class="view-title">Моите сигнали</span>
                             </div>
-                            <div class="gallery-grid">
-                                <div class="gallery-item" onclick="selectPhoto('car1.jpeg', 'CB 1234 AB')">
-                                    <img src="car1.jpeg" alt="Car 1">
+                            <div class="app-content">
+                                <div class="signal-list">
+                                    <div class="signal-item">
+                                        <img src="car1.jpeg" alt="signal">
+                                        <div class="signal-info">
+                                            <div class="signal-top">
+                                                <span class="plate-badge">CB 4816 TM</span>
+                                                <span class="status-text approved">Одобрен</span>
+                                            </div>
+                                            <div class="signal-date">02.01.2026 • 14:30</div>
+                                        </div>
+                                    </div>
+                                    <div class="signal-item">
+                                        <img src="car2.JPG" alt="signal">
+                                        <div class="signal-info">
+                                            <div class="signal-top">
+                                                <span class="plate-badge">CO 3708 CX</span>
+                                                <span class="status-text pending">Обработка</span>
+                                            </div>
+                                            <div class="signal-date">05.01.2026 • 09:15</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="gallery-item" onclick="selectPhoto('car2.JPG', 'PK 6666 PK')">
-                                    <img src="car2.JPG" alt="Car 2">
+                            </div>
+                        </div>
+
+                        <div class="app-view" id="view-map">
+                            <div class="view-nav">
+                                <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                <span class="view-title">Карта</span>
+                            </div>
+                            <div class="map-container">
+                                <div class="map-pin" style="top: 40%; left: 30%;">
+                                    <img src="car1.jpeg">
                                 </div>
-                                <div class="gallery-item placeholder"></div>
-                                <div class="gallery-item placeholder"></div>
+                                <div class="map-pin" style="top: 60%; left: 70%;">
+                                    <img src="car2.JPG">
+                                </div>
+                                <div class="map-pin pulse" style="top: 50%; left: 50%;"></div>
+                            </div>
+                            <div class="map-controls">
+                                <button class="btn-map">📍 Твоята локация</button>
                             </div>
                         </div>
 
                         <div class="app-view" id="view-report">
                             <div class="view-nav">
-                                <span class="material-icons-round back-btn" onclick="goBack('gallery')">arrow_back</span>
-                                <span class="view-title">Детайли</span>
+                                <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                <span class="view-title">Нов Сигнал</span>
                             </div>
                             <div class="report-preview">
                                 <img id="selected-img-preview" src="" alt="Preview">
                             </div>
                             <div class="report-form">
                                 <div class="form-group">
-                                    <label>Рег. Номер</label>
-                                    <input type="text" id="plate-input" value="CB 1234 AB" readonly>
+                                    <label>Разпознат номер (AI)</label>
+                                    <input type="text" id="plate-input" value="" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label>Локация</label>
-                                    <div class="fake-input">📍 42.6977, 23.3219</div>
+                                    <div class="fake-input">📍 София, България</div>
                                 </div>
                                 <button class="btn-submit" onclick="submitReport()">
                                     ИЗПРАТИ СИГНАЛ
                                 </button>
+                            </div>
+                        </div>
+
+                         <div class="app-view" id="view-viewer">
+                            <div class="view-nav">
+                                <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                <span class="view-title">Преглед</span>
+                            </div>
+                            <div class="report-preview large">
+                                <img id="viewer-img" src="" alt="Preview">
+                            </div>
+                            <div class="report-form">
+                                <div class="viewer-meta">
+                                    <h3 id="viewer-plate">CB 1234 AB</h3>
+                                    <p>Докладвано на: <span id="viewer-date"></span></p>
+                                </div>
+                                <div class="viewer-stats">
+                                    <div class="stat-box">
+                                        <span class="material-icons-round">visibility</span>
+                                        <span>1.2k</span>
+                                    </div>
+                                    <div class="stat-box">
+                                        <span class="material-icons-round">thumb_up</span>
+                                        <span>45</span>
+                                    </div>
+                                    <div class="stat-box">
+                                        <span class="material-icons-round">gavel</span>
+                                        <span>Act</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -161,11 +220,10 @@
                             <h3>Успешно!</h3>
                             <p>Сигналът е изпратен.</p>
                         </div>
-
                     </div>
                 </div>
                 <div class="phone-shadow"></div>
-                <div class="phone-hint">👆 Интерактивно демо: Натисни "Сигнал"</div>
+                <div class="phone-hint">👆 Интерактивно демо: Натисни "Снимай"</div>
             </div>
         </div>
     </header>

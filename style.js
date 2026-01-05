@@ -1,76 +1,99 @@
 /* P.E.D.A.L. Interactive Demo Logic */
 
-let selectedPlate = "";
-let selectedImg = "";
+const DB = [
+    { img: "car1.jpeg", plate: "CB 4816 TM" },
+    { img: "car2.JPG", plate: "CO 3708 CX" }
+];
 
-// Navigate between screens in phone
 function setView(viewId) {
-    // Hide all
     document.querySelectorAll('.app-view').forEach(el => {
         el.classList.remove('active');
     });
-    // Show target
-    document.getElementById(viewId).classList.add('active');
-}
-
-function goToGallery() {
-    setView('view-gallery');
+    document.getElementById('view-' + viewId).classList.add('active');
 }
 
 function goBack(targetView) {
-    setView('view-' + targetView);
+    setView(targetView);
 }
 
-// User selects a car from gallery
-function selectPhoto(imgSrc, plateNum) {
-    selectedImg = imgSrc;
-    selectedPlate = plateNum;
-
-    // Populate Report View
-    document.getElementById('selected-img-preview').src = imgSrc;
-    document.getElementById('plate-input').value = plateNum;
-
-    // Go to Report
-    setView('view-report');
+function showLoader(callback) {
+    const loader = document.getElementById('global-loader');
+    loader.classList.add('active');
+    setTimeout(() => {
+        loader.classList.remove('active');
+        callback();
+    }, 800);
 }
 
-// Simulate API submission
+function getRandomEntry() {
+    return DB[Math.floor(Math.random() * DB.length)];
+}
+
+// 1. Red Button (Shoot/Upload)
+function simulateUpload() {
+    showLoader(() => {
+        const entry = getRandomEntry();
+        document.getElementById('selected-img-preview').src = entry.img;
+        document.getElementById('plate-input').value = entry.plate;
+        setView('report');
+    });
+}
+
+// 2. Yellow Button (My Signals)
+function openMySignals() {
+    setView('mysignals');
+}
+
+// 3. Green Button (Map)
+function openMap() {
+    showLoader(() => {
+        setView('map');
+    });
+}
+
+// 4. Purple Button (Random)
+function openRandom() {
+    showLoader(() => {
+        const entry = getRandomEntry();
+        document.getElementById('viewer-img').src = entry.img;
+        document.getElementById('viewer-plate').innerText = entry.plate;
+        
+        const now = new Date();
+        document.getElementById('viewer-date').innerText = now.toLocaleDateString();
+        
+        setView('viewer');
+    });
+}
+
 function submitReport() {
     const btn = document.querySelector('.btn-submit');
     const originalText = btn.innerText;
     
-    // Loading state
     btn.innerText = "ИЗПРАЩАНЕ...";
     btn.style.opacity = "0.7";
 
     setTimeout(() => {
-        // Reset button
         btn.innerText = originalText;
         btn.style.opacity = "1";
 
-        // Show success overlay
         const success = document.getElementById('success-screen');
         success.classList.add('show');
 
-        // After 2s, return home
         setTimeout(() => {
             success.classList.remove('show');
-            setView('view-dashboard');
+            setView('dashboard');
         }, 2000);
 
     }, 1500);
 }
 
-// --- General Site Scripts ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Clock
     setInterval(() => {
         const now = new Date();
         document.getElementById('clock').innerText = 
             now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     }, 1000);
 
-    // Fade-in Elements on scroll
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) entry.target.classList.add('visible');
@@ -78,7 +101,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-    
-    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 });
