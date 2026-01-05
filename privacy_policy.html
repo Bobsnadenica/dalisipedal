@@ -1,1 +1,250 @@
-Кот такова
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | P.E.D.A.L.</title>
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Specific overrides for the text-heavy policy page */
+        body {
+            overflow-y: auto; /* Allow scrolling */
+        }
+        .policy-container {
+            max-width: 900px;
+            margin: 120px auto 60px;
+            padding: 50px;
+            background: #121212;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 10;
+        }
+        .lang-switch {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn {
+            background: rgba(255,255,255,0.1);
+            color: #888;
+            border: 1px solid transparent;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.2s;
+            font-family: var(--font-mono);
+        }
+        .lang-btn.active {
+            background: var(--primary);
+            color: black;
+            border-color: var(--primary);
+        }
+        h1 { margin-bottom: 10px; font-size: 2.5rem; letter-spacing: -1px; }
+        .last-updated { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 40px; display: block; font-family: var(--font-mono); }
+        
+        h2 { margin-top: 40px; margin-bottom: 15px; color: white; font-size: 1.4rem; border-left: 4px solid var(--primary); padding-left: 15px; }
+        h3 { margin-top: 25px; margin-bottom: 10px; color: var(--primary); font-size: 1.1rem; }
+        
+        p, li { color: #ccc; line-height: 1.7; margin-bottom: 15px; font-size: 1rem; }
+        ul { margin-left: 20px; margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
+        
+        .email-link { color: var(--text-main); font-weight: 600; text-decoration: underline; font-family: var(--font-mono); }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: var(--primary); transform: translateX(-5px); }
+        
+        .legal-box {
+            background: rgba(255,255,255,0.03);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-top: 30px;
+        }
+
+        /* Hide content based on language */
+        [data-lang] { display: none; }
+        [data-lang].active { display: block; animation: fadeIn 0.5s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 600px) {
+            .policy-container { padding: 25px; margin-top: 100px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow-top"></div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="app_icon.png" alt="P.E.D.A.L." class="logo-icon-img">
+                <span class="logo-text">P.E.D.A.L. 🤫</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="policy-container fade-in">
+        <a href="index.html" class="back-link">← Начало / Home</a>
+        
+        <div class="lang-switch">
+            <button class="lang-btn active" onclick="setLang('bg')">BG</button>
+            <button class="lang-btn" onclick="setLang('en')">EN</button>
+        </div>
+
+        <div data-lang="bg" class="active">
+            <h1>Политика за поверителност</h1>
+            <span class="last-updated">Последна актуализация: 05.01.2026</span>
+            
+            <p>P.E.D.A.L. ("Ние", "Нас" или "Нашият") се ангажира да защитава вашата поверителност. Тази Политика за поверителност обяснява как събираме, използваме, разкриваме и защитаваме вашата информация, когато използвате нашето мобилно приложение.</p>
+            <p>Настоящата политика е изготвена в съответствие с Общия регламент за защита на данните (GDPR) (ЕС) 2016/679.</p>
+
+            <h2>1. Администратор на лични данни</h2>
+            <p>За целите на GDPR, P.E.D.A.L. действа като администратор на данните, които предоставяте. Ако имате въпроси относно обработката на вашите данни, можете да се свържете с нас на <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a>.</p>
+
+            <h2>2. Данни, които събираме</h2>
+            <p>Ние събираме и обработваме следните категории информация, необходима за функционирането на услугата:</p>
+            <ul>
+                <li><strong>Снимков материал:</strong> Снимки на пътни нарушения, които вие доброволно заснемате и качвате чрез приложението.</li>
+                <li><strong>Технически метаданни:</strong> Информация за устройството (модел, операционна система), IP адрес, час и дата на заснемане.</li>
+                <li><strong>Данни за локация (GPS):</strong> Географски координати на нарушението, необходими за верификация на сигнала и визуализация на картата.</li>
+                <li><strong>Потребителски профил:</strong> Имейл адрес или потребителско име (ако е приложимо), използвани за управление на вашите сигнали.</li>
+            </ul>
+
+            <h2>3. Правно основание и цели</h2>
+            <p>Обработваме вашите данни на следните правни основания:</p>
+            <ul>
+                <li><strong>Легитимен интерес:</strong> За подобряване на градската среда, пътната безопасност и гражданския контрол.</li>
+                <li><strong>Съгласие:</strong> За достъп до камерата и локацията на вашето устройство.</li>
+            </ul>
+
+            <h2>4. Съхранение на данни</h2>
+            <p>Ние прилагаме принципа на "ограничение на съхранението". Вашата лична информация и качените материали <strong>не се съхраняват безсрочно</strong>.</p>
+            <p>Данните се пазят само за периода, необходим за обработка, верификация и предаване на сигналите към компетентните органи (ако е приложимо), след което се анонимизират или изтриват съгласно нашите вътрешни протоколи за сигурност.</p>
+
+            <h2>5. Вашите права по GDPR</h2>
+            <p>Като субект на данни, вие имате следните права:</p>
+            <ul>
+                <li><strong>Право на достъп:</strong> Да поискате копие от личните данни, които съхраняваме за вас.</li>
+                <li><strong>Право на коригиране:</strong> Да поискате поправка на неточни данни.</li>
+                <li><strong>Право на изтриване („Право да бъдеш забравен“):</strong> Да поискате изтриване на вашия профил или конкретни сигнали.</li>
+                <li><strong>Право на ограничаване на обработването:</strong> Да възразите срещу обработването на вашите данни.</li>
+                <li><strong>Право на преносимост:</strong> Да получите данните си в структуриран вид.</li>
+            </ul>
+
+            <div class="legal-box">
+                <h3>Упражняване на права</h3>
+                <p>За да упражните правото си на изтриване или корекция, моля свържете се с нашето длъжностно лице по защита на данните на:</p>
+                <a href="mailto:complaing@dalisipedal.com" class="email-link">complaing@dalisipedal.com</a>
+            </div>
+
+            <h2>6. Споделяне на данни</h2>
+            <p>Ние не продаваме вашите лични данни на трети страни. Данните могат да бъдат споделени с правоприлагащи органи само при наличие на законово изискване или за целите на подаване на официален сигнал за нарушение.</p>
+
+            <h2>7. Контакти и надзор</h2>
+            <p>Ако смятате, че правата ви са нарушени, имате право да подадете жалба до Комисията за защита на личните данни (КЗЛД).</p>
+            
+            <p><strong>Общи запитвания:</strong> <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a></p>
+            <p><strong>Партньорства и реклама:</strong> <a href="mailto:opportunities@dalisipedal.com" class="email-link">opportunities@dalisipedal.com</a></p>
+        </div>
+
+        <div data-lang="en">
+            <h1>Privacy Policy</h1>
+            <span class="last-updated">Last Updated: January 5, 2026</span>
+            
+            <p>P.E.D.A.L. ("We", "Us", or "Our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application.</p>
+            <p>This policy is compliant with the General Data Protection Regulation (GDPR) (EU) 2016/679.</p>
+
+            <h2>1. Data Controller</h2>
+            <p>For the purposes of the GDPR, P.E.D.A.L. is the Data Controller of the information you provide. If you have any questions regarding data processing, please contact us at <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a>.</p>
+
+            <h2>2. Information We Collect</h2>
+            <p>We collect and process the following categories of data necessary for the service:</p>
+            <ul>
+                <li><strong>Photographic Content:</strong> Images of traffic violations you voluntarily capture and upload via the App.</li>
+                <li><strong>Technical Metadata:</strong> Device information (model, OS), IP address, timestamp of the capture.</li>
+                <li><strong>Location Data (GPS):</strong> Geographic coordinates of the violation, required to verify the report and display it on the map.</li>
+                <li><strong>User Data:</strong> Email address or username (where applicable) used to manage your reports.</li>
+            </ul>
+
+            <h2>3. Legal Basis and Purpose</h2>
+            <p>We process your data based on the following legal grounds:</p>
+            <ul>
+                <li><strong>Legitimate Interest:</strong> To improve urban environments, road safety, and civic control.</li>
+                <li><strong>Consent:</strong> Specifically obtained to access your device's camera and location services.</li>
+            </ul>
+
+            <h2>4. Data Retention</h2>
+            <p>We apply the principle of "storage limitation." Your personal information and uploaded content are <strong>not stored indefinitely</strong>.</p>
+            <p>Data is retained only for the period necessary to process, verify, and transmit reports to competent authorities (if applicable), after which it is anonymized or deleted according to our internal security protocols.</p>
+
+            <h2>5. Your GDPR Rights</h2>
+            <p>As a data subject, you have the following rights:</p>
+            <ul>
+                <li><strong>Right of Access:</strong> Request a copy of the personal data we hold about you.</li>
+                <li><strong>Right to Rectification:</strong> Request correction of inaccurate data.</li>
+                <li><strong>Right to Erasure ("Right to be Forgotten"):</strong> Request the deletion of your account or specific reports.</li>
+                <li><strong>Right to Restriction:</strong> Request limitation of processing your data.</li>
+                <li><strong>Right to Portability:</strong> Receive your data in a structured format.</li>
+            </ul>
+
+            <div class="legal-box">
+                <h3>Exercising Your Rights</h3>
+                <p>To exercise your right to erasure or any other GDPR right, please contact our data protection team at:</p>
+                <a href="mailto:complaing@dalisipedal.com" class="email-link">complaing@dalisipedal.com</a>
+            </div>
+
+            <h2>6. Data Sharing</h2>
+            <p>We do not sell your personal data to third parties. Data may be shared with law enforcement agencies only when required by law or for the purpose of submitting an official violation report.</p>
+
+            <h2>7. Contact & Complaints</h2>
+            <p>If you believe your rights have been violated, you have the right to lodge a complaint with the Commission for Personal Data Protection (CPDP).</p>
+            
+            <p><strong>General Inquiries:</strong> <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a></p>
+            <p><strong>Partnerships & Advertising:</strong> <a href="mailto:opportunities@dalisipedal.com" class="email-link">opportunities@dalisipedal.com</a></p>
+        </div>
+
+        <footer style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
+            &copy; 2026 P.E.D.A.L. Team. All rights reserved.
+        </footer>
+    </div>
+
+    <script>
+        function setLang(lang) {
+            // Toggle Content
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                if(el.getAttribute('data-lang') === lang) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+
+            // Toggle Buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase() === lang.toLowerCase()) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
