@@ -8,10 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
-        /* Specific overrides for the text-heavy policy page */
-        body {
-            overflow-y: auto; /* Allow scrolling */
-        }
+        body { overflow-y: auto; }
         .policy-container {
             max-width: 900px;
             margin: 120px auto 60px;
@@ -74,6 +71,14 @@
             border: 1px solid rgba(255,255,255,0.05);
             margin-top: 30px;
         }
+        .cpdp-info {
+            background: rgba(52, 199, 89, 0.05);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
 
         /* Hide content based on language */
         [data-lang] { display: none; }
@@ -111,114 +116,98 @@
 
         <div data-lang="bg" class="active">
             <h1>Политика за поверителност</h1>
-            <span class="last-updated">Последна актуализация: 05.01.2026</span>
+            <span class="last-updated">В сила от: 05.01.2026 | Версия 2.1</span>
             
-            <p>P.E.D.A.L. ("Ние", "Нас" или "Нашият") се ангажира да защитава вашата поверителност. Тази Политика за поверителност обяснява как събираме, използваме, разкриваме и защитаваме вашата информация, когато използвате нашето мобилно приложение.</p>
-            <p>Настоящата политика е изготвена в съответствие с Общия регламент за защита на данните (GDPR) (ЕС) 2016/679.</p>
+            <p>P.E.D.A.L. ("Ние") обработва лични данни в пълно съответствие с Общия регламент за защита на данните (GDPR) (ЕС) 2016/679 и действащото българско законодателство.</p>
 
             <h2>1. Администратор на лични данни</h2>
-            <p>За целите на GDPR, P.E.D.A.L. действа като администратор на данните, които предоставяте. Ако имате въпроси относно обработката на вашите данни, можете да се свържете с нас на <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a>.</p>
+            <p>P.E.D.A.L. действа като администратор на личните данни, събирани чрез приложението. Ние поддържаме вътрешен регистър на дейностите по обработване съгласно чл. 30 от GDPR.</p>
+            <p><strong>Контакт по въпроси за защита на данните:</strong> <br><a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a></p>
 
-            <h2>2. Данни, които събираме</h2>
-            <p>Ние събираме и обработваме следните категории информация, необходима за функционирането на услугата:</p>
+            <h2>2. Категории събирани данни</h2>
             <ul>
-                <li><strong>Снимков материал:</strong> Снимки на пътни нарушения, които вие доброволно заснемате и качвате чрез приложението.</li>
-                <li><strong>Технически метаданни:</strong> Информация за устройството (модел, операционна система), IP адрес, час и дата на заснемане.</li>
-                <li><strong>Данни за локация (GPS):</strong> Географски координати на нарушението, необходими за верификация на сигнала и визуализация на картата.</li>
-                <li><strong>Потребителски профил:</strong> Имейл адрес или потребителско име (ако е приложимо), използвани за управление на вашите сигнали.</li>
+                <li><strong>Визуални данни:</strong> Снимки на нарушения (с или без регистрационни номера).</li>
+                <li><strong>Геолокация (GPS):</strong> Точни координати за верификация на сигнала.</li>
+                <li><strong>Метаданни:</strong> IP адрес, модел на устройство, времеви печат.</li>
+                <li><strong>Контактни данни:</strong> Имейл адрес за обратна връзка (при регистрация).</li>
             </ul>
 
-            <h2>3. Правно основание и цели</h2>
-            <p>Обработваме вашите данни на следните правни основания:</p>
+            <h2>3. Правно основание (чл. 6 GDPR)</h2>
+            <p>Обработването се извършва въз основа на:</p>
             <ul>
-                <li><strong>Легитимен интерес:</strong> За подобряване на градската среда, пътната безопасност и гражданския контрол.</li>
-                <li><strong>Съгласие:</strong> За достъп до камерата и локацията на вашето устройство.</li>
+                <li><strong>Легитимен интерес (чл. 6, т. 1, буква "е"):</strong> За осигуряване на граждански контрол и пътна безопасност.</li>
+                <li><strong>Съгласие (чл. 6, т. 1, буква "а"):</strong> За достъп до камерата и локацията на устройството.</li>
             </ul>
 
-            <h2>4. Съхранение на данни</h2>
-            <p>Ние прилагаме принципа на "ограничение на съхранението". Вашата лична информация и качените материали <strong>не се съхраняват безсрочно</strong>.</p>
-            <p>Данните се пазят само за периода, необходим за обработка, верификация и предаване на сигналите към компетентните органи (ако е приложимо), след което се анонимизират или изтриват съгласно нашите вътрешни протоколи за сигурност.</p>
+            <h2>4. Срокове за съхранение</h2>
+            <p>Прилагаме стриктна политика за ограничаване на съхранението. Личните данни <strong>не се съхраняват безсрочно</strong>.</p>
+            <p>Данните се пазят до приключване на процедурата по обработка на сигнала или до изтичане на давностните срокове за обжалване, след което се анонимизират или унищожават сигурно.</p>
 
-            <h2>5. Вашите права по GDPR</h2>
-            <p>Като субект на данни, вие имате следните права:</p>
-            <ul>
-                <li><strong>Право на достъп:</strong> Да поискате копие от личните данни, които съхраняваме за вас.</li>
-                <li><strong>Право на коригиране:</strong> Да поискате поправка на неточни данни.</li>
-                <li><strong>Право на изтриване („Право да бъдеш забравен“):</strong> Да поискате изтриване на вашия профил или конкретни сигнали.</li>
-                <li><strong>Право на ограничаване на обработването:</strong> Да възразите срещу обработването на вашите данни.</li>
-                <li><strong>Право на преносимост:</strong> Да получите данните си в структуриран вид.</li>
-            </ul>
+            <h2>5. Вашите права</h2>
+            <p>Вие разполагате с пълния набор от права по GDPR, включително правото да поискате изтриване на вашите данни („право да бъдеш забравен“) по всяко време, като пишете на <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a>.</p>
 
-            <div class="legal-box">
-                <h3>Упражняване на права</h3>
-                <p>За да упражните правото си на изтриване или корекция, моля свържете се с нашето длъжностно лице по защита на данните на:</p>
-                <a href="mailto:complaing@dalisipedal.com" class="email-link">complaing@dalisipedal.com</a>
+            <h2>6. Право на жалба</h2>
+            <p>Ако смятате, че правата ви са нарушени, имате право да сезирате надзорния орган в Република България:</p>
+            
+            <div class="cpdp-info">
+                <strong>Комисия за защита на личните данни (КЗЛД)</strong><br>
+                Адрес: гр. София 1592, бул. „Проф. Цветан Лазаров” № 2<br>
+                Уебсайт: <a href="https://www.cpdp.bg" target="_blank" style="color:#34C759">www.cpdp.bg</a><br>
+                Ел. поща: kzld@cpdp.bg
             </div>
 
-            <h2>6. Споделяне на данни</h2>
-            <p>Ние не продаваме вашите лични данни на трети страни. Данните могат да бъдат споделени с правоприлагащи органи само при наличие на законово изискване или за целите на подаване на официален сигнал за нарушение.</p>
-
-            <h2>7. Контакти и надзор</h2>
-            <p>Ако смятате, че правата ви са нарушени, имате право да подадете жалба до Комисията за защита на личните данни (КЗЛД).</p>
-            
-            <p><strong>Общи запитвания:</strong> <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a></p>
-            <p><strong>Партньорства и реклама:</strong> <a href="mailto:opportunities@dalisipedal.com" class="email-link">opportunities@dalisipedal.com</a></p>
+            <h2>7. Контакти</h2>
+            <p><strong>Подаване на сигнали и жалби:</strong> <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a></p>
+            <p><strong>Общи въпроси:</strong> <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a></p>
+            <p><strong>Партньорства:</strong> <a href="mailto:opportunities@dalisipedal.com" class="email-link">opportunities@dalisipedal.com</a></p>
         </div>
 
         <div data-lang="en">
             <h1>Privacy Policy</h1>
-            <span class="last-updated">Last Updated: January 5, 2026</span>
+            <span class="last-updated">Effective Date: 05.01.2026 | Version 2.1</span>
             
-            <p>P.E.D.A.L. ("We", "Us", or "Our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application.</p>
-            <p>This policy is compliant with the General Data Protection Regulation (GDPR) (EU) 2016/679.</p>
+            <p>P.E.D.A.L. ("We") processes personal data in full compliance with the General Data Protection Regulation (GDPR) (EU) 2016/679 and applicable Bulgarian legislation.</p>
 
             <h2>1. Data Controller</h2>
-            <p>For the purposes of the GDPR, P.E.D.A.L. is the Data Controller of the information you provide. If you have any questions regarding data processing, please contact us at <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a>.</p>
+            <p>P.E.D.A.L. acts as the Data Controller for information collected via the app. We maintain an internal registry of processing activities pursuant to Art. 30 of GDPR.</p>
+            <p><strong>Data Protection Contact:</strong> <br><a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a></p>
 
-            <h2>2. Information We Collect</h2>
-            <p>We collect and process the following categories of data necessary for the service:</p>
+            <h2>2. Data Categories</h2>
             <ul>
-                <li><strong>Photographic Content:</strong> Images of traffic violations you voluntarily capture and upload via the App.</li>
-                <li><strong>Technical Metadata:</strong> Device information (model, OS), IP address, timestamp of the capture.</li>
-                <li><strong>Location Data (GPS):</strong> Geographic coordinates of the violation, required to verify the report and display it on the map.</li>
-                <li><strong>User Data:</strong> Email address or username (where applicable) used to manage your reports.</li>
+                <li><strong>Visual Data:</strong> Photos of violations (with or without license plates).</li>
+                <li><strong>Geolocation (GPS):</strong> Precise coordinates for report verification.</li>
+                <li><strong>Metadata:</strong> IP address, device model, timestamp.</li>
+                <li><strong>Contact Data:</strong> Email address for feedback (upon registration).</li>
             </ul>
 
-            <h2>3. Legal Basis and Purpose</h2>
-            <p>We process your data based on the following legal grounds:</p>
+            <h2>3. Legal Basis (Art. 6 GDPR)</h2>
+            <p>Processing is based on:</p>
             <ul>
-                <li><strong>Legitimate Interest:</strong> To improve urban environments, road safety, and civic control.</li>
-                <li><strong>Consent:</strong> Specifically obtained to access your device's camera and location services.</li>
+                <li><strong>Legitimate Interest (Art. 6(1)(f)):</strong> To ensure civic control and road safety.</li>
+                <li><strong>Consent (Art. 6(1)(a)):</strong> Specifically for camera and location access.</li>
             </ul>
 
             <h2>4. Data Retention</h2>
-            <p>We apply the principle of "storage limitation." Your personal information and uploaded content are <strong>not stored indefinitely</strong>.</p>
-            <p>Data is retained only for the period necessary to process, verify, and transmit reports to competent authorities (if applicable), after which it is anonymized or deleted according to our internal security protocols.</p>
+            <p>We apply a strict storage limitation policy. Personal data is <strong>not stored indefinitely</strong>.</p>
+            <p>Data is retained until the report processing procedure is finalized or appeal periods expire, after which it is anonymized or securely destroyed.</p>
 
-            <h2>5. Your GDPR Rights</h2>
-            <p>As a data subject, you have the following rights:</p>
-            <ul>
-                <li><strong>Right of Access:</strong> Request a copy of the personal data we hold about you.</li>
-                <li><strong>Right to Rectification:</strong> Request correction of inaccurate data.</li>
-                <li><strong>Right to Erasure ("Right to be Forgotten"):</strong> Request the deletion of your account or specific reports.</li>
-                <li><strong>Right to Restriction:</strong> Request limitation of processing your data.</li>
-                <li><strong>Right to Portability:</strong> Receive your data in a structured format.</li>
-            </ul>
+            <h2>5. Your Rights</h2>
+            <p>You have full rights under GDPR, including the right to request deletion of your data ("Right to be Forgotten") at any time by writing to <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a>.</p>
 
-            <div class="legal-box">
-                <h3>Exercising Your Rights</h3>
-                <p>To exercise your right to erasure or any other GDPR right, please contact our data protection team at:</p>
-                <a href="mailto:complaing@dalisipedal.com" class="email-link">complaing@dalisipedal.com</a>
+            <h2>6. Right to Complain</h2>
+            <p>If you believe your rights have been violated, you have the right to lodge a complaint with the supervisory authority in Bulgaria:</p>
+            
+            <div class="cpdp-info">
+                <strong>Commission for Personal Data Protection (CPDP)</strong><br>
+                Address: 2 Prof. Tsvetan Lazarov Blvd., Sofia 1592, Bulgaria<br>
+                Website: <a href="https://www.cpdp.bg" target="_blank" style="color:#34C759">www.cpdp.bg</a><br>
+                Email: kzld@cpdp.bg
             </div>
 
-            <h2>6. Data Sharing</h2>
-            <p>We do not sell your personal data to third parties. Data may be shared with law enforcement agencies only when required by law or for the purpose of submitting an official violation report.</p>
-
-            <h2>7. Contact & Complaints</h2>
-            <p>If you believe your rights have been violated, you have the right to lodge a complaint with the Commission for Personal Data Protection (CPDP).</p>
-            
+            <h2>7. Contact Us</h2>
+            <p><strong>Complaints & Removal:</strong> <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a></p>
             <p><strong>General Inquiries:</strong> <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a></p>
-            <p><strong>Partnerships & Advertising:</strong> <a href="mailto:opportunities@dalisipedal.com" class="email-link">opportunities@dalisipedal.com</a></p>
+            <p><strong>Partnerships:</strong> <a href="mailto:opportunities@dalisipedal.com" class="email-link">opportunities@dalisipedal.com</a></p>
         </div>
 
         <footer style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
@@ -228,7 +217,6 @@
 
     <script>
         function setLang(lang) {
-            // Toggle Content
             document.querySelectorAll('[data-lang]').forEach(el => {
                 if(el.getAttribute('data-lang') === lang) {
                     el.classList.add('active');
@@ -237,7 +225,6 @@
                 }
             });
 
-            // Toggle Buttons
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.innerText.toLowerCase() === lang.toLowerCase()) {
