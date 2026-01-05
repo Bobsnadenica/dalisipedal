@@ -1,4 +1,4 @@
-/* P.E.D.A.L. Interactive Demo Logic v2.6 */
+/* P.E.D.A.L. Interactive Demo Logic v2.7 */
 
 const DB = [
     { id: 1, img: "car1.jpeg", plate: "CB 4816 TM", status: "approved", date: "02.01.2026" },
@@ -12,7 +12,7 @@ const DB = [
 // Global State
 let map = null;
 let userMarker = null;
-let signalsGenerated = false; // Prevents duplicate simulation
+let signalsGenerated = false;
 
 function setView(viewId) {
     document.querySelectorAll('.app-view').forEach(el => {
@@ -75,14 +75,12 @@ function openMySignals() {
     setView('mysignals');
 }
 
-// 3. Green Button (Map) - Fixed Logic
+// 3. Green Button (Map)
 function openMap() {
     showLoader(() => {
         setView('map');
         
-        // Ensure the view transition is complete before initializing Leaflet
         setTimeout(() => {
-            // 1. Initialize Map Object (Only Once)
             if (!map) {
                 map = L.map('map-container', { zoomControl: false }).setView([42.6977, 23.3219], 13);
                 
@@ -90,17 +88,17 @@ function openMap() {
                     attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
                 }).addTo(map);
             }
+            
+            // Critical fix for map rendering in hidden div
+            map.invalidateSize();
 
-            // 2. Get User Location
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(position => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     
-                    // Center map on user
                     map.setView([lat, lng], 15);
 
-                    // Update or Create User Marker (Green Dot)
                     if (userMarker) {
                         userMarker.setLatLng([lat, lng]);
                     } else {
@@ -114,11 +112,8 @@ function openMap() {
                         }).addTo(map).bindPopup("Ти си тук");
                     }
 
-                    // 3. Simulate Signals (Only Once per Session)
-                    // This check prevents duplicate markers when reopening the map
                     if (!signalsGenerated) {
                         DB.forEach(item => {
-                            // Generate random offset ~500m around user
                             const latOffset = (Math.random() - 0.5) * 0.01;
                             const lngOffset = (Math.random() - 0.5) * 0.01;
                             
@@ -133,13 +128,11 @@ function openMap() {
                                 .addTo(map)
                                 .on('click', () => openViewer(item.id));
                         });
-                        
-                        signalsGenerated = true; // Flag to stop regeneration
+                        signalsGenerated = true;
                     }
 
                 }, (error) => {
                     console.warn("GPS Access Denied:", error);
-                    // Fallback if no GPS: just initialize simulation around default center if needed
                 });
             }
         }, 300);
@@ -197,7 +190,6 @@ function openLeaderboard() {
         { name: "Gosho", score: 950, rank: 6 }
     ];
 
-    // Sort descending
     users.sort((a,b) => b.score - a.score);
 
     users.forEach((u, index) => {
@@ -217,7 +209,6 @@ function openLeaderboard() {
     setView('leaderboard');
 }
 
-// Helper to open specific viewer
 function openViewer(id) {
     const entry = DB.find(x => x.id === id);
     if(entry) {
