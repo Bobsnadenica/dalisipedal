@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>P.E.D.A.L. | Граждански контрол</title>
-    <meta name="description" content="Снимай нарушителите. Направи пътищата по-безопасни.">
+    <title>П.Е.Д.А.Л. | Публичен Електронен Достъп за Анализ на Лоши шофьори</title>
+    <meta name="description" content="П.Е.Д.А.Л. - Публичен Електронен Достъп за Анализ на Лоши шофьори. Снимай нарушителите. Направи пътищата по-безопасни.">
+    <meta property="og:title" content="П.Е.Д.А.Л. | Граждански контрол">
+    <meta property="og:description" content="Публичен Електронен Достъп за Анализ на Лоши шофьори.">
+    <meta property="og:image" content="app_icon.png">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="stylesheet" href="style.css">
@@ -14,6 +17,35 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        .system-definition {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: inline-block;
+            backdrop-filter: blur(5px);
+        }
+        .def-abbr {
+            color: #ff4757;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .def-text {
+            color: #bdc3c7;
+            font-size: 0.9em;
+        }
+        @media (max-width: 600px) {
+            .system-definition {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -42,13 +74,18 @@
                     <span class="pulsing-dot"></span>
                     <span>Системата е активна v2.6</span>
                 </div>
+                
+                <div class="system-definition">
+                    <span class="def-abbr">П.Е.Д.А.Л.</span>
+                    <span class="def-text"> = Публичен Електронен Достъп за Анализ на Лоши шофьори</span>
+                </div>
+
                 <h1>Твоят град.<br><span class="text-gradient">Твоите правила.</span></h1>
                 <p>
                     Превърни телефона си в инструмент за ред. Снимай нарушенията, ние се грижим за останалото. Анонимно. Бързо. Ефективно.
                 </p>
                 <div class="hero-actions">
-                    <a href="#download" class="btn-primary-hero">Свали сега</a>
-                    <a href="#demo" class="btn-secondary-hero">Виж демо 👇</a>
+                    <a href="#download" class="btn-primary-hero">Свали сега (скоро)</a>
                 </div>
             </div>
 
@@ -93,15 +130,15 @@
                                         </div>
                                         <div class="dash-card purple" onclick="openRandom()">
                                             <span class="material-icons-round icon-lg">shuffle</span>
-                                            <span class="card-label">Рандъм</span>
+                                            <span class="card-label">Произволна</span>
                                         </div>
                                         <div class="dash-card blue" onclick="openAchievements()">
                                             <span class="material-icons-round icon-lg">emoji_events</span>
-                                            <span class="card-label">Ранк</span>
+                                            <span class="card-label">Постижения</span>
                                         </div>
                                         <div class="dash-card orange" onclick="openLeaderboard()">
                                             <span class="material-icons-round icon-lg">leaderboard</span>
-                                            <span class="card-label">Топ</span>
+                                            <span class="card-label">Класация</span>
                                         </div>
                                     </div>
 
@@ -256,8 +293,8 @@
             <div class="download-box">
                 <h2>Готов ли си за действие?</h2>
                 <div class="store-buttons">
-                    <button class="btn-store">🍏 App Store</button>
-                    <button class="btn-store">🤖 Google Play</button>
+                    <button class="btn-store">🍏 App Store (скоро)</button>
+                    <button class="btn-store">🤖 Google Play (скоро)</button>
                 </div>
             </div>
         </div>
