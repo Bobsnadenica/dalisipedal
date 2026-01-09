@@ -72,7 +72,6 @@
             font-size: 0.9em;
         }
         
-        /* New Button Styles Override */
         .hero-actions {
             display: flex;
             flex-wrap: wrap;
@@ -146,7 +145,7 @@
             <div class="hero-text fade-in">
                 <div class="status-pill-live">
                     <span class="pulsing-dot"></span>
-                    <span>Системата е активна v2.6</span>
+                    <span>Системата е активна v1</span>
                 </div>
                 
                 <div class="system-definition">
@@ -186,6 +185,8 @@
                             <div class="loading-overlay" id="global-loader">
                                 <div class="spinner"></div>
                             </div>
+                            
+                            <div class="camera-flash" id="cam-flash"></div>
 
                             <div class="app-view active" id="view-dashboard">
                                 <div class="app-header">
@@ -217,6 +218,14 @@
                                             <span class="material-icons-round icon-lg">leaderboard</span>
                                             <span class="card-label">Класация</span>
                                         </div>
+                                        <div class="dash-card cyan" onclick="openStats()">
+                                            <span class="material-icons-round icon-lg">query_stats</span>
+                                            <span class="card-label">Статистика</span>
+                                        </div>
+                                        <div class="dash-card dark" onclick="openSecret()">
+                                            <span class="material-icons-round icon-lg">lock</span>
+                                            <span class="card-label">Тайна</span>
+                                        </div>
                                     </div>
 
                                     <div class="widget-pod" onclick="openRandom()">
@@ -229,6 +238,19 @@
                                             <p>София, Люлин 5</p>
                                         </div>
                                     </div>
+
+                                    <div class="widget-pod" onclick="openPodMonth()">
+                                        <div class="widget-img-holder">
+                                            <img src="car5.jpeg" alt="Pedal of Month">
+                                            <div class="pod-badge month">🏆 Месец</div>
+                                        </div>
+                                        <div class="widget-text">
+                                            <h5>П.Е.Д.А.Л. на МЕСЕЦА</h5>
+                                            <p>София, Младост 4</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="height: 80px;"></div>
                                 </div>
                                 <div class="fab-main" onclick="simulateUpload()">
                                     <span class="material-icons-round">camera_alt</span>
@@ -270,6 +292,45 @@
                                 </div>
                                 <div class="app-content">
                                     <div class="lb-list" id="lb-list"></div>
+                                </div>
+                            </div>
+
+                            <div class="app-view" id="view-stats">
+                                <div class="view-nav">
+                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                    <span class="view-title">Статистика за ПТП</span>
+                                </div>
+                                <div class="app-content" id="stats-content"></div>
+                            </div>
+
+                            <div class="app-view" id="view-secret">
+                                <div class="view-nav">
+                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                    <span class="view-title">Строго Секретно</span>
+                                </div>
+                                <div class="app-content secret-wrapper">
+                                    <div class="secret-lock-icon">
+                                        <span class="material-icons-round">gpp_bad</span>
+                                    </div>
+                                    <h3>Достъп забранен</h3>
+                                    <p>Въведете ПИН код за достъп до административния панел.</p>
+                                    <div class="secret-pin-dots">
+                                        <span></span><span></span><span></span><span></span>
+                                    </div>
+                                    <div class="keypad">
+                                        <div class="key" onclick="pressKey(1)">1</div>
+                                        <div class="key" onclick="pressKey(2)">2</div>
+                                        <div class="key" onclick="pressKey(3)">3</div>
+                                        <div class="key" onclick="pressKey(4)">4</div>
+                                        <div class="key" onclick="pressKey(5)">5</div>
+                                        <div class="key" onclick="pressKey(6)">6</div>
+                                        <div class="key" onclick="pressKey(7)">7</div>
+                                        <div class="key" onclick="pressKey(8)">8</div>
+                                        <div class="key" onclick="pressKey(9)">9</div>
+                                        <div class="key" style="opacity:0"></div>
+                                        <div class="key" onclick="pressKey(0)">0</div>
+                                        <div class="key" onclick="clearKey()"><span class="material-icons-round">backspace</span></div>
+                                    </div>
                                 </div>
                             </div>
 

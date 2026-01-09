@@ -1,18 +1,19 @@
-/* P.E.D.A.L. Interactive Demo Logic v2.7 */
+/* P.E.D.A.L. Interactive Demo Logic v2.8 */
 
 const DB = [
-    { id: 1, img: "car1.jpeg", plate: "CB XXXX TM", status: "approved", date: "02.01.2026" },
-    { id: 2, img: "car2.JPG", plate: "CO XXXX CX", status: "pending", date: "05.01.2026" },
-    { id: 3, img: "car3.jpeg", plate: "CA XXXX HP", status: "approved", date: "28.12.2025" },
-    { id: 4, img: "car4.jpeg", plate: "CB XXXX KA", status: "pending", date: "06.01.2026" },
-    { id: 5, img: "car5.jpeg", plate: "E XXXX PB", status: "approved", date: "15.12.2025" },
-    { id: 6, img: "car6.JPG", plate: "PB XXXX MX", status: "pending", date: "06.01.2026" }
+    { id: 1, img: "car1.jpeg", plate: "CB 4816 TM", status: "approved", date: "02.01.2026" },
+    { id: 2, img: "car2.JPG", plate: "CO 3708 CX", status: "pending", date: "05.01.2026" },
+    { id: 3, img: "car3.jpeg", plate: "CA 1290 HP", status: "approved", date: "28.12.2025" },
+    { id: 4, img: "car4.jpeg", plate: "CB 9921 KA", status: "pending", date: "06.01.2026" },
+    { id: 5, img: "car5.jpeg", plate: "TX 5502 PB", status: "approved", date: "15.12.2025" },
+    { id: 6, img: "car6.JPG", plate: "PB 1188 MX", status: "pending", date: "06.01.2026" }
 ];
 
 // Global State
 let map = null;
 let userMarker = null;
 let signalsGenerated = false;
+let secretPin = "";
 
 function setView(viewId) {
     document.querySelectorAll('.app-view').forEach(el => {
@@ -23,6 +24,11 @@ function setView(viewId) {
 
 function goBack(targetView) {
     setView(targetView);
+    // Clear secret pin if leaving secret view
+    if (targetView === 'dashboard') {
+        secretPin = "";
+        updatePinDots();
+    }
 }
 
 function showLoader(callback) {
@@ -31,7 +37,15 @@ function showLoader(callback) {
     setTimeout(() => {
         loader.classList.remove('active');
         callback();
-    }, 800);
+    }, 600);
+}
+
+function triggerFlash() {
+    const flash = document.getElementById('cam-flash');
+    flash.classList.add('flash-active');
+    setTimeout(() => {
+        flash.classList.remove('flash-active');
+    }, 100);
 }
 
 function getRandomEntry() {
@@ -40,12 +54,15 @@ function getRandomEntry() {
 
 // 1. Red Button (Shoot/Upload)
 function simulateUpload() {
-    showLoader(() => {
-        const entry = getRandomEntry();
-        document.getElementById('selected-img-preview').src = entry.img;
-        document.getElementById('plate-input').value = entry.plate;
-        setView('report');
-    });
+    triggerFlash();
+    setTimeout(() => {
+        showLoader(() => {
+            const entry = getRandomEntry();
+            document.getElementById('selected-img-preview').src = entry.img;
+            document.getElementById('plate-input').value = entry.plate;
+            setView('report');
+        });
+    }, 200);
 }
 
 // 2. Yellow Button (My Signals)
@@ -89,7 +106,6 @@ function openMap() {
                 }).addTo(map);
             }
             
-            // Critical fix for map rendering in hidden div
             map.invalidateSize();
 
             if (navigator.geolocation) {
@@ -144,6 +160,18 @@ function openRandom() {
     showLoader(() => {
         const entry = getRandomEntry();
         renderViewer(entry);
+        setView('viewer');
+    });
+}
+
+function openPodMonth() {
+    showLoader(() => {
+        // Specifically car5 for month
+        const entry = DB.find(x => x.img.includes('car5'));
+        if(entry) {
+            renderViewer(entry);
+            document.getElementById('viewer-meta').innerHTML += '<br><span style="color:#AF52DE; font-weight:700">🏆 П.Е.Д.А.Л. на Месеца</span>';
+        }
         setView('viewer');
     });
 }
@@ -207,6 +235,82 @@ function openLeaderboard() {
     });
 
     setView('leaderboard');
+}
+
+// 7. Cyan Button (Stats)
+function openStats() {
+    const container = document.getElementById('stats-content');
+    
+    // Generate slight random variations
+    const weekly = 120 + Math.floor(Math.random() * 20);
+    const processed = 90 + Math.floor(Math.random() * 10);
+    
+    container.innerHTML = `
+        <div class="stat-card">
+            <div class="stat-header">Сигнали тази седмица</div>
+            <div class="stat-value">${weekly}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">Обработени от КАТ</div>
+            <div class="stat-value" style="color: #34C759">${processed}</div>
+        </div>
+        <div class="chart-container">
+            <div class="chart-bar active" style="height: 40%"><span class="bar-label">Пн</span></div>
+            <div class="chart-bar active" style="height: 60%"><span class="bar-label">Вт</span></div>
+            <div class="chart-bar active" style="height: 30%"><span class="bar-label">Ср</span></div>
+            <div class="chart-bar active" style="height: 80%"><span class="bar-label">Чт</span></div>
+            <div class="chart-bar active" style="height: 50%"><span class="bar-label">Пт</span></div>
+            <div class="chart-bar" style="height: 90%"><span class="bar-label">Сб</span></div>
+            <div class="chart-bar" style="height: 70%"><span class="bar-label">Нд</span></div>
+        </div>
+    `;
+    
+    setView('stats');
+}
+
+// 8. Dark Button (Secret)
+function openSecret() {
+    secretPin = "";
+    updatePinDots();
+    setView('secret');
+}
+
+function pressKey(num) {
+    if (secretPin.length < 4) {
+        secretPin += num;
+        updatePinDots();
+        
+        if (secretPin.length === 4) {
+            setTimeout(() => {
+                const wrapper = document.querySelector('.secret-wrapper');
+                wrapper.classList.add('shake');
+                if(navigator.vibrate) navigator.vibrate(200);
+                
+                setTimeout(() => {
+                    wrapper.classList.remove('shake');
+                    secretPin = "";
+                    updatePinDots();
+                    alert("Грешен код! Достъп отказан.");
+                }, 500);
+            }, 300);
+        }
+    }
+}
+
+function clearKey() {
+    secretPin = secretPin.slice(0, -1);
+    updatePinDots();
+}
+
+function updatePinDots() {
+    const dots = document.querySelectorAll('.secret-pin-dots span');
+    dots.forEach((dot, index) => {
+        if (index < secretPin.length) {
+            dot.classList.add('filled');
+        } else {
+            dot.classList.remove('filled');
+        }
+    });
 }
 
 function openViewer(id) {
