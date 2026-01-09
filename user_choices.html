@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление на данни | P.E.D.A.L.</title>
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        body { overflow-y: auto; }
+        .doc-container {
+            max-width: 900px;
+            margin: 120px auto 60px;
+            padding: 50px;
+            background: #121212;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 { margin-bottom: 10px; font-size: 2.5rem; letter-spacing: -1px; }
+        .subtitle { color: var(--text-muted); margin-bottom: 50px; display: block; font-size: 1.1rem; }
+
+        h2 { margin-top: 50px; margin-bottom: 20px; color: white; font-size: 1.5rem; border-left: 4px solid var(--primary); padding-left: 15px; }
+        
+        .info-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .requirement-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        .requirement-list li {
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            color: #ccc;
+        }
+        .requirement-list li::before {
+            content: 'check_circle';
+            font-family: 'Material Icons Round';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .email-template {
+            background: #000;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #aaa;
+            border: 1px dashed #333;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--primary);
+            color: black;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 20px;
+            transition: 0.2s;
+        }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3); }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: var(--primary); transform: translateX(-5px); }
+
+        @media (max-width: 600px) {
+            .doc-container { padding: 25px; margin-top: 100px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow-top"></div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="app_icon.png" alt="P.E.D.A.L." class="logo-icon-img">
+                <span class="logo-text">P.E.D.A.L. 🤫</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="doc-container fade-in">
+        <a href="index.html" class="back-link">← Начало / Home</a>
+
+        <h1>Вашите права и избор</h1>
+        <span class="subtitle">Ръководство за заявки за изтриване на данни и GDPR.</span>
+
+        <p>В P.E.D.A.L. уважаваме правото ви на поверителност. Тази страница описва стъпките, които трябва да предприемете, ако желаете да изтриете профила си или да премахнете съдържание, засягащо вас.</p>
+
+        <h2>1. За потребители на приложението</h2>
+        <div class="info-box">
+            <h3>Искам да изтрия профила си</h3>
+            <p>Ако сте регистриран потребител и желаете да премахнете акаунта си и всички свързани с него данни (история на качвания, точки, постижения):</p>
+            
+            <ul class="requirement-list">
+                <li>Пишете ни от <strong>имейл адреса, с който сте регистрирани</strong>.</li>
+                <li>Посочете ясно вашето потребителско име.</li>
+            </ul>
+
+            <div class="email-template">
+До: complaints@dalisipedal.com
+Тема: Изтриване на акаунт - [Вашето Потребителско Име]
+
+Здравейте,
+Моля да изтриете моя акаунт и всички свързани с него лични данни от системата на P.E.D.A.L.
+            </div>
+            
+            <a href="mailto:complaints@dalisipedal.com?subject=Изтриване на акаунт" class="action-btn">
+                <span class="material-icons-round">email</span> Изпрати заявка
+            </a>
+        </div>
+
+        <h2>2. За засегнати лица (Собственици на МПС)</h2>
+        <div class="info-box">
+            <h3>Искам да премахна снимка на моя автомобил</h3>
+            <p>Ако ваш автомобил е заснет и качен в платформата, и желаете снимката да бъде свалена, трябва да докажете, че вие сте собственикът или упълномощено лице.</p>
+            
+            <p><strong>Необходими доказателства:</strong></p>
+            <ul class="requirement-list">
+                <li><strong>Линк към сигнала:</strong> Или дата и място на заснемане.</li>
+                <li><strong>Доказателство за собственост:</strong> Снимка на малкия талон на автомобила (можете да скриете лични данни, но регистрационният номер трябва да се вижда).</li>
+                <li><strong>Декларация:</strong> Кратък текст, че вие сте лицето, управляващо автомобила.</li>
+            </ul>
+
+            <div class="email-template">
+До: complaints@dalisipedal.com
+Тема: Премахване на съдържание - [Рег. номер]
+
+Здравейте,
+Желая премахване на сигнал/снимка, показваща моя автомобил с регистрационен номер [Въведете Номер].
+
+Прилагам:
+1. Копие от свидетелство за регистрация (талон).
+            </div>
+
+            <a href="mailto:complaints@dalisipedal.com?subject=Премахване на съдържание" class="action-btn">
+                <span class="material-icons-round">remove_circle</span> Заяви премахване
+            </a>
+        </div>
+
+        <h2>3. Срокове и Процедура</h2>
+        <p>Всички заявки се разглеждат от наш администратор (DPO) в срок до <strong>30 дни</strong>, съгласно GDPR.</p>
+        <ul>
+            <li>При успешно верифициране, данните се изтриват безвъзвратно.</li>
+            <li>Ако доказателствата са недостатъчни, може да поискаме допълнителна информация.</li>
+        </ul>
+
+        <footer style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
+            &copy; 2026 P.E.D.A.L. Team.
+        </footer>
+    </div>
+
+</body>
+</html>
