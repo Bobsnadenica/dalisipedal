@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подкрепи ни | P.E.D.A.L.</title>
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        body { overflow-y: auto; }
+        .support-container {
+            max-width: 1000px;
+            margin: 120px auto 60px;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 { margin-bottom: 20px; font-size: 2.5rem; letter-spacing: -1px; text-align: center; }
+        .subtitle { 
+            color: var(--text-muted); 
+            text-align: center; 
+            max-width: 700px; 
+            margin: 0 auto 60px; 
+            font-size: 1.1rem; 
+            line-height: 1.6; 
+        }
+
+        .wallets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .wallet-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wallet-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-5px);
+            border-color: rgba(255, 193, 7, 0.3);
+        }
+
+        .coin-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+        }
+
+        .coin-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .wallet-address {
+            background: rgba(0,0,0,0.3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            word-break: break-all;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            width: 100%;
+        }
+
+        .btn-copy {
+            background: var(--primary);
+            color: black;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-copy:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .revolut-card {
+            background: linear-gradient(135deg, #1C1C1E, #2C2C2E);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .revolut-btn {
+            background: white;
+            color: black;
+            text-decoration: none;
+        }
+
+        .thank-you-section {
+            text-align: center;
+            margin-top: 80px;
+            padding: 40px;
+            background: rgba(52, 199, 89, 0.05);
+            border-radius: 24px;
+            border: 1px solid rgba(52, 199, 89, 0.2);
+        }
+        .thank-you-title {
+            color: #34C759;
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+            font-weight: 800;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: var(--primary); transform: translateX(-5px); }
+        
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .support-container { padding: 20px; margin-top: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow-top"></div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="app_icon.png" alt="P.E.D.A.L." class="logo-icon-img">
+                <span class="logo-text">P.E.D.A.L. 🤫</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="support-container fade-in">
+        <a href="index.html" class="back-link">← Начало / Home</a>
+
+        <h1>Подкрепи P.E.D.A.L. ❤️</h1>
+        <p class="subtitle">
+            Гравирал съм една метална плоча и съм я зазидал в стената на село - каквото събера от crypto ще го дам на детето <3
+        </p>
+
+        <div class="wallets-grid">
+            <div class="wallet-card">
+                <img src="images/supportus/btc.png" alt="Bitcoin" class="coin-img">
+                <div class="coin-name">Bitcoin (BTC)</div>
+                <div class="wallet-address">bc1q9jh0w4w8ug59qdt2e9lxw54c9sz2aw5q2njxgl</div>
+                <button onclick="copyWallet('bc1q9jh0w4w8ug59qdt2e9lxw54c9sz2aw5q2njxgl')" class="btn-copy">
+                    <span class="material-icons-round" style="font-size: 18px;">content_copy</span> Копирай
+                </button>
+            </div>
+
+            <div class="wallet-card">
+                <img src="images/supportus/ethereum.png" alt="Ethereum" class="coin-img">
+                <div class="coin-name">Ethereum (ETH)</div>
+                <div class="wallet-address">0xF00716eDAF7Aca38Db93228D3372B3c642F03b03</div>
+                <button onclick="copyWallet('0xF00716eDAF7Aca38Db93228D3372B3c642F03b03')" class="btn-copy">
+                    <span class="material-icons-round" style="font-size: 18px;">content_copy</span> Копирай
+                </button>
+            </div>
+
+            <div class="wallet-card">
+                <img src="images/supportus/sol.png" alt="Solana" class="coin-img">
+                <div class="coin-name">Solana (SOL)</div>
+                <div class="wallet-address">5dnwFVsjHcrCSNzA4wy88pFq1o57kKU9gm8C8JzmMwBa</div>
+                <button onclick="copyWallet('5dnwFVsjHcrCSNzA4wy88pFq1o57kKU9gm8C8JzmMwBa')" class="btn-copy">
+                    <span class="material-icons-round" style="font-size: 18px;">content_copy</span> Копирай
+                </button>
+            </div>
+
+            <div class="wallet-card">
+                <img src="images/supportus/XRP.png" alt="XRP" class="coin-img">
+                <div class="coin-name">Ripple (XRP)</div>
+                <div class="wallet-address">r3y1du8c8BZrxcX45vehoz2rSkEFqjD154</div>
+                <button onclick="copyWallet('r3y1du8c8BZrxcX45vehoz2rSkEFqjD154')" class="btn-copy">
+                    <span class="material-icons-round" style="font-size: 18px;">content_copy</span> Копирай
+                </button>
+            </div>
+
+            <div class="wallet-card">
+                <img src="images/supportus/doge.png" alt="Dogecoin" class="coin-img">
+                <div class="coin-name">Dogecoin (DOGE)</div>
+                <div class="wallet-address">bnb1a4aye09zl258qjt8laqggqhd86j6g8chelgwv9</div>
+                <button onclick="copyWallet('bnb1a4aye09zl258qjt8laqggqhd86j6g8chelgwv9')" class="btn-copy">
+                    <span class="material-icons-round" style="font-size: 18px;">content_copy</span> Копирай
+                </button>
+            </div>
+
+            <div class="wallet-card revolut-card">
+                <img src="images/supportus/revolut.jpg" alt="Revolut" class="coin-img" style="border-radius: 12px;">
+                <div class="coin-name">Revolut</div>
+                <div class="wallet-address" style="background: transparent; border: none; padding: 0;">Директна подкрепа</div>
+                <a href="https://revolut.me/privileged" target="_blank" class="btn-copy revolut-btn">
+                    <span class="material-icons-round" style="font-size: 18px;">open_in_new</span> Отвори Revolut.me
+                </a>
+            </div>
+        </div>
+
+        <section class="thank-you-section">
+            <h2 class="thank-you-title">Благодарим за подкрепата! 🌿</h2>
+            <p>Вие сте готини хора. Ако сте ми дали пари - пишете, ще ви дам почти неограничен акаунт.</p>
+        </section>
+
+        <footer style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
+            &copy; 2026 P.E.D.A.L. Team. Всички права запазени.
+        </footer>
+    </div>
+
+    <script>
+        function copyWallet(address) {
+            navigator.clipboard.writeText(address).then(() => {
+                // Simple toast or alert replacement could go here, for now alert is fine
+                alert("Адресът е копиран успешно!");
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+</body>
+</html>

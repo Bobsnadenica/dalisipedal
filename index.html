@@ -3,20 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>П.Е.Д.А.Л. | Публичен Електронен Достъп за Анализ на Лоши шофьори</title>
-    <meta name="description" content="П.Е.Д.А.Л. - Публичен Електронен Достъп за Анализ на Лоши шофьори. Снимай нарушителите. Направи пътищата по-безопасни.">
-    <meta property="og:title" content="П.Е.Д.А.Л. | Граждански контрол">
-    <meta property="og:description" content="Публичен Електронен Достъп за Анализ на Лоши шофьори.">
-    <meta property="og:image" content="app_icon.png">
+    
+    <title>P.E.D.A.L. | Граждански контрол и пътна безопасност</title>
+    <meta name="description" content="P.E.D.A.L. (Публичен Електронен Достъп за Анализ на Лоши шофьори) е мобилно приложение за подаване на сигнали за пътни нарушения в България. Снимай, изпрати, промени средата.">
+    <meta name="keywords" content="граждански контрол, пътни нарушения, неправилно паркиране, КАТ, сигнали, софия, българия, pedal app, педал приложение, трафик, пътна безопасност">
+    <meta name="author" content="P.E.D.A.L. Team">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.dalisipedal.com/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.dalisipedal.com/">
+    <meta property="og:title" content="P.E.D.A.L. | Твоят град. Твоите правила.">
+    <meta property="og:description" content="Снимай нарушителите анонимно и бързо. Включи се в гражданския контрол на пътя.">
+    <meta property="og:image" content="https://www.dalisipedal.com/app_icon.png">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.dalisipedal.com/">
+    <meta property="twitter:title" content="P.E.D.A.L. | Граждански контрол">
+    <meta property="twitter:description" content="Снимай нарушителите анонимно и бързо. Включи се в гражданския контрол на пътя.">
+    <meta property="twitter:image" content="https://www.dalisipedal.com/app_icon.png">
+
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="stylesheet" href="style.css">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "P.E.D.A.L.",
+      "operatingSystem": "Android, iOS",
+      "applicationCategory": "UtilitiesApplication",
+      "description": "Мобилно приложение за граждански контрол и подаване на сигнали за пътни нарушения.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "BGN"
+      }
+    }
+    </script>
+
     <style>
         .system-definition {
             font-family: 'JetBrains Mono', monospace;
@@ -37,12 +71,52 @@
             color: #bdc3c7;
             font-size: 0.9em;
         }
+        
+        /* New Button Styles Override */
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-outline:hover {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .btn-support {
+            background: rgba(255, 59, 48, 0.15);
+            color: #FF3B30;
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-support:hover {
+            background: rgba(255, 59, 48, 0.25);
+            box-shadow: 0 0 15px rgba(255, 59, 48, 0.2);
+        }
+
         @media (max-width: 600px) {
             .system-definition {
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 4px;
+            }
+            .hero-actions {
+                justify-content: center;
             }
         }
     </style>
@@ -61,7 +135,7 @@
             </a>
             <div class="nav-links">
                 <a href="#demo">Демо</a>
-                <a href="#features">Функции</a>
+                <a href="how_to.html">Как работи?</a>
                 <a href="#download" class="btn-nav">Изтегли</a>
             </div>
         </div>
@@ -84,8 +158,11 @@
                 <p>
                     Превърни телефона си в инструмент за ред. Снимай нарушенията, ние се грижим за останалото. Анонимно. Бързо. Ефективно.
                 </p>
+                
                 <div class="hero-actions">
-                    <a href="#download" class="btn-primary-hero">Свали сега (скоро)</a>
+                    <a href="#download" class="btn-primary-hero">Свали (скоро)</a>
+                    <a href="how_to.html" class="btn-outline">Как работи?</a>
+                    <a href="supportus.html" class="btn-support">❤️ Подкрепи ни</a>
                 </div>
             </div>
 

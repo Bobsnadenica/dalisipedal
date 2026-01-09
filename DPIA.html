@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPIA | P.E.D.A.L.</title>
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { overflow-y: auto; }
+        .doc-container {
+            max-width: 900px;
+            margin: 120px auto 60px;
+            padding: 50px;
+            background: #121212;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Typography */
+        h1 { margin-bottom: 10px; font-size: 2.2rem; letter-spacing: -1px; }
+        h2 { margin-top: 50px; margin-bottom: 20px; color: white; font-size: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        h3 { margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-size: 1.1rem; }
+        p, li { color: #ccc; line-height: 1.7; margin-bottom: 15px; font-size: 1rem; }
+        ul { margin-left: 20px; margin-bottom: 20px; }
+        
+        /* Meta Info Box */
+        .meta-box {
+            background: rgba(255,255,255,0.03);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 40px;
+            display: flex;
+            gap: 40px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .meta-item strong { color: white; display: block; margin-bottom: 5px; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; background: rgba(255,255,255,0.02); border-radius: 12px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        th { background: rgba(255,255,255,0.05); color: white; font-weight: 600; font-size: 0.9rem; }
+        td { color: #ccc; font-size: 0.95rem; vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(52, 199, 89, 0.15);
+            color: #34C759;
+            border: 1px solid rgba(52, 199, 89, 0.3);
+        }
+
+        /* Risk Cards */
+        .risk-card {
+            background: rgba(255, 59, 48, 0.05);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .risk-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .risk-title { color: #FF3B30; font-weight: 700; }
+        .risk-level { font-family: var(--font-mono); font-size: 0.8rem; color: #FF3B30; opacity: 0.8; }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: var(--primary); transform: translateX(-5px); }
+
+        @media (max-width: 600px) {
+            .doc-container { padding: 25px; margin-top: 100px; }
+            .meta-box { flex-direction: column; gap: 15px; }
+            table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow-top"></div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="app_icon.png" alt="P.E.D.A.L." class="logo-icon-img">
+                <span class="logo-text">P.E.D.A.L. 🤫</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="doc-container fade-in">
+        <a href="index.html" class="back-link">← Начало / Home</a>
+
+        <h1>Оценка на въздействието (DPIA)</h1>
+        
+        <div class="meta-box">
+            <div class="meta-item">
+                <strong>Проект</strong>
+                App P.E.D.A.L.
+            </div>
+            <div class="meta-item">
+                <strong>Версия</strong>
+                1.0
+            </div>
+            <div class="meta-item">
+                <strong>Дата</strong>
+                10.01.2026
+            </div>
+            <div class="meta-item">
+                <strong>Статус</strong>
+                <span class="status-badge">ОДОБРЕН</span>
+            </div>
+        </div>
+
+        <p>Настоящият документ представлява Оценка на въздействието върху защитата на данните (DPIA), изготвена съгласно чл. 35 от GDPR, във връзка с обработването на данни чрез мобилното приложение P.E.D.A.L.</p>
+
+        <h2>1. Описание на обработването</h2>
+        <h3>1.1. Естество и обхват</h3>
+        <p>Приложението позволява на потребителите да заснемат и докладват пътнотранспортни нарушения.</p>
+        <ul>
+            <li><strong>Събирани данни:</strong> Снимков материал (вкл. рег. номера), GPS координати, метаданни на устройството, потребителски данни (имейл).</li>
+            <li><strong>Субекти на данни:</strong> Потребители (податели) и трети лица (собственици на заснети автомобили).</li>
+        </ul>
+
+        <h3>1.2. Контекст и цел</h3>
+        <p>Обработването се извършва в обществен интерес за повишаване на пътната безопасност и подпомагане на контролните органи.</p>
+
+        <h2>2. Необходимост и пропорционалност</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th width="30%">Критерий</th>
+                    <th>Оценка</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Законосъобразност</td>
+                    <td>Легитимен интерес (чл. 6, т. 1, б. "е") и Съгласие (чл. 6, т. 1, б. "а").</td>
+                </tr>
+                <tr>
+                    <td>Минимизиране</td>
+                    <td>Събират се само данни, пряко доказващи нарушението (снимка + локация).</td>
+                </tr>
+                <tr>
+                    <td>Ограничение</td>
+                    <td>Данните се изтриват след приключване на процедурата по обработка.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>3. Оценка на рисковете</h2>
+        
+        <div class="risk-card">
+            <div class="risk-header">
+                <span class="risk-title">Риск 1: Злоупотреба с данни (Тормоз)</span>
+                <span class="risk-level">ТЕЖЕСТ: ВИСОКА</span>
+            </div>
+            <p><strong>Описание:</strong> Потребител снима автомобил с цел тормоз или "shaming" в социални мрежи, а не за реален сигнал.</p>
+            <p><strong>Мерки:</strong> Ръчна модерация на всеки сигнал; Замъгляване на лица; Стриктни правила за ползване (ToS).</p>
+        </div>
+
+        <div class="risk-card">
+            <div class="risk-header">
+                <span class="risk-title">Риск 2: Изтичане на база данни</span>
+                <span class="risk-level">ТЕЖЕСТ: МН. ВИСОКА</span>
+            </div>
+            <p><strong>Описание:</strong> Неоторизиран достъп, разкриващ самоличността на подателите.</p>
+            <p><strong>Мерки:</strong> SSL/TLS криптиране; Сигурна облачна инфраструктура (AWS); Разделяне на данните (Псевдонимизация).</p>
+        </div>
+
+        <div class="risk-card">
+            <div class="risk-header">
+                <span class="risk-title">Риск 3: Неточна локация</span>
+                <span class="risk-level">ТЕЖЕСТ: СРЕДНА</span>
+            </div>
+            <p><strong>Описание:</strong> Техническа грешка в GPS координатите, увреждаща репутацията на грешен обект.</p>
+            <p><strong>Мерки:</strong> Опция за ръчна корекция на адреса; Администраторска проверка.</p>
+        </div>
+
+        <h2>4. План за действие (Мерки)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Мярка</th>
+                    <th>Описание</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Криптиране</td>
+                    <td>HTTPS трансфер на всички данни.</td>
+                    <td><span class="status-badge">Внедрено</span></td>
+                </tr>
+                <tr>
+                    <td>Прозрачност</td>
+                    <td>Публична Политика за поверителност.</td>
+                    <td><span class="status-badge">Внедрено</span></td>
+                </tr>
+                <tr>
+                    <td>Изтриване</td>
+                    <td>Механизъм "Right to be forgotten".</td>
+                    <td><span class="status-badge">Внедрено</span></td>
+                </tr>
+                <tr>
+                    <td>Модерация</td>
+                    <td>Задължително одобрение преди публикация.</td>
+                    <td><span class="status-badge">Внедрено</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>5. Заключение</h2>
+        <p>С оглед на въведените технически и организационни мерки, остатъчният риск за правата и свободите на субектите на данни се оценява като <strong>НИСЪК до СРЕДЕН</strong>. Обработването е допустимо при спазване на процедурите.</p>
+
+        <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.9rem;">
+            Документът е одобрен от Data Protection Officer (DPO).<br>
+            &copy; 2026 P.E.D.A.L. Internal Documentation.
+        </div>
+    </div>
+
+</body>
+</html>

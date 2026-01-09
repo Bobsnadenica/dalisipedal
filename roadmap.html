@@ -1,5 +1,185 @@
-- Когато получа някакво финансиране, ще добавя автоматично разпознаване на регистрационни номера с Amazon Rekognition
-- Още Постижения
-- Чат
-- Награди
-- Система за download / upvote 
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap | P.E.D.A.L.</title>
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        body { overflow-y: auto; }
+        .doc-container {
+            max-width: 900px;
+            margin: 120px auto 60px;
+            padding: 50px;
+            background: #121212;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 { margin-bottom: 10px; font-size: 2.5rem; letter-spacing: -1px; }
+        .subtitle { color: var(--text-muted); margin-bottom: 50px; display: block; }
+
+        h2 { margin-top: 40px; margin-bottom: 20px; color: white; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        
+        /* Known Bugs Section */
+        .bug-box {
+            background: rgba(255, 59, 48, 0.05);
+            border: 1px dashed rgba(255, 59, 48, 0.3);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+        .bug-icon { font-size: 40px; color: var(--accent-red); margin-bottom: 10px; display: block; }
+
+        /* Roadmap List */
+        .roadmap-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .roadmap-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: 0.2s;
+        }
+        .roadmap-item:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateX(5px);
+        }
+        .status-icon {
+            color: var(--text-muted);
+            font-size: 24px;
+        }
+        .item-text {
+            font-weight: 600;
+            color: #ccc;
+            flex: 1;
+        }
+        .funding-badge {
+            background: linear-gradient(45deg, #FFC107, #FF9800);
+            color: black;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-right: 8px;
+            display: inline-block;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: var(--primary); transform: translateX(-5px); }
+
+        @media (max-width: 600px) {
+            .doc-container { padding: 25px; margin-top: 100px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow-top"></div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="app_icon.png" alt="P.E.D.A.L." class="logo-icon-img">
+                <span class="logo-text">P.E.D.A.L. 🤫</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="doc-container fade-in">
+        <a href="index.html" class="back-link">← Начало / Home</a>
+
+        <h1>Roadmap 🗺️</h1>
+        <span class="subtitle">План за развитие на проекта.</span>
+
+        <h2>
+            <span class="material-icons-round" style="color: var(--accent-red);">bug_report</span>
+            Известни проблеми
+        </h2>
+        <div class="bug-box">
+            <span class="material-icons-round bug-icon">pest_control</span>
+            <p>(Ще бъдат описани тук при докладване)</p>
+            <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.6;">Докладвайте грешки на complaints@dalisipedal.com</p>
+        </div>
+
+        <h2>
+            <span class="material-icons-round" style="color: var(--primary);">construction</span>
+            Бъдещи функции / To Do
+        </h2>
+        
+        <ul class="roadmap-list">
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">chat_bubble_outline</span>
+                <span class="item-text">Чат система</span>
+            </li>
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">leaderboard</span>
+                <span class="item-text">Повече класации</span>
+            </li>
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">query_stats</span>
+                <span class="item-text">Още статистики</span>
+            </li>
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">emoji_events</span>
+                <span class="item-text">Още постижения</span>
+            </li>
+            <li class="roadmap-item" style="border-color: rgba(255, 193, 7, 0.3);">
+                <span class="material-icons-round status-icon" style="color: var(--primary);">auto_awesome</span>
+                <span class="item-text">
+                    <span class="funding-badge">ЦЕЛ: €100</span>
+                    Когато получа 100 евро ще направя автоматично разпознаване
+                </span>
+            </li>
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">thumbs_up_down</span>
+                <span class="item-text">Гласуване за снимки upvote/downvote</span>
+            </li>
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">mark_email_read</span>
+                <span class="item-text">Обратна връзка за сигнала</span>
+            </li>
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">stars</span>
+                <span class="item-text">П.Е.Д.А.Л. на седмицата</span>
+            </li>
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">lock</span>
+                <span class="item-text">Тайна функция 🤫</span>
+            </li>
+        </ul>
+
+        <footer style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
+            &copy; 2026 P.E.D.A.L. Team. Всички права запазени.
+            <span style="margin: 0 10px;">|</span>
+            <a href="privacy_policy.html" style="color: #666; text-decoration: none;">Политика за поверителност</a>
+        </footer>
+    </div>
+
+</body>
+</html>

@@ -1,12 +1,12 @@
 /* P.E.D.A.L. Interactive Demo Logic v2.7 */
 
 const DB = [
-    { id: 1, img: "car1.jpeg", plate: "CB 4816 TM", status: "approved", date: "02.01.2026" },
-    { id: 2, img: "car2.JPG", plate: "CO 3708 CX", status: "pending", date: "05.01.2026" },
-    { id: 3, img: "car3.jpeg", plate: "CA 1290 HP", status: "approved", date: "28.12.2025" },
-    { id: 4, img: "car4.jpeg", plate: "CB 9921 KA", status: "pending", date: "06.01.2026" },
-    { id: 5, img: "car5.jpeg", plate: "TX 5502 PB", status: "approved", date: "15.12.2025" },
-    { id: 6, img: "car6.JPG", plate: "PB 1188 MX", status: "pending", date: "06.01.2026" }
+    { id: 1, img: "car1.jpeg", plate: "CB XXXX TM", status: "approved", date: "02.01.2026" },
+    { id: 2, img: "car2.JPG", plate: "CO XXXX CX", status: "pending", date: "05.01.2026" },
+    { id: 3, img: "car3.jpeg", plate: "CA XXXX HP", status: "approved", date: "28.12.2025" },
+    { id: 4, img: "car4.jpeg", plate: "CB XXXX KA", status: "pending", date: "06.01.2026" },
+    { id: 5, img: "car5.jpeg", plate: "E XXXX PB", status: "approved", date: "15.12.2025" },
+    { id: 6, img: "car6.JPG", plate: "PB XXXX MX", status: "pending", date: "06.01.2026" }
 ];
 
 // Global State

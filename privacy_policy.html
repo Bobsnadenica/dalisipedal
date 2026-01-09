@@ -71,6 +71,13 @@
             border: 1px solid rgba(255,255,255,0.05);
             margin-top: 30px;
         }
+        .highlight-box {
+            background: rgba(255, 193, 7, 0.05); /* Primary color low opacity */
+            border: 1px solid rgba(255, 193, 7, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
         .cpdp-info {
             background: rgba(52, 199, 89, 0.05);
             border: 1px solid rgba(52, 199, 89, 0.2);
@@ -116,7 +123,7 @@
 
         <div data-lang="bg" class="active">
             <h1>Политика за поверителност</h1>
-            <span class="last-updated">В сила от: 05.01.2026 | Версия 2.1</span>
+            <span class="last-updated">В сила от: 05.01.2026 | Версия 2.2</span>
             
             <p>P.E.D.A.L. ("Ние") обработва лични данни в пълно съответствие с Общия регламент за защита на данните (GDPR) (ЕС) 2016/679 и действащото българско законодателство.</p>
 
@@ -128,83 +135,101 @@
             <ul>
                 <li><strong>Визуални данни:</strong> Снимки на нарушения (с или без регистрационни номера).</li>
                 <li><strong>Геолокация (GPS):</strong> Точни координати за верификация на сигнала.</li>
-                <li><strong>Метаданни:</strong> IP адрес, модел на устройство, времеви печат.</li>
+                <li><strong>Метаданни:</strong> IP адрес, модел на устройство, времеви печат и технически логове.</li>
                 <li><strong>Контактни данни:</strong> Имейл адрес за обратна връзка (при регистрация).</li>
             </ul>
 
-            <h2>3. Правно основание (чл. 6 GDPR)</h2>
+            <h2>3. Правно основание и цели</h2>
             <p>Обработването се извършва въз основа на:</p>
             <ul>
-                <li><strong>Легитимен интерес (чл. 6, т. 1, буква "е"):</strong> За осигуряване на граждански контрол и пътна безопасност.</li>
-                <li><strong>Съгласие (чл. 6, т. 1, буква "а"):</strong> За достъп до камерата и локацията на устройството.</li>
+                <li><strong>Легитимен интерес (чл. 6, т. 1, буква "е" от GDPR):</strong> За целите на гражданския контрол, подобряване на градската среда и пътната безопасност.</li>
+                <li><strong>Съгласие (чл. 6, т. 1, буква "а" от GDPR):</strong> Изрично предоставено за достъп до камерата и локацията на устройството.</li>
             </ul>
 
-            <h2>4. Срокове за съхранение</h2>
-            <p>Прилагаме стриктна политика за ограничаване на съхранението. Личните данни <strong>не се съхраняват безсрочно</strong>.</p>
-            <p>Данните се пазят до приключване на процедурата по обработка на сигнала или до изтичане на давностните срокове за обжалване, след което се анонимизират или унищожават сигурно.</p>
+            <h2>4. Сигурност и съхранение</h2>
+            <p>Ние използваме индустриални стандарти за криптиране (SSL/TLS) при предаване на данните. Информацията се съхранява на защитени сървъри в рамките на Европейското икономическо пространство или при доставчици, гарантиращи адекватно ниво на защита.</p>
+            <p>Личните данни <strong>не се съхраняват безсрочно</strong>. Те се пазят само до приключване на процедурата по обработка на сигнала.</p>
 
-            <h2>5. Вашите права</h2>
-            <p>Вие разполагате с пълния набор от права по GDPR, включително правото да поискате изтриване на вашите данни („право да бъдеш забравен“) по всяко време, като пишете на <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a>.</p>
+            <h2>5. Вашите права и Изтриване на данни</h2>
+            <p>Вие разполагате с пълния набор от права по GDPR, включително право на достъп, коригиране и преносимост.</p>
+            
+            <div class="highlight-box">
+                <h3>Право да бъдеш забравен (Изтриване)</h3>
+                <p>Имате право да поискате незабавно изтриване на вашия профил или конкретни сигнали, съдържащи лични данни.</p>
+                <p>За да упражните това право, изпратете заявка на:</p>
+                <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a>
+            </div>
 
-            <h2>6. Право на жалба</h2>
-            <p>Ако смятате, че правата ви са нарушени, имате право да сезирате надзорния орган в Република България:</p>
+            <h2>6. Бисквитки (Cookies)</h2>
+            <p>Нашият уебсайт използва само технически необходими бисквитки за правилното функциониране на страницата и запомняне на езиковите ви предпочитания.</p>
+
+            <h2>7. Право на жалба</h2>
+            <p>Ако смятате, че правата ви са нарушени, имате право да сезирате надзорния орган:</p>
             
             <div class="cpdp-info">
                 <strong>Комисия за защита на личните данни (КЗЛД)</strong><br>
                 Адрес: гр. София 1592, бул. „Проф. Цветан Лазаров” № 2<br>
-                Уебсайт: <a href="https://www.cpdp.bg" target="_blank" style="color:#34C759">www.cpdp.bg</a><br>
-                Ел. поща: kzld@cpdp.bg
+                Уебсайт: <a href="https://www.cpdp.bg" target="_blank" style="color:#34C759">www.cpdp.bg</a>
             </div>
 
-            <h2>7. Контакти</h2>
-            <p><strong>Подаване на сигнали и жалби:</strong> <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a></p>
+            <h2>8. Контакти</h2>
+            <p><strong>Жалби и изтриване на данни:</strong> <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a></p>
             <p><strong>Общи въпроси:</strong> <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a></p>
             <p><strong>Партньорства:</strong> <a href="mailto:opportunities@dalisipedal.com" class="email-link">opportunities@dalisipedal.com</a></p>
         </div>
 
         <div data-lang="en">
             <h1>Privacy Policy</h1>
-            <span class="last-updated">Effective Date: 05.01.2026 | Version 2.1</span>
+            <span class="last-updated">Effective Date: 05.01.2026 | Version 2.2</span>
             
-            <p>P.E.D.A.L. ("We") processes personal data in full compliance with the General Data Protection Regulation (GDPR) (EU) 2016/679 and applicable Bulgarian legislation.</p>
+            <p>P.E.D.A.L. ("We") processes personal data in full compliance with the General Data Protection Regulation (GDPR) (EU) 2016/679 and applicable legislation.</p>
 
             <h2>1. Data Controller</h2>
-            <p>P.E.D.A.L. acts as the Data Controller for information collected via the app. We maintain an internal registry of processing activities pursuant to Art. 30 of GDPR.</p>
+            <p>P.E.D.A.L. acts as the Data Controller. We maintain an internal registry of processing activities pursuant to Art. 30 of GDPR.</p>
             <p><strong>Data Protection Contact:</strong> <br><a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a></p>
 
             <h2>2. Data Categories</h2>
             <ul>
                 <li><strong>Visual Data:</strong> Photos of violations (with or without license plates).</li>
                 <li><strong>Geolocation (GPS):</strong> Precise coordinates for report verification.</li>
-                <li><strong>Metadata:</strong> IP address, device model, timestamp.</li>
+                <li><strong>Metadata:</strong> IP address, device model, timestamp, and technical logs.</li>
                 <li><strong>Contact Data:</strong> Email address for feedback (upon registration).</li>
             </ul>
 
-            <h2>3. Legal Basis (Art. 6 GDPR)</h2>
+            <h2>3. Legal Basis and Purpose</h2>
             <p>Processing is based on:</p>
             <ul>
-                <li><strong>Legitimate Interest (Art. 6(1)(f)):</strong> To ensure civic control and road safety.</li>
-                <li><strong>Consent (Art. 6(1)(a)):</strong> Specifically for camera and location access.</li>
+                <li><strong>Legitimate Interest (Art. 6(1)(f) GDPR):</strong> For civic control, improving urban environments, and road safety.</li>
+                <li><strong>Consent (Art. 6(1)(a) GDPR):</strong> Explicitly obtained for camera and location access.</li>
             </ul>
 
-            <h2>4. Data Retention</h2>
-            <p>We apply a strict storage limitation policy. Personal data is <strong>not stored indefinitely</strong>.</p>
-            <p>Data is retained until the report processing procedure is finalized or appeal periods expire, after which it is anonymized or securely destroyed.</p>
+            <h2>4. Security and Retention</h2>
+            <p>We use industry-standard encryption (SSL/TLS) for data transmission. Data is stored on secure servers within the EEA or with providers ensuring adequate data protection.</p>
+            <p>Personal data is <strong>not stored indefinitely</strong>. It is retained only until the report processing is finalized.</p>
 
-            <h2>5. Your Rights</h2>
-            <p>You have full rights under GDPR, including the right to request deletion of your data ("Right to be Forgotten") at any time by writing to <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a>.</p>
+            <h2>5. Your Rights & Data Deletion</h2>
+            <p>You have full rights under GDPR, including access, rectification, and portability.</p>
 
-            <h2>6. Right to Complain</h2>
-            <p>If you believe your rights have been violated, you have the right to lodge a complaint with the supervisory authority in Bulgaria:</p>
+            <div class="highlight-box">
+                <h3>Right to be Forgotten (Deletion)</h3>
+                <p>You have the right to request the immediate deletion of your account or specific reports containing personal data.</p>
+                <p>To exercise this right, please email:</p>
+                <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a>
+            </div>
+
+            <h2>6. Cookies</h2>
+            <p>Our website uses only technically necessary cookies for proper functionality and to remember your language preferences.</p>
+
+            <h2>7. Right to Complain</h2>
+            <p>If you believe your rights have been violated, you may lodge a complaint with the supervisory authority:</p>
             
             <div class="cpdp-info">
                 <strong>Commission for Personal Data Protection (CPDP)</strong><br>
                 Address: 2 Prof. Tsvetan Lazarov Blvd., Sofia 1592, Bulgaria<br>
-                Website: <a href="https://www.cpdp.bg" target="_blank" style="color:#34C759">www.cpdp.bg</a><br>
-                Email: kzld@cpdp.bg
+                Website: <a href="https://www.cpdp.bg" target="_blank" style="color:#34C759">www.cpdp.bg</a>
             </div>
 
-            <h2>7. Contact Us</h2>
+            <h2>8. Contact Us</h2>
             <p><strong>Complaints & Removal:</strong> <a href="mailto:complaints@dalisipedal.com" class="email-link">complaints@dalisipedal.com</a></p>
             <p><strong>General Inquiries:</strong> <a href="mailto:contactus@dalisipedal.com" class="email-link">contactus@dalisipedal.com</a></p>
             <p><strong>Partnerships:</strong> <a href="mailto:opportunities@dalisipedal.com" class="email-link">opportunities@dalisipedal.com</a></p>
@@ -212,6 +237,8 @@
 
         <footer style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
             &copy; 2026 P.E.D.A.L. Team. All rights reserved.
+            <span style="margin: 0 10px;">|</span>
+            <a href="dpia.html" style="color: #666; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#666'">DPIA</a>
         </footer>
     </div>
 
