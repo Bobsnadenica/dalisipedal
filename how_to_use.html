@@ -3,102 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ръководство на бутоните | P.E.D.A.L.</title>
+    <title>Интерактивно Ръководство | P.E.D.A.L.</title>
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <style>
         body { overflow-y: auto; }
-        .doc-container {
-            max-width: 1000px;
-            margin: 120px auto 60px;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        h1 { margin-bottom: 20px; font-size: 2.5rem; letter-spacing: -1px; text-align: center; }
-        .subtitle { 
-            color: var(--text-muted); 
-            text-align: center; 
-            max-width: 700px; 
-            margin: 0 auto 60px; 
-            font-size: 1.1rem; 
-            line-height: 1.6; 
-        }
-
-        .guide-grid {
+        
+        .guide-layout {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 20px;
+            align-items: start;
         }
 
-        .guide-item {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 25px;
-            display: flex;
-            align-items: flex-start;
-            gap: 20px;
-            transition: 0.3s;
-        }
-
-        .guide-item:hover {
-            background: rgba(255,255,255,0.06);
-            transform: translateY(-5px);
-            border-color: rgba(255,255,255,0.1);
-        }
-
-        /* Container for the app button visual */
-        .visual-container {
-            flex-shrink: 0;
-            width: 80px;
-        }
-
-        /* Override dash-card for presentation */
-        .demo-card {
-            width: 80px;
-            height: 80px; /* Square for guide */
-            border-radius: 16px;
+        .text-column {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            gap: 20px;
+        }
+
+        .phone-column {
+            position: sticky;
+            top: 100px; /* Sticks the phone while scrolling text */
+            display: flex;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            cursor: default;
+            perspective: 1000px;
         }
-        .demo-card .icon-lg { font-size: 28px; margin-bottom: 4px; }
-        .demo-card .card-label { font-size: 9px; }
 
-        .text-container h3 { margin-bottom: 8px; font-size: 1.1rem; color: white; }
-        .text-container p { font-size: 0.9rem; color: #aaa; line-height: 1.5; }
+        .guide-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
 
-        /* Specific Highlight colors for titles */
-        .h-red { color: var(--accent-red) !important; }
-        .h-yellow { color: var(--primary) !important; }
-        .h-green { color: #34C759 !important; }
-        .h-purple { color: #AF52DE !important; }
-        .h-blue { color: #2196F3 !important; }
-        .h-orange { color: #FF9800 !important; }
-        .h-cyan { color: #00BCD4 !important; }
+        .guide-card:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+            transform: translateX(10px);
+        }
+
+        .guide-card.active {
+            border-color: var(--primary);
+            background: rgba(255, 193, 7, 0.05);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            font-size: 24px;
+        }
+
+        /* Specific Icon Colors to match app */
+        .ib-red { background: rgba(255, 59, 48, 0.2); color: #FF3B30; }
+        .ib-yellow { background: rgba(255, 193, 7, 0.2); color: #FFC107; }
+        .ib-green { background: rgba(52, 199, 89, 0.2); color: #34C759; }
+        .ib-purple { background: rgba(175, 82, 222, 0.2); color: #AF52DE; }
+        .ib-blue { background: rgba(33, 150, 243, 0.2); color: #2196F3; }
+        .ib-orange { background: rgba(255, 152, 0, 0.2); color: #FF9800; }
+        .ib-cyan { background: rgba(0, 188, 212, 0.2); color: #00BCD4; }
+        .ib-dark { background: rgba(255, 255, 255, 0.1); color: #aaa; }
+
+        .guide-content h3 { margin: 0 0 4px 0; font-size: 1.1rem; color: white; }
+        .guide-content p { margin: 0; font-size: 0.9rem; color: #aaa; line-height: 1.4; }
+        .guide-hint { font-size: 0.75rem; color: var(--primary); margin-top: 6px; font-weight: 700; text-transform: uppercase; display: block; opacity: 0; transition: 0.2s; }
         
-        .back-link {
-            display: inline-block;
-            margin-bottom: 30px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: 0.2s;
-        }
-        .back-link:hover { color: var(--primary); transform: translateX(-5px); }
+        .guide-card:hover .guide-hint { opacity: 1; }
 
-        @media (max-width: 600px) {
-            .doc-container { padding: 20px; margin-top: 100px; }
-            h1 { font-size: 2rem; }
-            .guide-item { flex-direction: column; align-items: center; text-align: center; }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .intro-text { color: var(--text-muted); margin-bottom: 40px; font-size: 1.1rem; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 900px) {
+            .guide-layout { grid-template-columns: 1fr; }
+            .phone-column { order: -1; position: relative; top: 0; margin-bottom: 40px; }
+            h1, .intro-text { text-align: center; }
         }
     </style>
 </head>
@@ -113,129 +110,348 @@
                 <img src="app_icon.png" alt="P.E.D.A.L." class="logo-icon-img">
                 <span class="logo-text">P.E.D.A.L. 🤫</span>
             </a>
+            <div class="nav-links">
+                <a href="how_to_use.html" style="color:white;">Как се използва?</a>
+                <a href="how_to.html">Как работи?</a>
+                <a href="supportus.html" style="color: #FF3B30; font-weight: 800;">❤️ Подкрепи ни</a>
+                <a href="#download" class="btn-nav">Изтегли</a>
+            </div>
         </div>
     </nav>
 
-    <div class="doc-container fade-in">
-        <a href="index.html" class="back-link">← Начало / Home</a>
+    <div class="guide-layout fade-in">
+        
+        <div class="text-column">
+            <div>
+                <h1>Интерактивен Тур</h1>
+                <p class="intro-text">Кликнете върху картите по-долу, за да видите как работи всяка функция директно на виртуалния телефон.</p>
+            </div>
 
-        <h1>Интерфейс & Бутони</h1>
-        <p class="subtitle">
-            Научете какво прави всеки бутон в приложението, за да действате бързо и ефективно на пътя.
-        </p>
-
-        <div class="guide-grid">
-            
-            <div class="guide-item">
-                <div class="visual-container">
-                    <div class="demo-card red">
-                        <span class="material-icons-round icon-lg">add_a_photo</span>
-                        <span class="card-label">Снимай</span>
-                    </div>
-                </div>
-                <div class="text-container">
-                    <h3 class="h-red">Камера / Снимай</h3>
-                    <p>Основният бутон. Стартира камерата за моментално заснемане на нарушение. Приложението автоматично добавя GPS координати и час.</p>
+            <div class="guide-card" onclick="simulateUpload()">
+                <div class="icon-box ib-red"><span class="material-icons-round">add_a_photo</span></div>
+                <div class="guide-content">
+                    <h3>1. Качи (Upload)</h3>
+                    <p>Стартира камерата. Снимате нарушение, добавяте локация и изпращате. Има лимити за размер според нивото ви.</p>
+                    <span class="guide-hint">👉 Кликни за тест</span>
                 </div>
             </div>
 
-            <div class="guide-item">
-                <div class="visual-container">
-                    <div class="demo-card yellow">
-                        <span class="material-icons-round icon-lg">folder_shared</span>
-                        <span class="card-label">Моите</span>
-                    </div>
-                </div>
-                <div class="text-container">
-                    <h3 class="h-yellow">Моите Сигнали</h3>
-                    <p>Личен архив на всички подадени от вас сигнали. Тук следите техния статус (Одобрен, Отхвърлен или В процес на обработка).</p>
+            <div class="guide-card" onclick="openMySignals()">
+                <div class="icon-box ib-yellow"><span class="material-icons-round">folder_shared</span></div>
+                <div class="guide-content">
+                    <h3>2. Моите Сигнали</h3>
+                    <p>Архив на вашите сигнали. Виждате статус (Одобрен/Обработка) и можете да ги препратите към КАТ.</p>
+                    <span class="guide-hint">👉 Кликни за тест</span>
                 </div>
             </div>
 
-            <div class="guide-item">
-                <div class="visual-container">
-                    <div class="demo-card green">
-                        <span class="material-icons-round icon-lg">map</span>
-                        <span class="card-label">Карта</span>
-                    </div>
-                </div>
-                <div class="text-container">
-                    <h3 class="h-green">Интерактивна Карта</h3>
-                    <p>Отваря карта на района, показваща всички активни нарушения около вас. Помага да се видят "горещите точки" на неправилно паркиране.</p>
+            <div class="guide-card" onclick="openMap()">
+                <div class="icon-box ib-green"><span class="material-icons-round">map</span></div>
+                <div class="guide-content">
+                    <h3>3. Карта & Търсене</h3>
+                    <p>Търсене по локация. Изберете си локация и си проверете късмета. Търсенето по номер е само за оторизирани лица.</p>
+                    <span class="guide-hint">👉 Кликни за тест</span>
                 </div>
             </div>
 
-            <div class="guide-item">
-                <div class="visual-container">
-                    <div class="demo-card purple">
-                        <span class="material-icons-round icon-lg">shuffle</span>
-                        <span class="card-label">Рандъм</span>
-                    </div>
-                </div>
-                <div class="text-container">
-                    <h3 class="h-purple">Случаен Сигнал</h3>
-                    <p>Показва произволно избран сигнал от базата данни. Използва се за валидация или просто да видите какви "герои" има по пътищата.</p>
+            <div class="guide-card" onclick="openRandom()">
+                <div class="icon-box ib-purple"><span class="material-icons-round">shuffle</span></div>
+                <div class="guide-content">
+                    <h3>4. Произволна (Random)</h3>
+                    <p>Зарежда случаен сигнал от базата данни. Идеален начин да разгледате "колекцията" от нарушения.</p>
+                    <span class="guide-hint">👉 Кликни за тест</span>
                 </div>
             </div>
 
-            <div class="guide-item">
-                <div class="visual-container">
-                    <div class="demo-card blue">
-                        <span class="material-icons-round icon-lg">emoji_events</span>
-                        <span class="card-label">Ранк</span>
-                    </div>
-                </div>
-                <div class="text-container">
-                    <h3 class="h-blue">Постижения</h3>
-                    <p>Вашата зала на славата. Тук отключвате значки (като "Снайперист", "Активен гражданин") за брой подадени и одобрени сигнали.</p>
+            <div class="guide-card" onclick="openAchievements()">
+                <div class="icon-box ib-blue"><span class="material-icons-round">emoji_events</span></div>
+                <div class="guide-content">
+                    <h3>5. Постижения</h3>
+                    <p>Отключвайте значки за активност. Наградите включват по-високи лимити за качване на видео.</p>
+                    <span class="guide-hint">👉 Кликни за тест</span>
                 </div>
             </div>
 
-            <div class="guide-item">
-                <div class="visual-container">
-                    <div class="demo-card orange">
-                        <span class="material-icons-round icon-lg">leaderboard</span>
-                        <span class="card-label">Топ</span>
-                    </div>
-                </div>
-                <div class="text-container">
-                    <h3 class="h-orange">Класация</h3>
-                    <p>Седмична и месечна класация на най-активните потребители. Състезавайте се с другите за по-чист град.</p>
+            <div class="guide-card" onclick="openLeaderboard()">
+                <div class="icon-box ib-orange"><span class="material-icons-round">leaderboard</span></div>
+                <div class="guide-content">
+                    <h3>6. Класация</h3>
+                    <p>Топ потребители по региони. Обновява се всяка неделя в 22:00 ч.</p>
+                    <span class="guide-hint">👉 Кликни за тест</span>
                 </div>
             </div>
 
-            <div class="guide-item">
-                <div class="visual-container">
-                    <div class="demo-card cyan">
-                        <span class="material-icons-round icon-lg">query_stats</span>
-                        <span class="card-label">Статс</span>
-                    </div>
-                </div>
-                <div class="text-container">
-                    <h3 class="h-cyan">Статистика</h3>
-                    <p>Визуализира данни за нарушенията – графики по дни, седмици и райони. Полезно за анализ на тенденциите.</p>
+            <div class="guide-card" onclick="openStats()">
+                <div class="icon-box ib-cyan"><span class="material-icons-round">query_stats</span></div>
+                <div class="guide-content">
+                    <h3>7. Статистика за ПТП</h3>
+                    <p>Официални данни от МВР. Графики и интерактивна карта на инцидентите по часове и дни.</p>
+                    <span class="guide-hint">👉 Кликни за тест</span>
                 </div>
             </div>
 
-            <div class="guide-item">
-                <div class="visual-container">
-                    <div class="demo-card dark">
-                        <span class="material-icons-round icon-lg">lock</span>
-                        <span class="card-label">Тайна</span>
-                    </div>
-                </div>
-                <div class="text-container">
-                    <h3>Секретна Зона</h3>
-                    <p>Административен панел или скрити функции за "Power Users". Достъпът е защитен с ПИН код.</p>
+            <div class="guide-card" onclick="openSecret()">
+                <div class="icon-box ib-dark"><span class="material-icons-round">lock</span></div>
+                <div class="guide-content">
+                    <h3>8. Тайна Зона</h3>
+                    <p>Административен панел, защитен с ПИН код. Достъпен само за модератори.</p>
+                    <span class="guide-hint">👉 Кликни за тест</span>
                 </div>
             </div>
 
+            <div class="info-alert" style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed #555;">
+                <h4 style="margin:0 0 10px 0; color:white;">ℹ️ Други функции</h4>
+                <ul style="margin:0; padding-left: 20px; color: #aaa; font-size: 0.9rem;">
+                    <li><strong>Upgrade:</strong> Вдига лимитите.</li>
+                    <li><strong>Chat:</strong> Връзка с други потребители.</li>
+                    <li><strong>Theme:</strong> Тъмен/Светъл/БМВ режим.</li>
+                    <li><strong>Logout:</strong> Изход от профила.</li>
+                </ul>
+            </div>
         </div>
 
-        <footer style="margin-top: 80px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
-            &copy; 2026 P.E.D.A.L. Team. Всички права запазени.
-        </footer>
+        <div class="phone-column">
+            <div class="hero-phone">
+                <div class="phone-wrapper">
+                    <div class="phone-case">
+                        <div class="phone-notch">
+                            <div class="camera-dot"></div>
+                            <div class="speaker-slot"></div>
+                        </div>
+                        
+                        <div class="phone-screen">
+                            <div class="status-bar">
+                                <span id="clock">12:30</span>
+                                <div class="status-right">
+                                    <span class="material-icons-round sm-icon">wifi</span>
+                                    <span class="material-icons-round sm-icon">battery_full</span>
+                                </div>
+                            </div>
+
+                            <div class="loading-overlay" id="global-loader">
+                                <div class="spinner"></div>
+                            </div>
+                            
+                            <div class="camera-flash" id="cam-flash"></div>
+
+                            <div class="app-view active" id="view-dashboard">
+                                <div class="app-header">
+                                    <div class="app-logo-text">P.E.D.A.L.</div>
+                                </div>
+                                <div class="app-content">
+                                    <div class="dash-grid">
+                                        <div class="dash-card red" onclick="simulateUpload()">
+                                            <span class="material-icons-round icon-lg">add_a_photo</span>
+                                            <span class="card-label">Снимай</span>
+                                        </div>
+                                        <div class="dash-card yellow" onclick="openMySignals()">
+                                            <span class="material-icons-round icon-lg">folder_shared</span>
+                                            <span class="card-label">Моите</span>
+                                        </div>
+                                        <div class="dash-card green" onclick="openMap()">
+                                            <span class="material-icons-round icon-lg">map</span>
+                                            <span class="card-label">Карта</span>
+                                        </div>
+                                        <div class="dash-card purple" onclick="openRandom()">
+                                            <span class="material-icons-round icon-lg">shuffle</span>
+                                            <span class="card-label">Произволна</span>
+                                        </div>
+                                        <div class="dash-card blue" onclick="openAchievements()">
+                                            <span class="material-icons-round icon-lg">emoji_events</span>
+                                            <span class="card-label">Постижения</span>
+                                        </div>
+                                        <div class="dash-card orange" onclick="openLeaderboard()">
+                                            <span class="material-icons-round icon-lg">leaderboard</span>
+                                            <span class="card-label">Класация</span>
+                                        </div>
+                                        <div class="dash-card cyan" onclick="openStats()">
+                                            <span class="material-icons-round icon-lg">query_stats</span>
+                                            <span class="card-label">Статистика</span>
+                                        </div>
+                                        <div class="dash-card dark" onclick="openSecret()">
+                                            <span class="material-icons-round icon-lg">lock</span>
+                                            <span class="card-label">Тайна</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="widget-pod" onclick="openRandom()">
+                                        <div class="widget-img-holder">
+                                            <img src="car1.jpeg" alt="Pedal of Day">
+                                            <div class="pod-badge">☀️ Днес</div>
+                                        </div>
+                                        <div class="widget-text">
+                                            <h5>П.Е.Д.А.Л. на ДЕНЯ</h5>
+                                            <p>София, Люлин 5</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="widget-pod" onclick="openPodMonth()">
+                                        <div class="widget-img-holder">
+                                            <img src="car5.jpeg" alt="Pedal of Month">
+                                            <div class="pod-badge month">🏆 Месец</div>
+                                        </div>
+                                        <div class="widget-text">
+                                            <h5>П.Е.Д.А.Л. на МЕСЕЦА</h5>
+                                            <p>София, Младост 4</p>
+                                        </div>
+                                    </div>
+                                    <div style="height: 80px;"></div>
+                                </div>
+                                <div class="fab-main" onclick="simulateUpload()">
+                                    <span class="material-icons-round">camera_alt</span>
+                                </div>
+                            </div>
+
+                            <div class="app-view" id="view-mysignals">
+                                <div class="view-nav">
+                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                    <span class="view-title">Моите сигнали</span>
+                                </div>
+                                <div class="app-content">
+                                    <div class="signal-list" id="signal-list-container"></div>
+                                </div>
+                            </div>
+
+                            <div class="app-view" id="view-map">
+                                <div class="view-nav">
+                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                    <span class="view-title">Карта</span>
+                                </div>
+                                <div class="map-container" id="map-container"></div>
+                            </div>
+
+                            <div class="app-view" id="view-achievements">
+                                <div class="view-nav">
+                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                    <span class="view-title">Постижения</span>
+                                </div>
+                                <div class="app-content">
+                                    <div class="ach-grid" id="ach-list"></div>
+                                </div>
+                            </div>
+
+                            <div class="app-view" id="view-leaderboard">
+                                <div class="view-nav">
+                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                    <span class="view-title">Топ Граждани</span>
+                                </div>
+                                <div class="app-content">
+                                    <div class="lb-list" id="lb-list"></div>
+                                </div>
+                            </div>
+
+                            <div class="app-view" id="view-stats">
+                                <div class="view-nav">
+                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                    <span class="view-title">Статистика за ПТП</span>
+                                </div>
+                                <div class="app-content" id="stats-content"></div>
+                            </div>
+
+                            <div class="app-view" id="view-secret">
+                                <div class="view-nav">
+                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                    <span class="view-title">Строго Секретно</span>
+                                </div>
+                                <div class="app-content secret-wrapper">
+                                    <div class="secret-lock-icon">
+                                        <span class="material-icons-round">gpp_bad</span>
+                                    </div>
+                                    <h3>Достъп забранен</h3>
+                                    <p>Въведете ПИН код за достъп до административния панел.</p>
+                                    <div class="secret-pin-dots">
+                                        <span></span><span></span><span></span><span></span>
+                                    </div>
+                                    <div class="keypad">
+                                        <div class="key" onclick="pressKey(1)">1</div>
+                                        <div class="key" onclick="pressKey(2)">2</div>
+                                        <div class="key" onclick="pressKey(3)">3</div>
+                                        <div class="key" onclick="pressKey(4)">4</div>
+                                        <div class="key" onclick="pressKey(5)">5</div>
+                                        <div class="key" onclick="pressKey(6)">6</div>
+                                        <div class="key" onclick="pressKey(7)">7</div>
+                                        <div class="key" onclick="pressKey(8)">8</div>
+                                        <div class="key" onclick="pressKey(9)">9</div>
+                                        <div class="key" style="opacity:0"></div>
+                                        <div class="key" onclick="pressKey(0)">0</div>
+                                        <div class="key" onclick="clearKey()"><span class="material-icons-round">backspace</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="app-view" id="view-report">
+                                <div class="view-nav">
+                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                    <span class="view-title">Нов Сигнал</span>
+                                </div>
+                                <div class="report-preview">
+                                    <img id="selected-img-preview" src="" alt="Preview">
+                                </div>
+                                <div class="report-form">
+                                    <div class="form-group">
+                                        <label>Регистрационен номер</label>
+                                        <input type="text" id="plate-input" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Локация</label>
+                                        <div class="fake-input">📍 София, България</div>
+                                    </div>
+                                    <button class="btn-submit" onclick="submitReport()">
+                                        ИЗПРАТИ СИГНАЛ
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="app-view" id="view-viewer">
+                                <div class="view-nav">
+                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
+                                    <span class="view-title">Преглед</span>
+                                </div>
+                                <div class="report-preview large">
+                                    <img id="viewer-img" src="" alt="Preview">
+                                </div>
+                                <div class="report-form">
+                                    <div class="viewer-meta">
+                                        <h3 id="viewer-plate">CB 1234 AB</h3>
+                                        <p>Докладвано на: <span id="viewer-date"></span></p>
+                                        <div id="viewer-meta"></div>
+                                    </div>
+                                    <div class="viewer-stats">
+                                        <div class="stat-box">
+                                            <span class="material-icons-round">visibility</span>
+                                            <span>1.2k</span>
+                                        </div>
+                                        <div class="stat-box">
+                                            <span class="material-icons-round">thumb_up</span>
+                                            <span>45</span>
+                                        </div>
+                                        <div class="stat-box">
+                                            <span class="material-icons-round">gavel</span>
+                                            <span>Act</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="success-overlay" id="success-screen">
+                                <div class="success-circle">
+                                    <span class="material-icons-round">check</span>
+                                </div>
+                                <h3>Успешно!</h3>
+                                <p>Сигналът е изпратен.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-shadow"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <footer style="margin-top: 80px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
+        &copy; 2026 P.E.D.A.L. Team. Всички права запазени.
+    </footer>
+
+    <script src="style.js"></script>
 </body>
 </html>
