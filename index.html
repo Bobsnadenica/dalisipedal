@@ -7,7 +7,7 @@
     <title>P.E.D.A.L. | Граждански контрол и пътна безопасност</title>
     <meta name="description" content="P.E.D.A.L. (Публичен Електронен Достъп за Анализ на Лоши шофьори) е мобилно приложение за подаване на сигнали за пътни нарушения в България. Снимай, изпрати, промени средата.">
     <meta name="keywords" content="граждански контрол, пътни нарушения, неправилно паркиране, КАТ, сигнали, софия, българия, pedal app, педал приложение, трафик, пътна безопасност">
-    <meta name="autho2r" content="P.E.D.A.L. Team">
+    <meta name="author" content="P.E.D.A.L. Team">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.dalisipedal.com/">
 
@@ -27,6 +27,8 @@
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="stylesheet" href="style.css">
     
+    <script src="background/mock_data.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -52,6 +54,33 @@
     </script>
 
     <style>
+        /* Terminal Background Style */
+        #terminal-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -5; /* Place behind bg-grid (-2) and glow (-1) */
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 13px;
+            color: #00ff41;
+            opacity: 0.08; /* Very subtle opacity so it doesn't distract */
+            padding: 20px;
+            overflow: hidden;
+            pointer-events: none;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            /* Fade out at the bottom */
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+        
+        /* Helper classes for the log lines */
+        .t-err { color: #ff3b30; font-weight: bold; }
+        .t-high { color: #ffc107; font-weight: bold; }
+        .t-dim { color: #555; }
+
         .system-definition {
             font-family: 'JetBrains Mono', monospace;
             background: rgba(255, 255, 255, 0.05);
@@ -93,7 +122,6 @@
             background: rgba(255, 255, 255, 0.05);
         }
         
-        /* Updated Nav Support Button Style */
         .nav-support {
             color: #FF3B30 !important;
             font-weight: 800;
@@ -107,7 +135,6 @@
             text-shadow: 0 0 10px rgba(255, 59, 48, 0.4);
         }
 
-        /* Nav Facebook Style */
         .nav-fb {
             color: #1877F2;
             font-weight: 700;
@@ -140,6 +167,8 @@
     <div class="bg-glow-top"></div>
     <div class="bg-glow-bottom"></div>
     <div class="bg-grid"></div>
+    
+    <div id="terminal-bg"></div>
 
     <nav class="navbar">
         <div class="container nav-container">
@@ -151,9 +180,7 @@
                 <a href="how_to_use.html">Как се използва?</a>
                 <a href="how_to.html">Как работи?</a>
                 <a href="https://www.facebook.com/profile.php?id=61586174976109" target="_blank" class="nav-fb">Facebook</a>
-                
                 <a href="supportus.html" class="nav-support">❤️ Подкрепи ни</a>
-
                 <a href="#download" class="btn-nav">Изтегли</a>
             </div>
         </div>
@@ -212,9 +239,9 @@
                                     <div class="header-row">
                                         <span class="material-icons-round h-btn" onclick="mockAction('Upgrade')" style="color:#FFC107">upgrade</span>
                                         <div class="header-right">
-                                            <span class="material-icons-round h-btn" onclick="mockAction('Чат')">chat</span>
-                                            <span class="material-icons-round h-btn" onclick="mockAction('Тема')">palette</span>
-                                            <span class="material-icons-round h-btn" onclick="mockAction('Изход')" style="color:#FF3B30">logout</span>
+                                            <span class="material-icons-round h-btn" onclick="mockAction('Chat')">chat</span>
+                                            <span class="material-icons-round h-btn" onclick="mockAction('Theme')">palette</span>
+                                            <span class="material-icons-round h-btn" onclick="mockAction('Logout')" style="color:#FF3B30">logout</span>
                                         </div>
                                     </div>
                                     <div class="app-logo-text">P.E.D.A.L.</div>
@@ -478,5 +505,62 @@
     </footer>
 
     <script src="style.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const term = document.getElementById('terminal-bg');
+            // Check if mock generator is loaded
+            if (!term || typeof Generator === 'undefined') {
+                console.warn('Background generator not loaded.');
+                return;
+            }
+
+            const MAX_LINES = 35; 
+            let lines = [];
+
+            function addLine(html) {
+                const time = new Date().toLocaleTimeString('bg-BG');
+                // Prepend time to the HTML string
+                const line = `<span class="t-dim">[${time}]</span> ${html}`;
+                
+                lines.push(line);
+                if (lines.length > MAX_LINES) lines.shift();
+                term.innerHTML = lines.join('\n');
+            }
+
+            // Init Message
+            addLine("P.E.D.A.L. SYSTEM CORE [ONLINE]");
+            addLine("Server: aws-bg-sofia-01");
+
+            // Loop
+            setInterval(() => {
+                const type = Math.random();
+                
+                if (type > 0.4) {
+                    // Simulate Scan
+                    const data = Generator.generateScanResult();
+                    const confidence = Math.round(data.confidence * 100);
+                    
+                    let statusHtml = `<span class="t-dim">OK</span>`;
+                    let plateHtml = `<span class="t-high">${data.plate}</span>`;
+
+                    if (parseFloat(data.confidence) > 0.85) {
+                        statusHtml = `<span class="t-err">${data.violation}</span>`;
+                    }
+
+                    addLine(`SCAN: ${plateHtml} | ${data.model} | ${statusHtml} (${confidence}%)`);
+                } else {
+                    // Simulate Log
+                    const log = Generator.generateLog();
+                    let logHtml = log;
+                    // Simple colorizing based on status codes in text
+                    if (log.includes(" 200 ")) logHtml = `<span style="color:#34C759">${log}</span>`;
+                    if (log.includes(" 404 ") || log.includes(" 500 ")) logHtml = `<span class="t-err">${log}</span>`;
+                    
+                    addLine(`NET: ${logHtml}`);
+                }
+            }, 1800); // 1.8s delay
+        });
+    </script>
 </body>
 </html>
