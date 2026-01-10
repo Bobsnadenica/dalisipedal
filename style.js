@@ -364,46 +364,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     document.getElementById('year').textContent = new Date().getFullYear();
-document.addEventListener('DOMContentLoaded', () => {
-    // ... existing initialization code ...
-
-    // 3D Rotate Logic
-    const phoneContainer = document.querySelector('.hero-phone');
-    const phoneWrapper = document.querySelector('.phone-wrapper');
-
-    if (phoneContainer && phoneWrapper) {
-        // Desktop Mouse Move
-        document.addEventListener('mousemove', (e) => {
-            rotatePhone(e.clientX, e.clientY);
-        });
-
-        // Mobile Touch Move
-        document.addEventListener('touchmove', (e) => {
-            rotatePhone(e.touches[0].clientX, e.touches[0].clientY);
-        });
-
-        // Reset on mouse leave (optional)
-        document.addEventListener('mouseleave', () => {
-            phoneWrapper.style.transform = `rotateY(0deg) rotateX(0deg)`;
-        });
-    }
-
-    function rotatePhone(x, y) {
-        const box = phoneContainer.getBoundingClientRect();
-        
-        // Calculate center of the phone container
-        const centerX = box.left + box.width / 2;
-        const centerY = box.top + box.height / 2;
-
-        // Calculate distance from center
-        const diffX = x - centerX;
-        const diffY = y - centerY;
-
-        // Calculate rotation (Sensitivity: divide by 20 or 25)
-        // RotateY is based on X movement, RotateX is based on Y movement (inverted)
-        const rotateY = diffX / 25; 
-        const rotateX = -(diffY / 25);
-
-        phoneWrapper.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
-    }
 });
