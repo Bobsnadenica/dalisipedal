@@ -149,7 +149,6 @@
             </a>
             <div class="nav-links">
                 <a href="how_to_use.html">Как се използва?</a>
-                
                 <a href="how_to.html">Как работи?</a>
                 <a href="https://www.facebook.com/profile.php?id=61586174976109" target="_blank" class="nav-fb">Facebook</a>
                 
@@ -210,8 +209,17 @@
 
                             <div class="app-view active" id="view-dashboard">
                                 <div class="app-header">
+                                    <div class="header-row">
+                                        <span class="material-icons-round h-btn" onclick="mockAction('Upgrade')" style="color:#FFC107">upgrade</span>
+                                        <div class="header-right">
+                                            <span class="material-icons-round h-btn" onclick="mockAction('Чат')">chat</span>
+                                            <span class="material-icons-round h-btn" onclick="mockAction('Тема')">palette</span>
+                                            <span class="material-icons-round h-btn" onclick="mockAction('Изход')" style="color:#FF3B30">logout</span>
+                                        </div>
+                                    </div>
                                     <div class="app-logo-text">P.E.D.A.L.</div>
                                 </div>
+
                                 <div class="app-content">
                                     <div class="dash-grid">
                                         <div class="dash-card red" onclick="simulateUpload()">

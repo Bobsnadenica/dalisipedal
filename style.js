@@ -1,5 +1,3 @@
-/* P.E.D.A.L. Interactive Demo Logic v2.8 */
-
 const DB = [
     { id: 1, img: "car1.jpeg", plate: "CB XXXX TM", status: "approved", date: "02.01.2026" },
     { id: 2, img: "car2.JPG", plate: "CO XXXX CX", status: "pending", date: "05.01.2026" },
@@ -24,7 +22,6 @@ function setView(viewId) {
 
 function goBack(targetView) {
     setView(targetView);
-    // Clear secret pin if leaving secret view
     if (targetView === 'dashboard') {
         secretPin = "";
         updatePinDots();
@@ -46,6 +43,10 @@ function triggerFlash() {
     setTimeout(() => {
         flash.classList.remove('flash-active');
     }, 100);
+}
+
+function mockAction(name) {
+    alert(`"${name}" е налична в апликацията.`);
 }
 
 function getRandomEntry() {
@@ -166,7 +167,6 @@ function openRandom() {
 
 function openPodMonth() {
     showLoader(() => {
-        // Specifically car5 for month
         const entry = DB.find(x => x.img.includes('car5'));
         if(entry) {
             renderViewer(entry);
@@ -240,8 +240,6 @@ function openLeaderboard() {
 // 7. Cyan Button (Stats)
 function openStats() {
     const container = document.getElementById('stats-content');
-    
-    // Generate slight random variations
     const weekly = 120 + Math.floor(Math.random() * 20);
     const processed = 90 + Math.floor(Math.random() * 10);
     
@@ -325,6 +323,8 @@ function renderViewer(entry) {
     document.getElementById('viewer-img').src = entry.img;
     document.getElementById('viewer-plate').innerText = entry.plate;
     document.getElementById('viewer-date').innerText = entry.date;
+    const extra = document.getElementById('viewer-meta');
+    if (extra) extra.innerHTML = "";
 }
 
 function submitReport() {

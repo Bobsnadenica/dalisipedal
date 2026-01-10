@@ -33,7 +33,7 @@
 
         .phone-column {
             position: sticky;
-            top: 100px; /* Sticks the phone while scrolling text */
+            top: 100px;
             display: flex;
             justify-content: center;
             perspective: 1000px;
@@ -55,11 +55,6 @@
             background: rgba(255,255,255,0.08);
             border-color: rgba(255,255,255,0.2);
             transform: translateX(10px);
-        }
-
-        .guide-card.active {
-            border-color: var(--primary);
-            background: rgba(255, 193, 7, 0.05);
         }
 
         .icon-box {
@@ -149,7 +144,7 @@
                 <div class="icon-box ib-green"><span class="material-icons-round">map</span></div>
                 <div class="guide-content">
                     <h3>3. Карта & Търсене</h3>
-                    <p>Търсене по локация. Изберете си локация и си проверете късмета. Търсенето по номер е само за оторизирани лица.</p>
+                    <p>Търсене по локация. Показва активните сигнали около вас. Търсенето по номер е само за оторизирани лица.</p>
                     <span class="guide-hint">👉 Кликни за тест</span>
                 </div>
             </div>
@@ -200,12 +195,12 @@
             </div>
 
             <div class="info-alert" style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed #555;">
-                <h4 style="margin:0 0 10px 0; color:white;">ℹ️ Други функции</h4>
+                <h4 style="margin:0 0 10px 0; color:white;">ℹ️ Други функции (Горен панел)</h4>
                 <ul style="margin:0; padding-left: 20px; color: #aaa; font-size: 0.9rem;">
-                    <li><strong>Upgrade:</strong> Вдига лимитите.</li>
-                    <li><strong>Chat:</strong> Връзка с други потребители.</li>
-                    <li><strong>Theme:</strong> Тъмен/Светъл/БМВ режим.</li>
-                    <li><strong>Logout:</strong> Изход от профила.</li>
+                    <li><span class="material-icons-round" style="font-size:14px; color:#FFC107; vertical-align:middle;">upgrade</span> <strong>Upgrade:</strong> Премахва реклами и вдига лимитите.</li>
+                    <li><span class="material-icons-round" style="font-size:14px; vertical-align:middle;">chat</span> <strong>Chat:</strong> Връзка с други потребители.</li>
+                    <li><span class="material-icons-round" style="font-size:14px; vertical-align:middle;">palette</span> <strong>Theme:</strong> Тъмен/Светъл режим.</li>
+                    <li><span class="material-icons-round" style="font-size:14px; color:#FF3B30; vertical-align:middle;">logout</span> <strong>Logout:</strong> Изход от профила.</li>
                 </ul>
             </div>
         </div>
@@ -236,8 +231,17 @@
 
                             <div class="app-view active" id="view-dashboard">
                                 <div class="app-header">
+                                    <div class="header-row">
+                                        <span class="material-icons-round h-btn" onclick="mockAction('Upgrade')" style="color:#FFC107">upgrade</span>
+                                        <div class="header-right">
+                                            <span class="material-icons-round h-btn" onclick="mockAction('Chat')">chat</span>
+                                            <span class="material-icons-round h-btn" onclick="mockAction('Theme')">palette</span>
+                                            <span class="material-icons-round h-btn" onclick="mockAction('Logout')" style="color:#FF3B30">logout</span>
+                                        </div>
+                                    </div>
                                     <div class="app-logo-text">P.E.D.A.L.</div>
                                 </div>
+
                                 <div class="app-content">
                                     <div class="dash-grid">
                                         <div class="dash-card red" onclick="simulateUpload()">
