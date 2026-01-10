@@ -92,19 +92,19 @@
             border-color: white;
             background: rgba(255, 255, 255, 0.05);
         }
-        .btn-support {
-            background: rgba(255, 59, 48, 0.15);
-            color: #FF3B30;
-            border: 1px solid rgba(255, 59, 48, 0.3);
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.2s;
+        
+        /* Updated Nav Support Button Style */
+        .nav-support {
+            color: #FF3B30 !important;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.2s;
         }
-        .btn-support:hover {
-            background: rgba(255, 59, 48, 0.25);
-            box-shadow: 0 0 15px rgba(255, 59, 48, 0.2);
+        .nav-support:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(255, 59, 48, 0.4);
         }
 
         /* Nav Facebook Style */
@@ -150,8 +150,9 @@
             <div class="nav-links">
                 <a href="#demo">Демо</a>
                 <a href="how_to.html">Как работи?</a>
-                
                 <a href="https://www.facebook.com/profile.php?id=61586174976109" target="_blank" class="nav-fb">Facebook</a>
+                
+                <a href="supportus.html" class="nav-support">❤️ Подкрепи ни</a>
 
                 <a href="#download" class="btn-nav">Изтегли</a>
             </div>
@@ -163,7 +164,7 @@
             <div class="hero-text fade-in">
                 <div class="status-pill-live">
                     <span class="pulsing-dot"></span>
-                    <span>Системата е активна v1</span>
+                    <span>Системата е активна v2.6</span>
                 </div>
                 
                 <div class="system-definition">
@@ -179,8 +180,8 @@
                 <div class="hero-actions">
                     <a href="#download" class="btn-primary-hero">Свали (скоро)</a>
                     <a href="how_to.html" class="btn-outline">Как работи?</a>
-                    <a href="supportus.html" class="btn-support">❤️ Подкрепи ни</a>
-                    </div>
+                    <a href="how_to_use.html" class="btn-outline">Как се използва</a>
+                </div>
             </div>
 
             <div id="demo" class="hero-phone fade-in delay-200">
@@ -463,8 +464,6 @@
                 <a href="privacy_policy.html">Политика за поверителност</a>
                 <span class="sep">•</span>
                 <a href="roadmap.html">Roadmap</a>
-                <span class="sep">•</span>
-                <a href="https://www.facebook.com/profile.php?id=61586174976109" target="_blank">Facebook</a>
             </div>
         </div>
     </footer>
