@@ -53,17 +53,23 @@ h1 { font-size: 3.5rem; line-height: 1.1; font-weight: 800; margin-bottom: 24px;
 .btn-outline:hover { border-color: white; background: rgba(255, 255, 255, 0.05); }
 
 /* PHONE MOCKUP */
-.hero-phone { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; perspective: 1000px; }
-.phone-wrapper { position: relative; transition: transform 0.3s ease; }
+.hero-phone { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    position: relative; perspective: 1000px; 
+    cursor: grab;
+}
+.hero-phone:active { cursor: grabbing; }
+
+.phone-wrapper { 
+    position: relative; 
+    transition: transform 0.1s ease-out; 
+    transform-style: preserve-3d; 
+}
 
 .phone-case {
     width: 300px; height: 620px; background: #000; border-radius: 48px;
     border: 8px solid #1a1a1a; box-shadow: 0 0 0 2px #333, 0 30px 60px rgba(0,0,0,0.5);
-    position: relative; overflow: hidden; transform: rotateY(-5deg) rotateX(5deg); transition: transform 0.5s ease;
-}
-
-@media (hover: hover) {
-    .hero-phone:hover .phone-case { transform: rotateY(0) rotateX(0); }
+    position: relative; overflow: hidden; 
 }
 
 .phone-screen { width: 100%; height: 100%; background: #000; position: relative; overflow: hidden; }
@@ -78,7 +84,7 @@ h1 { font-size: 3.5rem; line-height: 1.1; font-weight: 800; margin-bottom: 24px;
 .app-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; padding-top: 30px; display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform: scale(0.95) translateY(10px); }
 .app-view.active { opacity: 1; visibility: visible; transform: scale(1) translateY(0); }
 
-/* Updated App Header */
+/* Updated App Header (Inside Phone) */
 .app-header { padding: 10px 16px 10px; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
 .header-row { display: flex; justify-content: space-between; align-items: center; }
 .header-right { display: flex; gap: 12px; }
@@ -166,6 +172,40 @@ input { width: 100%; background: #1C1C1E; border: 1px solid #333; color: white; 
 .viewer-stats { display: flex; justify-content: space-between; background: #1C1C1E; padding: 16px; border-radius: 12px; border: 1px solid #333; }
 .stat-box { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.8rem; color: #aaa; }
 .stat-box span:first-child { color: white; font-size: 1.2rem; }
+
+/* --- NEW ACHIEVEMENTS STYLE --- */
+.ach-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px; }
+.ach-card { display: flex; align-items: center; gap: 16px; background: #1C1C1E; padding: 16px; border-radius: 16px; border: 1px solid #333; transition: 0.2s; position: relative; overflow: hidden; }
+.ach-card:active { transform: scale(0.98); }
+.ach-card.locked { opacity: 0.7; }
+.ach-icon-box { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; font-size: 24px; background: rgba(255,255,255,0.05); color: #666; transition: 0.3s; flex-shrink: 0; }
+.ach-card.unlocked .ach-icon-box { background: rgba(52, 199, 89, 0.2); color: #34C759; box-shadow: 0 0 15px rgba(52, 199, 89, 0.2); }
+.ach-text { flex: 1; }
+.ach-text h4 { margin: 0 0 4px 0; font-size: 0.95rem; font-weight: 700; }
+.ach-text p { margin: 0; font-size: 0.75rem; color: #888; }
+.ach-progress-bg { height: 4px; background: #333; border-radius: 2px; margin-top: 10px; width: 100%; position: relative; overflow: hidden; }
+.ach-progress-fill { height: 100%; background: #34C759; width: 0%; transition: width 1s ease; }
+.ach-check { opacity: 0; transition: 0.3s; color: #34C759; }
+.ach-card.unlocked .ach-check { opacity: 1; }
+
+/* --- NEW LEADERBOARD STYLE --- */
+.lb-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
+.lb-card { display: flex; align-items: center; gap: 12px; background: #1C1C1E; padding: 12px 16px; border-radius: 14px; border: 1px solid #333; transition: 0.2s; }
+.lb-card:active { transform: scale(0.98); }
+.lb-rank { font-family: var(--font-mono); font-weight: 800; width: 24px; text-align: center; color: #666; font-size: 0.9rem; }
+
+/* Top 3 Styling */
+.lb-card.top-1 { border-color: rgba(255, 215, 0, 0.3); background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(28, 28, 30, 0)); }
+.lb-card.top-1 .lb-rank { color: #FFD700; font-size: 1.2rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+.lb-card.top-2 .lb-rank { color: #C0C0C0; font-size: 1.1rem; }
+.lb-card.top-3 .lb-rank { color: #CD7F32; font-size: 1.1rem; }
+
+.lb-avatar { width: 40px; height: 40px; border-radius: 50%; background: #333; display: grid; place-items: center; font-weight: 700; color: white; font-size: 0.9rem; position: relative; }
+.lb-avatar::after { content: ''; position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; background: #34C759; border-radius: 50%; border: 2px solid #1C1C1E; }
+.lb-info { flex: 1; }
+.lb-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+.lb-region { font-size: 0.7rem; color: #888; }
+.lb-score { font-family: var(--font-mono); font-weight: 700; color: var(--primary); text-align: right; font-size: 0.95rem; }
 
 /* Stats View */
 .stat-card { background: #1C1C1E; border-radius: 12px; padding: 16px; margin-bottom: 12px; border: 1px solid #333; }

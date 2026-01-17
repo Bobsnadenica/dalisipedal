@@ -1,10 +1,12 @@
+/* P.E.D.A.L. Interactive Demo Logic v3.0 */
+
 const DB = [
-    { id: 1, img: "car1.jpeg", plate: "CB XXXX TM", status: "approved", date: "02.01.2026" },
-    { id: 2, img: "car2.JPG", plate: "CO XXXX CX", status: "pending", date: "05.01.2026" },
-    { id: 3, img: "car3.jpeg", plate: "CA XXXX HP", status: "approved", date: "28.12.2025" },
-    { id: 4, img: "car4.jpeg", plate: "CB XXXX KA", status: "pending", date: "06.01.2026" },
-    { id: 5, img: "car5.jpeg", plate: "TX XXXX PB", status: "approved", date: "15.12.2025" },
-    { id: 6, img: "car6.JPG", plate: "PB XXXX MX", status: "pending", date: "06.01.2026" }
+    { id: 1, img: "car1.jpeg", plate: "CB 9283 TM", status: "approved", date: "02.01.2026" },
+    { id: 2, img: "car2.JPG", plate: "CO 2819 CX", status: "pending", date: "05.01.2026" },
+    { id: 3, img: "car3.jpeg", plate: "CA 1290 HP", status: "approved", date: "28.12.2025" },
+    { id: 4, img: "car4.jpeg", plate: "CB 5521 KA", status: "pending", date: "06.01.2026" },
+    { id: 5, img: "car5.jpeg", plate: "TX 7777 PB", status: "approved", date: "15.12.2025" }, // Pedal of Month
+    { id: 6, img: "car6.JPG", plate: "PB 3399 MX", status: "pending", date: "06.01.2026" }
 ];
 
 // Global State
@@ -46,7 +48,7 @@ function triggerFlash() {
 }
 
 function mockAction(name) {
-    alert(`"${name}" е налична в апликацията.`);
+    alert(`[Демо] Функция "${name}" ще бъде налична в пълната версия.`);
 }
 
 function getRandomEntry() {
@@ -167,67 +169,92 @@ function openRandom() {
 
 function openPodMonth() {
     showLoader(() => {
-        const entry = DB.find(x => x.img.includes('car5'));
+        // Specifically look for car5 (the G-Wagon or fancy car)
+        const entry = DB.find(x => x.img.includes('car5')) || DB[4];
+        
         if(entry) {
             renderViewer(entry);
-            document.getElementById('viewer-meta').innerHTML += '<br><span style="color:#AF52DE; font-weight:700">🏆 П.Е.Д.А.Л. на Месеца</span>';
+            // Add the special MONTHLY BADGE to the viewer
+            const metaDiv = document.getElementById('viewer-meta');
+            metaDiv.innerHTML = `
+                <div style="margin-top:12px; padding:10px; background:linear-gradient(45deg, #AF52DE, #5E5CE6); border-radius:12px; text-align:center;">
+                    <div style="font-size:32px; margin-bottom:4px;">🏆</div>
+                    <div style="color:white; font-weight:800; font-size:1.1rem;">П.Е.Д.А.Л. на МЕСЕЦА</div>
+                    <div style="color:rgba(255,255,255,0.8); font-size:0.8rem;">Най-нагло паркиране за Януари</div>
+                </div>
+            `;
         }
         setView('viewer');
     });
 }
 
-// 5. Blue Button (Achievements)
+// 5. Blue Button (Achievements) - NEW DESIGN
 function openAchievements() {
     const list = document.getElementById('ach-list');
     list.innerHTML = '';
     
     const achievements = [
-        { icon: 'camera', title: 'Първи кадър', unlocked: true },
-        { icon: 'star', title: '5 Звезди', unlocked: true },
-        { icon: 'verified', title: 'Верифициран', unlocked: true },
-        { icon: 'public', title: 'Активист', unlocked: false },
-        { icon: 'bolt', title: 'Светкавица', unlocked: false },
-        { icon: 'military_tech', title: 'Генерал', unlocked: false }
+        { icon: 'camera_alt', title: 'Фотограф', desc: 'Направи първата си снимка', progress: 100, unlocked: true },
+        { icon: 'verified_user', title: 'Граждански Дълг', desc: '1 потвърден сигнал от КАТ', progress: 100, unlocked: true },
+        { icon: 'group', title: 'Influencer', desc: 'Сподели в социалните мрежи', progress: 100, unlocked: true },
+        { icon: 'photo_library', title: 'Папараци', desc: 'Качи 5 нарушения (3/5)', progress: 60, unlocked: false },
+        { icon: 'security', title: 'Шериф', desc: '10 потвърдени сигнала (2/10)', progress: 20, unlocked: false },
+        { icon: 'military_tech', title: 'Генерал', desc: 'Топ 1 в класацията за месеца', progress: 0, unlocked: false }
     ];
 
     achievements.forEach(ach => {
-        list.innerHTML += `
-            <div class="ach-item ${ach.unlocked ? 'unlocked' : ''}">
-                <div class="ach-icon">
+        const stateClass = ach.unlocked ? 'unlocked' : 'locked';
+        const checkMark = ach.unlocked ? 'check_circle' : '';
+        
+        const html = `
+            <div class="ach-card ${stateClass}">
+                <div class="ach-icon-box">
                     <span class="material-icons-round">${ach.icon}</span>
                 </div>
-                <div class="ach-title">${ach.title}</div>
+                <div class="ach-text">
+                    <div style="display:flex; justify-content:space-between;">
+                        <h4>${ach.title}</h4>
+                        <span class="material-icons-round ach-check">${checkMark}</span>
+                    </div>
+                    <p>${ach.desc}</p>
+                    <div class="ach-progress-bg">
+                        <div class="ach-progress-fill" style="width: ${ach.progress}%"></div>
+                    </div>
+                </div>
             </div>
         `;
+        list.innerHTML += html;
     });
     
     setView('achievements');
 }
 
-// 6. Orange Button (Leaderboard)
+// 6. Orange Button (Leaderboard) - NEW DESIGN
 function openLeaderboard() {
     const list = document.getElementById('lb-list');
     list.innerHTML = '';
 
     const users = [
-        { name: "Ти", score: 1450, rank: 4 },
-        { name: "Pesho_Golfa", score: 2890, rank: 1 },
-        { name: "Mariya88", score: 2100, rank: 2 },
-        { name: "Ivan_Taxi", score: 1850, rank: 3 },
-        { name: "Vanko1", score: 1200, rank: 5 },
-        { name: "Gosho", score: 950, rank: 6 }
+        { name: "Pesho_Golfa", score: 2890, region: "София, Люлин" },
+        { name: "Mariya88", score: 2100, region: "София, Младост" },
+        { name: "Ivan_Taxi", score: 1850, region: "Пловдив" },
+        { name: "Ти (Аз)", score: 1450, region: "София" },
+        { name: "Vanko1", score: 1200, region: "Варна" },
+        { name: "Gosho_BMW", score: 950, region: "Бургас" }
     ];
 
-    users.sort((a,b) => b.score - a.score);
-
     users.forEach((u, index) => {
-        const isTop = index < 3 ? 'top' : '';
         const rank = index + 1;
+        const topClass = rank <= 3 ? `top-${rank}` : '';
+        
         const html = `
-            <div class="lb-item ${isTop}">
+            <div class="lb-card ${topClass}">
                 <div class="lb-rank">${rank}</div>
                 <div class="lb-avatar">${u.name.charAt(0)}</div>
-                <div class="lb-name">${u.name} ${u.name === 'Ти' ? '(Ти)' : ''}</div>
+                <div class="lb-info">
+                    <div class="lb-name">${u.name}</div>
+                    <div class="lb-region">${u.region}</div>
+                </div>
                 <div class="lb-score">${u.score}</div>
             </div>
         `;
@@ -240,8 +267,8 @@ function openLeaderboard() {
 // 7. Cyan Button (Stats)
 function openStats() {
     const container = document.getElementById('stats-content');
-    const weekly = 120 + Math.floor(Math.random() * 20);
-    const processed = 90 + Math.floor(Math.random() * 10);
+    const weekly = 1240;
+    const processed = 890;
     
     container.innerHTML = `
         <div class="stat-card">
@@ -261,6 +288,9 @@ function openStats() {
             <div class="chart-bar" style="height: 90%"><span class="bar-label">Сб</span></div>
             <div class="chart-bar" style="height: 70%"><span class="bar-label">Нд</span></div>
         </div>
+        <p style="font-size:0.8rem; color:#666; margin-top:20px; text-align:center;">
+            * Данните се обновяват на всеки 24 часа от сървърите на МВР.
+        </p>
     `;
     
     setView('stats');
@@ -323,6 +353,7 @@ function renderViewer(entry) {
     document.getElementById('viewer-img').src = entry.img;
     document.getElementById('viewer-plate').innerText = entry.plate;
     document.getElementById('viewer-date').innerText = entry.date;
+    // Clear any previous special meta tags (like Month badge)
     const extra = document.getElementById('viewer-meta');
     if (extra) extra.innerHTML = "";
 }
