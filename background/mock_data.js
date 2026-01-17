@@ -1,4 +1,4 @@
-/* * P.E.D.A.L. Mock Data Generator (BG Edition)
+/* * P.E.D.A.L. Mock Data Generator (BG Edition v2.0)
  * Генерира реалистични български данни за трафик и логове.
  */
 
@@ -6,23 +6,36 @@ const Generator = {
     
     // 1. Бази данни (Масиви)
     regions: [
-        'СВ', 'СА', 'С', // София
+        'СВ', 'СА', 'С', // София-град / София-област
         'РВ', // Пловдив
         'В', 'ВН', // Варна
-        'В', // Бургас (използва А или В, но за простота)
+        'А', // Бургас
         'ТХ', // Добрич
         'КН', // Кюстендил
-        'А',  // Бургас (старо) / Ямбол (Y) е друго, но слагаме общи
         'ВР', 'ВТ', 'ВХ', 'Г', 'Е', 'ЕБ', 'К', 'КР', 'КТ', 'Л', 'М', 'Н', 'ОВ', 'П', 'ПА', 'ПК', 'ПП', 'Р', 'СМ', 'СН', 'СО', 'СС', 'СТ', 'Т', 'У', 'Х', 'Я'
     ],
     
+    cities: [
+        'София', 'Пловдив', 'Варна', 'Бургас', 'Русе', 
+        'Стара Загора', 'Плевен', 'Сливен', 'Добрич', 'Шумен'
+    ],
+
+    streets: [
+        'бул. "Витоша"', 'бул. "България"', 'ул. "Граф Игнатиев"', 'бул. "Цариградско шосе"', 'ж.к. Люлин 5', 
+        'ж.к. Младост 4', 'бул. "Шести Септември"', 'ул. "Иван Вазов"', 'бул. "Княз Борис I"', 'ул. "Александровска"',
+        'бул. "Сливница"', 'ул. "Опълченска"', 'ж.к. Тракия', 'кв. Аспарухово', 'ул. "Пиротска"', 'бул. "Мария Луиза"'
+    ],
+    
     models: [
-        'VW Golf 4', 'VW Golf 5', 'VW Passat', 
-        'Opel Astra', 'Opel Corsa', 
+        'VW Golf 4', 'VW Golf 5', 'VW Passat B6', 
+        'Opel Astra G', 'Opel Corsa', 'Opel Zafira',
         'BMW E46 (3 Series)', 'BMW E60 (5 Series)', 'BMW X5',
-        'Audi A4', 'Audi Q7', 
-        'Mercedes C-Class', 'Mercedes G-Class (G-Wagen)',
-        'Toyota Corolla', 'Dacia Logan', 'Ford Focus'
+        'Audi A4', 'Audi A6', 'Audi Q7', 
+        'Mercedes C-Class', 'Mercedes E-Class', 'Mercedes G-Class',
+        'Toyota Corolla', 'Toyota Yaris', 
+        'Dacia Logan', 'Dacia Duster',
+        'Ford Focus', 'Ford Fiesta',
+        'Peugeot 206', 'Renault Clio'
     ],
     
     violations: [
@@ -33,11 +46,13 @@ const Generator = {
         'Неплатена Зелена/Синя зона',
         'Паркиране на пешеходна пътека',
         'Обратен завой на забранено място',
-        'Липса на ГТП'
+        'Липса на ГТП',
+        'Паркиране в зелена площ',
+        'Блокиране на гараж'
     ],
 
-    firstNames: ['Иван', 'Георги', 'Димитър', 'Петър', 'Александър', 'Николай', 'Тодор', 'Стоян', 'Христо', 'Йордан'],
-    lastNames: ['Иванов', 'Петров', 'Димитров', 'Георгиев', 'Николов', 'Тодоров', 'Стоянов', 'Христов', 'Йорданов'],
+    firstNames: ['Иван', 'Георги', 'Димитър', 'Петър', 'Александър', 'Николай', 'Тодор', 'Стоян', 'Христо', 'Йордан', 'Красимир', 'Пламен'],
+    lastNames: ['Иванов', 'Петров', 'Димитров', 'Георгиев', 'Николов', 'Тодоров', 'Стоянов', 'Христов', 'Йорданов', 'Василев', 'Колев'],
 
     userAgents: [
         'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)', 
@@ -68,6 +83,11 @@ const Generator = {
         return `${this.getRandomItem(this.firstNames)} ${this.getRandomItem(this.lastNames)}`;
     },
 
+    // Генерира реалистичен адрес
+    generateAddress: function() {
+        return `${this.getRandomItem(this.cities)}, ${this.getRandomItem(this.streets)}`;
+    },
+
     // Генерира реалистичен сървърен лог
     generateLog: function() {
         const ip = `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
@@ -89,7 +109,7 @@ const Generator = {
             owner: Math.random() > 0.7 ? this.generateName() : '***** *****', // 30% шанс да покаже име
             violation: this.getRandomItem(this.violations),
             confidence: (Math.random() * (0.99 - 0.70) + 0.70).toFixed(2), // 70-99% увереност
-            location: Math.random() > 0.5 ? 'София, Център' : 'Пловдив, Тракия'
+            location: this.generateAddress()
         };
     }
 };
