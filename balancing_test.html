@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Балансиращ Тест (LIA) | П.Е.Д.А.Л.🤫</title>
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { overflow-y: auto; }
+        .doc-container {
+            max-width: 900px;
+            margin: 120px auto 60px;
+            padding: 50px;
+            background: #121212;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 { margin-bottom: 10px; font-size: 2.2rem; letter-spacing: -1px; }
+        .subtitle { color: var(--text-muted); margin-bottom: 40px; display: block; font-size: 1rem; font-family: var(--font-mono); }
+
+        h2 { margin-top: 40px; margin-bottom: 20px; color: white; font-size: 1.4rem; border-left: 4px solid var(--primary); padding-left: 15px; }
+        h3 { margin-top: 20px; margin-bottom: 10px; color: var(--text-main); font-size: 1.1rem; }
+        
+        p, li { color: #ccc; line-height: 1.6; margin-bottom: 15px; }
+        ul { margin-left: 20px; margin-bottom: 20px; }
+        
+        .lia-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .lia-header {
+            font-family: var(--font-mono);
+            color: var(--primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .verdict-box {
+            background: rgba(52, 199, 89, 0.1);
+            border: 1px solid rgba(52, 199, 89, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            color: #34C759;
+            font-weight: 600;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: var(--primary); transform: translateX(-5px); }
+
+        @media (max-width: 600px) {
+            .doc-container { padding: 25px; margin-top: 100px; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow-top"></div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="app_icon.png" alt="P.E.D.A.L." class="logo-icon-img">
+                <span class="logo-text">П.Е.Д.А.Л.🤫</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="doc-container fade-in">
+        <a href="index.html" class="back-link">← Начало / Home</a>
+
+        <h1>Оценка на легитимния интерес (LIA)</h1>
+        <span class="subtitle">Балансиращ тест съгласно чл. 6, т. 1, буква "е" от GDPR</span>
+
+        <p>Този документ описва "Балансиращия тест", извършен от П.Е.Д.А.Л.🤫, за да обоснове обработването на лични данни (снимки на МПС) без изричното съгласие на субектите (нарушителите), базирайки се на легитимен интерес.</p>
+
+        <h2>СТЪПКА 1: Тест за целта</h2>
+        <div class="lia-box">
+            <span class="lia-header">Какъв е легитимният интерес?</span>
+            <p><strong>Целта на П.Е.Д.А.Л.🤫 е:</strong></p>
+            <ul>
+                <li>Повишаване на гражданската ангажираност и контрол върху спазването на Закона за движение по пътищата (ЗДвП).</li>
+                <li>Осигуряване на по-безопасна и достъпна градска среда чрез документиране на нарушения (напр. паркиране на тротоари, в зелени площи).</li>
+                <li>Подпомагане на компетентните органи (КАТ/МВР) чрез предоставяне на структурирани данни за системни нарушения.</li>
+            </ul>
+            <p>Този интерес е както на администратора (приложението), така и на трети страни (обществото, пешеходците, майките с колички, хората с увреждания).</p>
+        </div>
+
+        <h2>СТЪПКА 2: Тест за необходимост</h2>
+        <div class="lia-box">
+            <span class="lia-header">Наложителна ли е обработката?</span>
+            <p>Обработването на снимков материал (включващ регистрационен номер на автомобил) е <strong>абсолютно необходимо</strong> за постигане на целта.</p>
+            <ul>
+                <li>Без визуален материал нарушението не може да бъде доказано.</li>
+                <li>Регистрационният номер е единственият начин за идентифициране на превозното средство нарушител.</li>
+                <li>Анонимните доклади (без снимка) нямат правна или социална стойност за органите на реда.</li>
+            </ul>
+            <p>Няма друг по-щадящ начин да се постигне целта за документиране на нарушение.</p>
+        </div>
+
+        <h2>СТЪПКА 3: Балансиращ тест</h2>
+        <div class="lia-box">
+            <span class="lia-header">Надделяват ли правата на субекта?</span>
+            <p>Сравняваме интереса на обществото (ред и безопасност) с интереса на заснетото лице (неприкосновеност).</p>
+            
+            <h3>Аргументи в полза на обработката:</h3>
+            <ul>
+                <li><strong>Публично място:</strong> Нарушенията се извършват на обществени места, където очакването за поверителност е занижено.</li>
+                <li><strong>Нарушение на закона:</strong> Субектът на данните извършва административно нарушение или престъпление. Правото на защита на лични данни не трябва да служи като прикритие за незаконосъобразни действия.</li>
+                <li><strong>Ограничен обем:</strong> Снима се само автомобилът и контекстът на нарушението. Лица на хора (минувачи/шофьори) се замъгляват автоматично или ръчно, ако попаднат в кадър.</li>
+            </ul>
+
+            <h3>Мерки за защита (Safeguards):</h3>
+            <ul>
+                <li>Възможност за лесно изтриване (Opt-out) при доказана собственост.</li>
+                <li>Данните не се използват за профилиране или маркетинг.</li>
+                <li>Данните се изтриват след приключване на целта (сигнализиране).</li>
+            </ul>
+        </div>
+
+        <div class="verdict-box">
+            <span class="material-icons-round" style="vertical-align: middle; margin-right: 8px;">verified</span>
+            ЗАКЛЮЧЕНИЕ: Легитимният интерес НАДДЕЛЯВА.
+            <div style="font-weight: 400; font-size: 0.9rem; margin-top: 5px; color: #ccc;">
+                Обработването на данни е законосъобразно, тъй като ползата за обществото и пътната безопасност е по-значима от дискомфорта на лицето, извършило нарушение на обществено място.
+            </div>
+        </div>
+
+        <footer style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
+            &copy; 2026 П.Е.Д.А.Л.🤫 Team. Всички права запазени.
+        </footer>
+    </div>
+
+</body>
+</html>
