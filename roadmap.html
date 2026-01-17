@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roadmap | P.E.D.A.L.</title>
+    <title>Roadmap | П.Е.Д.А.Л.🤫</title>
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -32,12 +32,14 @@
             border: 1px dashed rgba(255, 59, 48, 0.3);
             padding: 30px;
             border-radius: 16px;
-            text-align: center;
             color: var(--text-muted);
             font-family: var(--font-mono);
             font-size: 0.9rem;
         }
-        .bug-icon { font-size: 40px; color: var(--accent-red); margin-bottom: 10px; display: block; }
+        .bug-icon { font-size: 40px; color: var(--accent-red); margin-bottom: 15px; display: block; text-align: center; }
+        .bug-list { list-style: none; padding: 0; }
+        .bug-list li { margin-bottom: 10px; padding-left: 24px; position: relative; }
+        .bug-list li::before { content: '!'; position: absolute; left: 0; color: var(--accent-red); font-weight: bold; }
 
         /* Roadmap List */
         .roadmap-list {
@@ -69,6 +71,14 @@
             color: #ccc;
             flex: 1;
         }
+        
+        /* Status Styles */
+        .completed .status-icon { color: #34C759; }
+        .completed .item-text { text-decoration: line-through; color: #666; }
+        
+        .progress .status-icon { color: #FFC107; }
+        .progress .item-text { color: #fff; }
+
         .funding-badge {
             background: linear-gradient(45deg, #FFC107, #FF9800);
             color: black;
@@ -106,7 +116,7 @@
         <div class="container nav-container">
             <a href="index.html" class="logo">
                 <img src="app_icon.png" alt="P.E.D.A.L." class="logo-icon-img">
-                <span class="logo-text">P.E.D.A.L. 🤫</span>
+                <span class="logo-text">П.Е.Д.А.Л.🤫</span>
             </a>
         </div>
     </nav>
@@ -123,59 +133,76 @@
         </h2>
         <div class="bug-box">
             <span class="material-icons-round bug-icon">pest_control</span>
-            <p>(Ще бъдат описани тук при докладване)</p>
-            <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.6;">Докладвайте грешки на complaints@dalisipedal.com</p>
+            <ul class="bug-list">
+                <li><strong>Achievements:</strong> Бутонът "Виж наградата" е изрязан/скрит в някои резолюции.</li>
+                <li><strong>Моите сигнали:</strong> Историята се пази само локално на устройството, а не се синхронизира с профила (облака).</li>
+            </ul>
+            <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.6; text-align: center;">Докладвайте нови грешки на complaints@dalisipedal.com</p>
         </div>
 
         <h2>
             <span class="material-icons-round" style="color: var(--primary);">construction</span>
-            Бъдещи функции / To Do
+            Статус на разработката
         </h2>
         
         <ul class="roadmap-list">
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">chat_bubble_outline</span>
+            <li class="roadmap-item completed">
+                <span class="material-icons-round status-icon">check_circle</span>
                 <span class="item-text">Чат система</span>
+            </li>
+            <li class="roadmap-item completed">
+                <span class="material-icons-round status-icon">check_circle</span>
+                <span class="item-text">Тайна функция 🤫</span>
+            </li>
+            <li class="roadmap-item completed">
+                <span class="material-icons-round status-icon">check_circle</span>
+                <span class="item-text">Разширена статистика</span>
+            </li>
+
+            <li class="roadmap-item progress">
+                <span class="material-icons-round status-icon">hourglass_bottom</span>
+                <span class="item-text">Още постижения (50% Готово)</span>
+            </li>
+
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">poll</span>
+                <span class="item-text">Въпроси за гласуване (Polls)</span>
+            </li>
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">tune</span>
+                <span class="item-text">Оптимизация на лимити (чат, качване, търсене)</span>
+            </li>
+            <li class="roadmap-item">
+                <span class="material-icons-round status-icon">sports_esports</span>
+                <span class="item-text">Още малки игрички (Gamification)</span>
             </li>
             <li class="roadmap-item">
                 <span class="material-icons-round status-icon">leaderboard</span>
                 <span class="item-text">Повече класации</span>
             </li>
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">query_stats</span>
-                <span class="item-text">Още статистики</span>
-            </li>
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">emoji_events</span>
-                <span class="item-text">Още постижения</span>
-            </li>
             <li class="roadmap-item" style="border-color: rgba(255, 193, 7, 0.3);">
                 <span class="material-icons-round status-icon" style="color: var(--primary);">auto_awesome</span>
                 <span class="item-text">
                     <span class="funding-badge">ЦЕЛ: €100</span>
-                    Когато получа 100 евро ще направя автоматично разпознаване (щот все пак има някъв cost)
+                    Автоматично AI разпознаване на номера
                 </span>
             </li>
             <li class="roadmap-item">
                 <span class="material-icons-round status-icon">thumbs_up_down</span>
-                <span class="item-text">Гласуване за снимки upvote/downvote</span>
+                <span class="item-text">Гласуване за снимки (Upvote/Downvote)</span>
             </li>
             <li class="roadmap-item">
                 <span class="material-icons-round status-icon">mark_email_read</span>
-                <span class="item-text">Обратна връзка за сигнала</span>
+                <span class="item-text">Обратна връзка за сигнала по имейл</span>
             </li>
             <li class="roadmap-item">
                 <span class="material-icons-round status-icon">stars</span>
                 <span class="item-text">П.Е.Д.А.Л. на седмицата</span>
             </li>
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">lock</span>
-                <span class="item-text">Тайна функция 🤫</span>
-            </li>
         </ul>
 
         <footer style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
-            &copy; 2026 P.E.D.A.L. Team. Всички права запазени.
+            &copy; 2026 П.Е.Д.А.Л.🤫 Team. Всички права запазени.
             <span style="margin: 0 10px;">|</span>
             <a href="privacy_policy.html" style="color: #666; text-decoration: none;">Политика за поверителност</a>
         </footer>

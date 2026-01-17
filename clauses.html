@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Правни Клаузи | P.E.D.A.L.</title>
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        body { overflow-y: auto; }
+        .doc-container {
+            max-width: 900px;
+            margin: 120px auto 60px;
+            padding: 50px;
+            background: #121212;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 { margin-bottom: 10px; font-size: 2.2rem; letter-spacing: -1px; }
+        .subtitle { color: var(--text-muted); margin-bottom: 40px; display: block; font-size: 1rem; font-family: var(--font-mono); }
+
+        h2 { margin-top: 40px; margin-bottom: 20px; color: white; font-size: 1.4rem; border-left: 4px solid var(--primary); padding-left: 15px; }
+        h3 { margin-top: 25px; margin-bottom: 10px; color: var(--text-main); font-size: 1.1rem; font-weight: 700; }
+        
+        p, li { color: #ccc; line-height: 1.7; margin-bottom: 15px; font-size: 1rem; }
+        ul { margin-left: 20px; margin-bottom: 20px; list-style-type: none; }
+        ul li { position: relative; padding-left: 25px; }
+        ul li::before {
+            content: '•';
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        .clause-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+        }
+
+        .clause-letter {
+            font-family: var(--font-mono);
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .data-table th, .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #ccc;
+        }
+        .data-table th {
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        .data-table tr:last-child td { border-bottom: none; }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .back-link:hover { color: var(--primary); transform: translateX(-5px); }
+
+        @media (max-width: 600px) {
+            .doc-container { padding: 25px; margin-top: 100px; }
+            h1 { font-size: 1.8rem; }
+            .data-table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow-top"></div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="app_icon.png" alt="P.E.D.A.L." class="logo-icon-img">
+                <span class="logo-text">P.E.D.A.L. 🤫</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="doc-container fade-in">
+        <a href="index.html" class="back-link">← Начало / Home</a>
+
+        <h1>Клаузи за обработка на данни</h1>
+        <span class="subtitle">Специфични условия съгласно Регламент (ЕС) 2016/679 (GDPR)</span>
+
+        <p>Този документ допълва Общите условия и Политиката за поверителност, като урежда конкретни хипотези при упражняване на правата на субектите на данни и предоставя детайлна прозрачност относно събираната информация.</p>
+
+        <h2>1. Процедурни клаузи при искания</h2>
+        <p>Следните клаузи се прилагат при обработка на искания от субекти на данни (например искания за достъп, изтриване или коригиране):</p>
+
+        <div class="clause-box">
+            <p><strong>Прекомерни искания</strong></p>
+            <p>Когато исканията на субект на данни са прекомерни, по-специално поради своята повторяемост, вносителят на данни (P.E.D.A.L.) може или да наложи разумна такса, основана на административните разходи за обработване на искането, или да откаже да предприеме действия по искането.</p>
+        </div>
+
+        <div class="clause-box">
+            <span class="clause-letter">е)</span>
+            <p style="display:inline;">Вносителят на данни може да откаже да изпълни искането на субект на данни, ако такъв отказ е допустим съгласно законодателството на държавата на получаване и представлява необходима и пропорционална мярка в едно демократично общество за гарантиране на целите по член 23, параграф 1 от Регламент (ЕС) 2016/679.</p>
+        </div>
+
+        <div class="clause-box">
+            <span class="clause-letter">ж)</span>
+            <p style="display:inline;">Ако вносителят на данни възнамерява да откаже да изпълни искането на субект на данни, той уведомява субекта на данни за причините за отказа и за възможността да подаде жалба до компетентния надзорен орган и/или да поиска съдебна защита.</p>
+        </div>
+
+        <h2>2. Прозрачност на данните (Data Transparency)</h2>
+        <p>В духа на пълна прозрачност, P.E.D.A.L. декларира следните категории данни, които се събират, и конкретните цели, за които те се използват:</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th width="30%">Категория Данни</th>
+                    <th width="70%">Детайли и Цел на използване</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Визуални данни (Снимки)</strong></td>
+                    <td>
+                        <ul>
+                            <li><strong>Какво:</strong> Снимки на превозни средства, извършващи нарушения.</li>
+                            <li><strong>Защо:</strong> Доказателствен материал за валидиране на сигнала. Необходимо условие за граждански контрол.</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Геолокация (GPS)</strong></td>
+                    <td>
+                        <ul>
+                            <li><strong>Какво:</strong> Точни координати (Latitude/Longitude) и адрес.</li>
+                            <li><strong>Защо:</strong> За автоматично определяне на юрисдикцията (районно управление/община) и визуализация на картата.</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Метаданни</strong></td>
+                    <td>
+                        <ul>
+                            <li><strong>Какво:</strong> IP адрес, модел на устройство, версия на ОС, дата и час на заснемане.</li>
+                            <li><strong>Защо:</strong> Техническа сигурност, предотвратяване на спам (фалшиви сигнали) и удостоверяване на автентичността на снимката.</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Потребителски данни</strong></td>
+                    <td>
+                        <ul>
+                            <li><strong>Какво:</strong> Имейл адрес, потребителско име, история на активност.</li>
+                            <li><strong>Защо:</strong> Управление на акаунта, обратна връзка за статуса на сигналите, геймификация (класации и постижения).</li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>За какво НЕ използваме данните ви:</h3>
+        <ul>
+            <li>Не продаваме лични данни на трети страни за маркетингови цели.</li>
+            <li>Не използваме снимките за лицево разпознаване на случайни минувачи (използва се автоматично замъгляване, където е възможно).</li>
+            <li>Не следим местоположението ви, когато приложението не се използва активно.</li>
+        </ul>
+
+        <footer style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
+            &copy; 2026 P.E.D.A.L. Team. Всички права запазени.
+        </footer>
+    </div>
+
+</body>
+</html>
