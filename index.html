@@ -54,29 +54,26 @@
     </script>
 
     <style>
-        /* Terminal Background Style */
         #terminal-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -5; /* Place behind bg-grid (-2) and glow (-1) */
+            z-index: -5;
             font-family: 'JetBrains Mono', 'Consolas', monospace;
             font-size: 13px;
             color: #00ff41;
-            opacity: 0.08; /* Very subtle opacity so it doesn't distract */
+            opacity: 0.08;
             padding: 20px;
             overflow: hidden;
             pointer-events: none;
             line-height: 1.5;
             white-space: pre-wrap;
-            /* Fade out at the bottom */
             mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
             -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
         }
         
-        /* Helper classes for the log lines */
         .t-err { color: #ff3b30; font-weight: bold; }
         .t-high { color: #ffc107; font-weight: bold; }
         .t-dim { color: #555; }
@@ -200,11 +197,9 @@
                 </div>
 
                 <h1>Твоят град.<br><span class="text-gradient">Ред за всички.</span></h1>
-<p>
-  „Разбираме натоварения трафик в града, но не толерираме системното неуважение към правилата. П.Е.Д.А.Л.🤫 се фокусира върху най-фрапантните нарушения: блокирани тротоари, унищожени зелени площи и препречени гаражи. Нашата платформа функционира в пълно съответствие с българското законодателство. Използвайте приложението, за да сигнализирате за нередности, да видите кои са най-натоварените райони и да се запознаете с официалните данни на МВР за пътната обстановка. Може да ни последвате и във
-  <a href="https://www.facebook.com/profile.php?id=61586174976109" target="_blank" rel="noopener noreferrer">Facebook</a>, там също качваме всичко.“
-</p>
-
+                <p>
+                    Паркирането в града е предизвикателство за всички – ние разбираме това. П.Е.Д.А.Л.🤫 не е създаден за дребни грешки, а като отговор срещу <strong>най-наглите нарушители</strong>. Тези, които системно блокират тротоари, зелени площи и гаражи. Ние спазваме българското законодателство и вярваме, че правилата трябва да важат за всеки.
+                </p>
                 
                 <div class="hero-actions">
                     <a href="#download" class="btn-primary-hero">Свали (скоро)</a>
@@ -282,6 +277,23 @@
                                         <div class="dash-card dark" onclick="openSecret()">
                                             <span class="material-icons-round icon-lg">lock</span>
                                             <span class="card-label">Тайна</span>
+                                        </div>
+
+                                        <div class="dash-card indigo" onclick="mockAction('Speed Cams')">
+                                            <span class="material-icons-round icon-lg">speed</span>
+                                            <span class="card-label">Камери</span>
+                                        </div>
+                                        <div class="dash-card pink" onclick="mockAction('Games')">
+                                            <span class="material-icons-round icon-lg">sports_esports</span>
+                                            <span class="card-label">Игри</span>
+                                        </div>
+                                        <div class="dash-card teal" onclick="mockAction('Air Quality')">
+                                            <span class="material-icons-round icon-lg">air</span>
+                                            <span class="card-label">Въздух</span>
+                                        </div>
+                                        <div class="dash-card gray" onclick="mockAction('Settings')">
+                                            <span class="material-icons-round icon-lg">settings</span>
+                                            <span class="card-label">Настройки</span>
                                         </div>
                                     </div>
 
@@ -472,7 +484,7 @@
                 <div class="feature-card">
                     <div class="f-icon amber"><span class="material-icons-round">cloud_upload</span></div>
                     <h3>2. Изпрати</h3>
-                    <p>Нашата система автоматично разпознава локацията.</p>
+                    <p>Нашата система автоматично разпознава номера и локацията.</p>
                 </div>
                 <div class="feature-card">
                     <div class="f-icon cyan"><span class="material-icons-round">public</span></div>

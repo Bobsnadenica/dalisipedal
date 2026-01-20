@@ -94,9 +94,30 @@ h1 { font-size: 3.5rem; line-height: 1.1; font-weight: 800; margin-bottom: 24px;
 .app-logo-text { font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; color: white; text-align: center; margin-top: -4px; padding-bottom: 4px; }
 
 .app-content { flex: 1; padding: 0 16px; overflow-y: auto; scrollbar-width: none; }
-.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; margin-top: 16px; }
-.dash-card { aspect-ratio: 1.3; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: 0.1s; border: 1px solid rgba(255,255,255,0.05); }
-.dash-card:active { transform: scale(0.92); filter: brightness(0.8); }
+
+/* --- UPDATED GRID TO 2 COLUMNS (6 ROWS) --- */
+.dash-grid { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); /* 2 Columns */
+    gap: 12px; 
+    margin-bottom: 20px; 
+    margin-top: 16px; 
+}
+
+.dash-card { 
+    aspect-ratio: 1.3; /* Rectangular shape for 2 cols */
+    border-radius: 16px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    position: relative; 
+    transition: 0.1s; 
+    border: 1px solid rgba(255,255,255,0.05); 
+    padding: 10px;
+}
+.dash-card:active { transform: scale(0.95); filter: brightness(0.8); }
 
 /* Card Colors */
 .dash-card.red { background: var(--accent-red); color: white; }
@@ -107,9 +128,13 @@ h1 { font-size: 3.5rem; line-height: 1.1; font-weight: 800; margin-bottom: 24px;
 .dash-card.orange { background: #FF9800; color: white; }
 .dash-card.cyan { background: #00BCD4; color: black; }
 .dash-card.dark { background: #1C1C1E; color: white; border-color: #333; }
+.dash-card.indigo { background: #5E5CE6; color: white; }
+.dash-card.pink { background: #FF2D55; color: white; }
+.dash-card.teal { background: #30B0C7; color: white; }
+.dash-card.gray { background: #8E8E93; color: white; }
 
 .icon-lg { font-size: 28px; margin-bottom: 6px; }
-.card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
 
 .widget-pod { background: #1C1C1E; border-radius: 16px; overflow: hidden; border: 1px solid #333; margin-bottom: 20px; cursor: pointer; transition: 0.2s; }
 .widget-pod:active { transform: scale(0.98); }
