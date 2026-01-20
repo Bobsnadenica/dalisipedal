@@ -1,15 +1,15 @@
-/* P.E.D.A.L. Interactive Demo Logic v3.0 */
+
 
 const DB = [
     { id: 1, img: "car1.jpeg", plate: "CB XXXX TM", status: "approved", date: "02.01.2026" },
     { id: 2, img: "car2.JPG", plate: "CO XXXX CX", status: "pending", date: "05.01.2026" },
     { id: 3, img: "car3.jpeg", plate: "CA XXXX HP", status: "approved", date: "28.12.2025" },
     { id: 4, img: "car4.jpeg", plate: "CB XXXX KA", status: "pending", date: "06.01.2026" },
-    { id: 5, img: "car5.jpeg", plate: "TX XXXX PB", status: "approved", date: "15.12.2025" }, // Pedal of Month
+    { id: 5, img: "car5.jpeg", plate: "TX XXXX PB", status: "approved", date: "15.12.2025" }, 
     { id: 6, img: "car6.JPG", plate: "PB XXXX MX", status: "pending", date: "06.01.2026" }
 ];
 
-// Global State
+
 let map = null;
 let userMarker = null;
 let signalsGenerated = false;
@@ -55,7 +55,7 @@ function getRandomEntry() {
     return DB[Math.floor(Math.random() * DB.length)];
 }
 
-// 1. Red Button (Shoot/Upload)
+
 function simulateUpload() {
     triggerFlash();
     setTimeout(() => {
@@ -68,7 +68,6 @@ function simulateUpload() {
     }, 200);
 }
 
-// 2. Yellow Button (My Signals)
 function openMySignals() {
     const container = document.getElementById('signal-list-container');
     container.innerHTML = ''; 
@@ -95,7 +94,7 @@ function openMySignals() {
     setView('mysignals');
 }
 
-// 3. Green Button (Map)
+
 function openMap() {
     showLoader(() => {
         setView('map');
@@ -158,7 +157,7 @@ function openMap() {
     });
 }
 
-// 4. Purple Button (Random)
+
 function openRandom() {
     showLoader(() => {
         const entry = getRandomEntry();
@@ -169,12 +168,12 @@ function openRandom() {
 
 function openPodMonth() {
     showLoader(() => {
-        // Specifically look for car5 (the G-Wagon or fancy car)
+
         const entry = DB.find(x => x.img.includes('car5')) || DB[4];
         
         if(entry) {
             renderViewer(entry);
-            // Add the special MONTHLY BADGE to the viewer
+
             const metaDiv = document.getElementById('viewer-meta');
             metaDiv.innerHTML = `
                 <div style="margin-top:12px; padding:10px; background:linear-gradient(45deg, #AF52DE, #5E5CE6); border-radius:12px; text-align:center;">
@@ -188,7 +187,7 @@ function openPodMonth() {
     });
 }
 
-// 5. Blue Button (Achievements) - NEW DESIGN
+
 function openAchievements() {
     const list = document.getElementById('ach-list');
     list.innerHTML = '';
@@ -229,7 +228,7 @@ function openAchievements() {
     setView('achievements');
 }
 
-// 6. Orange Button (Leaderboard) - NEW DESIGN
+
 function openLeaderboard() {
     const list = document.getElementById('lb-list');
     list.innerHTML = '';
@@ -264,7 +263,7 @@ function openLeaderboard() {
     setView('leaderboard');
 }
 
-// 7. Cyan Button (Stats)
+
 function openStats() {
     const container = document.getElementById('stats-content');
     const weekly = 1240;
@@ -296,12 +295,123 @@ function openStats() {
     setView('stats');
 }
 
-// 8. Dark Button (Secret)
+
 function openSecret() {
     secretPin = "";
     updatePinDots();
     setView('secret');
 }
+
+
+function openSpeedCams() {
+    const container = document.getElementById('cams-content');
+    container.innerHTML = '';
+    
+    const cams = [
+        { loc: 'Цариградско шосе (Орлов мост)', limit: 50 },
+        { loc: 'Бул. България (НДК)', limit: 50 },
+        { loc: 'Околовръстен път (Бояна)', limit: 80 },
+        { loc: 'АМ Тракия (Изход София)', limit: 140 }
+    ];
+
+    cams.forEach(cam => {
+        container.innerHTML += `
+            <div class="lb-card">
+                <div class="ach-icon-box" style="color:#5E5CE6; background:rgba(94, 92, 230, 0.1);">
+                    <span class="material-icons-round">speed</span>
+                </div>
+                <div class="lb-info">
+                    <div class="lb-name">${cam.loc}</div>
+                    <div class="lb-region">Камера за скорост</div>
+                </div>
+                <div class="lb-score" style="color:white">${cam.limit}</div>
+            </div>
+        `;
+    });
+    
+    setView('speedcams');
+}
+
+
+function openGames() {
+    const container = document.getElementById('games-content');
+    container.innerHTML = `
+        <div class="ach-card" style="margin-bottom:10px;">
+            <div class="ach-icon-box" style="color:#FF2D55; background:rgba(255, 45, 85, 0.1);">
+                <span class="material-icons-round">directions_car</span>
+            </div>
+            <div class="ach-text">
+                <h4>Паркирай Правилно</h4>
+                <p>Симулатор за паркиране. Научи се как се прави!</p>
+            </div>
+            <button class="btn-submit" style="width:auto; padding:5px 15px; font-size:0.8rem; margin:0;" onclick="alert('Стартиране на играта...')">ИГРАЙ</button>
+        </div>
+        
+        <div class="ach-card">
+            <div class="ach-icon-box" style="color:#FF2D55; background:rgba(255, 45, 85, 0.1);">
+                <span class="material-icons-round">quiz</span>
+            </div>
+            <div class="ach-text">
+                <h4>Листовки 2026</h4>
+                <p>Тест за познаване на ЗДвП. Провери знанията си.</p>
+            </div>
+            <button class="btn-submit" style="width:auto; padding:5px 15px; font-size:0.8rem; margin:0;" onclick="alert('Зареждане на въпроси...')">ИГРАЙ</button>
+        </div>
+    `;
+    setView('games');
+}
+
+
+function openAir() {
+
+    const aqi = Math.floor(Math.random() * (120 - 30) + 30);
+    let status = "Добър";
+    let color = "#34C759";
+    
+    if (aqi > 50) { status = "Умерен"; color = "#FFC107"; }
+    if (aqi > 100) { status = "Замърсен"; color = "#FF3B30"; }
+
+    const container = document.getElementById('air-content');
+    container.innerHTML = `
+        <div style="text-align:center; padding:40px 0;">
+            <div style="font-size:4rem; font-weight:800; color:${color}; margin-bottom:10px;">${aqi}</div>
+            <div style="font-size:1.5rem; font-weight:700; color:white;">${status}</div>
+            <div style="color:#888; font-size:0.9rem; margin-top:5px;">Индекс за качество на въздуха (AQI)</div>
+            <div style="margin-top:30px; background:#333; height:6px; border-radius:3px; position:relative; overflow:hidden;">
+                <div style="width:${(aqi/150)*100}%; background:${color}; height:100%;"></div>
+            </div>
+            <p style="margin-top:20px; font-size:0.8rem; color:#666;">Данните са от измервателни станции в София.</p>
+        </div>
+    `;
+    setView('air');
+}
+
+
+function openSettings() {
+    const container = document.getElementById('settings-content');
+    
+
+    const createToggle = (label, checked) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:#1C1C1E; border-radius:12px; margin-bottom:10px; border:1px solid #333;">
+            <span style="font-weight:600; font-size:0.9rem;">${label}</span>
+            <div style="width:40px; height:22px; background:${checked ? '#34C759' : '#333'}; border-radius:11px; position:relative; transition:0.2s;">
+                <div style="width:18px; height:18px; background:white; border-radius:50%; position:absolute; top:2px; left:${checked ? '20px' : '2px'}; transition:0.2s;"></div>
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = `
+        ${createToggle('Тъмна тема', true)}
+        ${createToggle('Известия', true)}
+        ${createToggle('GPS Локация', true)}
+        <div style="margin-top:20px; text-align:center;">
+            <button class="btn-submit" style="background:#FF3B30; color:white; border:none;" onclick="alert('Акаунтът е изтрит!')">ИЗТРИВАНЕ НА АКАУНТ</button>
+            <p style="font-size:0.7rem; color:#666; margin-top:10px;">Версия 2.6.4 (Build 2026)</p>
+        </div>
+    `;
+    setView('settings');
+}
+
 
 function pressKey(num) {
     if (secretPin.length < 4) {
@@ -353,7 +463,7 @@ function renderViewer(entry) {
     document.getElementById('viewer-img').src = entry.img;
     document.getElementById('viewer-plate').innerText = entry.plate;
     document.getElementById('viewer-date').innerText = entry.date;
-    // Clear any previous special meta tags (like Month badge)
+
     const extra = document.getElementById('viewer-meta');
     if (extra) extra.innerHTML = "";
 }

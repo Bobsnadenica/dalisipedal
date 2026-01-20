@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
     <title>П.Е.Д.А.Л.🤫 | Граждански контрол и пътна безопасност</title>
-    <meta name="description" content="П.Е.Д.А.Л.🤫 (Публичен Електронен Достъп за Анализ на Лоши шофьори) е мобилно приложение за подаване на сигнали за пътни нарушения в България. Снимай, изпрати, промени средата.">
-    <meta name="keywords" content="граждански контрол, пътни нарушения, неправилно паркиране, КАТ, сигнали, софия, българия, pedal app, педал приложение, трафик, пътна безопасност">
+    <meta name="description" content="П.Е.Д.А.Л.🤫 (Публичен Електронен Достъп за Анализ на Лоши шофьори) е мобилно приложение за подаване на сигнали за пътни нарушения в България.">
+    <meta name="keywords" content="граждански контрол, пътни нарушения, неправилно паркиране, КАТ, сигнали, софия, българия, pedal app">
     <meta name="author" content="П.Е.Д.А.Л.🤫 Team">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.dalisipedal.com/">
@@ -44,12 +44,7 @@
       "name": "П.Е.Д.А.Л.🤫",
       "operatingSystem": "Android, iOS",
       "applicationCategory": "UtilitiesApplication",
-      "description": "Мобилно приложение за граждански контрол и подаване на сигнали за пътни нарушения.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "BGN"
-      }
+      "description": "Мобилно приложение за граждански контрол и подаване на сигнали за пътни нарушения."
     }
     </script>
 
@@ -88,74 +83,21 @@
             display: inline-block;
             backdrop-filter: blur(5px);
         }
-        .def-abbr {
-            color: #ff4757;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-        .def-text {
-            color: #bdc3c7;
-            font-size: 0.9em;
-        }
+        .def-abbr { color: #ff4757; font-weight: 800; letter-spacing: 1px; }
+        .def-text { color: #bdc3c7; font-size: 0.9em; }
         
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-        }
-        .btn-outline {
-            background: transparent;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .btn-outline:hover {
-            border-color: white;
-            background: rgba(255, 255, 255, 0.05);
-        }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+        .btn-outline { background: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 14px 24px; border-radius: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .btn-outline:hover { border-color: white; background: rgba(255, 255, 255, 0.05); }
         
-        .nav-support {
-            color: #FF3B30 !important;
-            font-weight: 800;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: transform 0.2s;
-        }
-        .nav-support:hover {
-            transform: scale(1.05);
-            text-shadow: 0 0 10px rgba(255, 59, 48, 0.4);
-        }
-
-        .nav-fb {
-            color: #1877F2;
-            font-weight: 700;
-            margin-right: 8px;
-            display: inline-flex;
-            align-items: center;
-            text-decoration: none;
-            transition: color 0.2s, text-shadow 0.2s;
-        }
-        .nav-fb:hover {
-            color: #4e9af1;
-            text-shadow: 0 0 10px rgba(24, 119, 242, 0.6);
-        }
+        .nav-support { color: #FF3B30 !important; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; transition: transform 0.2s; }
+        .nav-support:hover { transform: scale(1.05); text-shadow: 0 0 10px rgba(255, 59, 48, 0.4); }
+        .nav-fb { color: #1877F2; font-weight: 700; margin-right: 8px; display: inline-flex; align-items: center; text-decoration: none; transition: color 0.2s; }
+        .nav-fb:hover { color: #4e9af1; }
 
         @media (max-width: 600px) {
-            .system-definition {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 4px;
-            }
-            .hero-actions {
-                justify-content: center;
-            }
+            .system-definition { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+            .hero-actions { justify-content: center; }
         }
     </style>
 </head>
@@ -278,20 +220,20 @@
                                             <span class="material-icons-round icon-lg">lock</span>
                                             <span class="card-label">Тайна</span>
                                         </div>
-
-                                        <div class="dash-card indigo" onclick="mockAction('Speed Cams')">
+                                        
+                                        <div class="dash-card indigo" onclick="openSpeedCams()">
                                             <span class="material-icons-round icon-lg">speed</span>
                                             <span class="card-label">Камери</span>
                                         </div>
-                                        <div class="dash-card pink" onclick="mockAction('Games')">
+                                        <div class="dash-card pink" onclick="openGames()">
                                             <span class="material-icons-round icon-lg">sports_esports</span>
                                             <span class="card-label">Игри</span>
                                         </div>
-                                        <div class="dash-card teal" onclick="mockAction('Air Quality')">
+                                        <div class="dash-card teal" onclick="openAir()">
                                             <span class="material-icons-round icon-lg">air</span>
                                             <span class="card-label">Въздух</span>
                                         </div>
-                                        <div class="dash-card gray" onclick="mockAction('Settings')">
+                                        <div class="dash-card gray" onclick="openSettings()">
                                             <span class="material-icons-round icon-lg">settings</span>
                                             <span class="card-label">Настройки</span>
                                         </div>
@@ -326,133 +268,40 @@
                                 </div>
                             </div>
 
-                            <div class="app-view" id="view-mysignals">
-                                <div class="view-nav">
-                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
-                                    <span class="view-title">Моите сигнали</span>
-                                </div>
+                            <div class="app-view" id="view-mysignals"><div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Моите сигнали</span></div><div class="app-content"><div class="signal-list" id="signal-list-container"></div></div></div>
+                            <div class="app-view" id="view-map"><div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Карта</span></div><div class="map-container" id="map-container"></div></div>
+                            <div class="app-view" id="view-achievements"><div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Постижения</span></div><div class="app-content"><div class="ach-grid" id="ach-list"></div></div></div>
+                            <div class="app-view" id="view-leaderboard"><div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Топ Граждани</span></div><div class="app-content"><div class="lb-list" id="lb-list"></div></div></div>
+                            <div class="app-view" id="view-stats"><div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Статистика за ПТП</span></div><div class="app-content" id="stats-content"></div></div>
+                            <div class="app-view" id="view-secret"><div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Строго Секретно</span></div><div class="app-content secret-wrapper"><div class="secret-lock-icon"><span class="material-icons-round">gpp_bad</span></div><h3>Достъп забранен</h3><p>Въведете ПИН код.</p><div class="secret-pin-dots"><span></span><span></span><span></span><span></span></div><div class="keypad"><div class="key" onclick="pressKey(1)">1</div><div class="key" onclick="pressKey(2)">2</div><div class="key" onclick="pressKey(3)">3</div><div class="key" onclick="pressKey(4)">4</div><div class="key" onclick="pressKey(5)">5</div><div class="key" onclick="pressKey(6)">6</div><div class="key" onclick="pressKey(7)">7</div><div class="key" onclick="pressKey(8)">8</div><div class="key" onclick="pressKey(9)">9</div><div class="key" style="opacity:0"></div><div class="key" onclick="pressKey(0)">0</div><div class="key" onclick="clearKey()"><span class="material-icons-round">backspace</span></div></div></div></div>
+                            <div class="app-view" id="view-report"><div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Нов Сигнал</span></div><div class="report-preview"><img id="selected-img-preview" src="" alt="Preview"></div><div class="report-form"><div class="form-group"><label>Регистрационен номер</label><input type="text" id="plate-input" value=""></div><div class="form-group"><label>Локация</label><div class="fake-input">📍 София, България</div></div><button class="btn-submit" onclick="submitReport()">ИЗПРАТИ СИГНАЛ</button></div></div>
+                            <div class="app-view" id="view-viewer"><div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Преглед</span></div><div class="report-preview large"><img id="viewer-img" src="" alt="Preview"></div><div class="report-form"><div class="viewer-meta"><h3 id="viewer-plate">CB 1234 AB</h3><p>Докладвано на: <span id="viewer-date"></span></p><div id="viewer-meta"></div></div><div class="viewer-stats"><div class="stat-box"><span class="material-icons-round">visibility</span><span>1.2k</span></div><div class="stat-box"><span class="material-icons-round">thumb_up</span><span>45</span></div><div class="stat-box"><span class="material-icons-round">gavel</span><span>Act</span></div></div></div></div>
+                            
+                            <div class="app-view" id="view-speedcams">
+                                <div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Камери</span></div>
                                 <div class="app-content">
-                                    <div class="signal-list" id="signal-list-container"></div>
+                                    <div id="cams-content" class="lb-list"></div>
                                 </div>
                             </div>
-
-                            <div class="app-view" id="view-map">
-                                <div class="view-nav">
-                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
-                                    <span class="view-title">Карта</span>
-                                </div>
-                                <div class="map-container" id="map-container"></div>
-                            </div>
-
-                            <div class="app-view" id="view-achievements">
-                                <div class="view-nav">
-                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
-                                    <span class="view-title">Постижения</span>
-                                </div>
+                            
+                            <div class="app-view" id="view-games">
+                                <div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Игри</span></div>
                                 <div class="app-content">
-                                    <div class="ach-grid" id="ach-list"></div>
+                                    <div id="games-content" class="ach-list"></div>
                                 </div>
                             </div>
-
-                            <div class="app-view" id="view-leaderboard">
-                                <div class="view-nav">
-                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
-                                    <span class="view-title">Топ Граждани</span>
-                                </div>
+                            
+                            <div class="app-view" id="view-air">
+                                <div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Качество на въздуха</span></div>
                                 <div class="app-content">
-                                    <div class="lb-list" id="lb-list"></div>
+                                    <div id="air-content"></div>
                                 </div>
                             </div>
-
-                            <div class="app-view" id="view-stats">
-                                <div class="view-nav">
-                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
-                                    <span class="view-title">Статистика за ПТП</span>
-                                </div>
-                                <div class="app-content" id="stats-content"></div>
-                            </div>
-
-                            <div class="app-view" id="view-secret">
-                                <div class="view-nav">
-                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
-                                    <span class="view-title">Строго Секретно</span>
-                                </div>
-                                <div class="app-content secret-wrapper">
-                                    <div class="secret-lock-icon">
-                                        <span class="material-icons-round">gpp_bad</span>
-                                    </div>
-                                    <h3>Достъп забранен</h3>
-                                    <p>Въведете ПИН код за достъп до административния панел.</p>
-                                    <div class="secret-pin-dots">
-                                        <span></span><span></span><span></span><span></span>
-                                    </div>
-                                    <div class="keypad">
-                                        <div class="key" onclick="pressKey(1)">1</div>
-                                        <div class="key" onclick="pressKey(2)">2</div>
-                                        <div class="key" onclick="pressKey(3)">3</div>
-                                        <div class="key" onclick="pressKey(4)">4</div>
-                                        <div class="key" onclick="pressKey(5)">5</div>
-                                        <div class="key" onclick="pressKey(6)">6</div>
-                                        <div class="key" onclick="pressKey(7)">7</div>
-                                        <div class="key" onclick="pressKey(8)">8</div>
-                                        <div class="key" onclick="pressKey(9)">9</div>
-                                        <div class="key" style="opacity:0"></div>
-                                        <div class="key" onclick="pressKey(0)">0</div>
-                                        <div class="key" onclick="clearKey()"><span class="material-icons-round">backspace</span></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="app-view" id="view-report">
-                                <div class="view-nav">
-                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
-                                    <span class="view-title">Нов Сигнал</span>
-                                </div>
-                                <div class="report-preview">
-                                    <img id="selected-img-preview" src="" alt="Preview">
-                                </div>
-                                <div class="report-form">
-                                    <div class="form-group">
-                                        <label>Регистрационен номер</label>
-                                        <input type="text" id="plate-input" value="">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Локация</label>
-                                        <div class="fake-input">📍 София, България</div>
-                                    </div>
-                                    <button class="btn-submit" onclick="submitReport()">
-                                        ИЗПРАТИ СИГНАЛ
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="app-view" id="view-viewer">
-                                <div class="view-nav">
-                                    <span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span>
-                                    <span class="view-title">Преглед</span>
-                                </div>
-                                <div class="report-preview large">
-                                    <img id="viewer-img" src="" alt="Preview">
-                                </div>
-                                <div class="report-form">
-                                    <div class="viewer-meta">
-                                        <h3 id="viewer-plate">CB 1234 AB</h3>
-                                        <p>Докладвано на: <span id="viewer-date"></span></p>
-                                    </div>
-                                    <div class="viewer-stats">
-                                        <div class="stat-box">
-                                            <span class="material-icons-round">visibility</span>
-                                            <span>1.2k</span>
-                                        </div>
-                                        <div class="stat-box">
-                                            <span class="material-icons-round">thumb_up</span>
-                                            <span>45</span>
-                                        </div>
-                                        <div class="stat-box">
-                                            <span class="material-icons-round">gavel</span>
-                                            <span>Act</span>
-                                        </div>
-                                    </div>
+                            
+                            <div class="app-view" id="view-settings">
+                                <div class="view-nav"><span class="material-icons-round back-btn" onclick="goBack('dashboard')">arrow_back</span><span class="view-title">Настройки</span></div>
+                                <div class="app-content">
+                                    <div id="settings-content"></div>
                                 </div>
                             </div>
 
@@ -484,7 +333,7 @@
                 <div class="feature-card">
                     <div class="f-icon amber"><span class="material-icons-round">cloud_upload</span></div>
                     <h3>2. Изпрати</h3>
-                    <p>Нашата система автоматично разпознава номера и локацията.</p>
+                    <p>Нашата система автоматично разпознава локацията.</p>
                 </div>
                 <div class="feature-card">
                     <div class="f-icon cyan"><span class="material-icons-round">public</span></div>
@@ -523,7 +372,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const term = document.getElementById('terminal-bg');
-            // Check if mock generator is loaded
             if (!term || typeof Generator === 'undefined') {
                 console.warn('Background generator not loaded.');
                 return;
@@ -534,46 +382,34 @@
 
             function addLine(html) {
                 const time = new Date().toLocaleTimeString('bg-BG');
-                // Prepend time to the HTML string
                 const line = `<span class="t-dim">[${time}]</span> ${html}`;
-                
                 lines.push(line);
                 if (lines.length > MAX_LINES) lines.shift();
                 term.innerHTML = lines.join('\n');
             }
 
-            // Init Message
             addLine("П.Е.Д.А.Л.🤫 SYSTEM CORE [ONLINE]");
             addLine("Server: aws-bg-sofia-01");
 
-            // Loop
             setInterval(() => {
                 const type = Math.random();
-                
                 if (type > 0.4) {
-                    // Simulate Scan
                     const data = Generator.generateScanResult();
                     const confidence = Math.round(data.confidence * 100);
-                    
                     let statusHtml = `<span class="t-dim">OK</span>`;
                     let plateHtml = `<span class="t-high">${data.plate}</span>`;
-
                     if (parseFloat(data.confidence) > 0.85) {
                         statusHtml = `<span class="t-err">${data.violation}</span>`;
                     }
-
                     addLine(`SCAN: ${plateHtml} | ${data.model} | ${statusHtml} (${confidence}%)`);
                 } else {
-                    // Simulate Log
                     const log = Generator.generateLog();
                     let logHtml = log;
-                    // Simple colorizing based on status codes in text
                     if (log.includes(" 200 ")) logHtml = `<span style="color:#34C759">${log}</span>`;
                     if (log.includes(" 404 ") || log.includes(" 500 ")) logHtml = `<span class="t-err">${log}</span>`;
-                    
                     addLine(`NET: ${logHtml}`);
                 }
-            }, 1800); // 1.8s delay
+            }, 1800);
         });
     </script>
 </body>
