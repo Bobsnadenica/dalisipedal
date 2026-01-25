@@ -26,22 +26,20 @@
 
         h2 { margin-top: 40px; margin-bottom: 20px; color: white; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
         
-        /* Known Bugs Section */
         .bug-box {
-            background: rgba(255, 59, 48, 0.05);
-            border: 1px dashed rgba(255, 59, 48, 0.3);
+            background: rgba(52, 199, 89, 0.05);
+            border: 1px dashed rgba(52, 199, 89, 0.3);
             padding: 30px;
             border-radius: 16px;
             color: var(--text-muted);
             font-family: var(--font-mono);
             font-size: 0.9rem;
         }
-        .bug-icon { font-size: 40px; color: var(--accent-red); margin-bottom: 15px; display: block; text-align: center; }
+        .bug-icon { font-size: 40px; color: #34C759; margin-bottom: 15px; display: block; text-align: center; }
         .bug-list { list-style: none; padding: 0; }
-        .bug-list li { margin-bottom: 10px; padding-left: 24px; position: relative; }
-        .bug-list li::before { content: '!'; position: absolute; left: 0; color: var(--accent-red); font-weight: bold; }
+        .bug-list li { margin-bottom: 10px; padding-left: 24px; position: relative; text-decoration: line-through; color: #666; }
+        .bug-list li::before { content: 'check'; font-family: 'Material Icons Round'; position: absolute; left: 0; color: #34C759; font-weight: bold; font-size: 16px; }
 
-        /* Roadmap List */
         .roadmap-list {
             list-style: none;
             display: flex;
@@ -72,7 +70,6 @@
             flex: 1;
         }
         
-        /* Status Styles */
         .completed .status-icon { color: #34C759; }
         .completed .item-text { text-decoration: line-through; color: #666; }
         
@@ -128,11 +125,11 @@
         <span class="subtitle">План за развитие на проекта.</span>
 
         <h2>
-            <span class="material-icons-round" style="color: var(--accent-red);">bug_report</span>
-            Известни проблеми
+            <span class="material-icons-round" style="color: #34C759;">task_alt</span>
+            Изчистени проблеми
         </h2>
         <div class="bug-box">
-            <span class="material-icons-round bug-icon">pest_control</span>
+            <span class="material-icons-round bug-icon">verified</span>
             <ul class="bug-list">
                 <li><strong>Achievements:</strong> Бутонът "Виж наградата" е изрязан/скрит в някои резолюции.</li>
                 <li><strong>Моите сигнали:</strong> Историята се пази само локално на устройството, а не се синхронизира с профила (облака).</li>
@@ -158,6 +155,10 @@
                 <span class="material-icons-round status-icon">check_circle</span>
                 <span class="item-text">Разширена статистика</span>
             </li>
+            <li class="roadmap-item completed">
+                <span class="material-icons-round status-icon">check_circle</span>
+                <span class="item-text">Още малки игрички (Gamification)</span>
+            </li>
 
             <li class="roadmap-item progress">
                 <span class="material-icons-round status-icon">hourglass_bottom</span>
@@ -171,10 +172,6 @@
             <li class="roadmap-item">
                 <span class="material-icons-round status-icon">tune</span>
                 <span class="item-text">Оптимизация на лимити (чат, качване, търсене)</span>
-            </li>
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">sports_esports</span>
-                <span class="item-text">Още малки игрички (Gamification)</span>
             </li>
             <li class="roadmap-item">
                 <span class="material-icons-round status-icon">leaderboard</span>
