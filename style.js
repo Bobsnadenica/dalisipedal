@@ -1,12 +1,12 @@
 
 
 const DB = [
-    { id: 1, img: "car1.jpeg", plate: "CB XXXX TM", status: "approved", date: "02.01.2026" },
-    { id: 2, img: "car2.JPG", plate: "CO XXXX CX", status: "pending", date: "05.01.2026" },
-    { id: 3, img: "car3.jpeg", plate: "CA XXXX HP", status: "approved", date: "28.12.2025" },
-    { id: 4, img: "car4.jpeg", plate: "CB XXXX KA", status: "pending", date: "06.01.2026" },
-    { id: 5, img: "car5.jpeg", plate: "TX XXXX PB", status: "approved", date: "15.12.2025" }, 
-    { id: 6, img: "car6.JPG", plate: "PB XXXX MX", status: "pending", date: "06.01.2026" }
+    { id: 1, img: "car1.jpeg", plate: "CB XXXX XX", status: "approved", date: "02.01.2026" },
+    { id: 2, img: "car2.JPG", plate: "CO XXXX XX", status: "pending", date: "05.01.2026" },
+    { id: 3, img: "car3.jpeg", plate: "CA XXXX XX", status: "approved", date: "28.12.2025" },
+    { id: 4, img: "car4.jpeg", plate: "CB XXXX XX", status: "pending", date: "06.01.2026" },
+    { id: 5, img: "car5.jpeg", plate: "E XXXX XX", status: "approved", date: "15.12.2025" }, 
+    { id: 6, img: "car6.JPG", plate: "PB XXXX XX", status: "pending", date: "06.01.2026" }
 ];
 
 
