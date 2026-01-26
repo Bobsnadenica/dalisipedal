@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>P.E.D.A.L. | Privacy Run</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+        :root {
+            --primary: #39ff14; /* Green */
+            --accent: #ff00ff;  /* Pink */
+            --bg: #1a1a1a;
+            --text: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            touch-action: none; /* CRITICAL: Prevents scroll on mobile */
+            -webkit-user-select: none; /* Disable text selection */
+            user-select: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- UI LAYERS --- */
+        .ui-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.88);
+            z-index: 20;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- SCORE --- */
+        #score-board {
+            position: absolute;
+            top: 40px; left: 20px;
+            font-size: 20px;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            z-index: 10;
+            pointer-events: none;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* --- MODALS --- */
+        .modal {
+            background: #ffffff;
+            color: #222;
+            padding: 30px 25px;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            text-align: left;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .modal h2 {
+            color: #d600d6;
+            font-size: 24px;
+            font-weight: 900;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .modal p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 10px 0;
+            color: #444;
+        }
+
+        /* SLANG BOX */
+        .slang-box {
+            background: #f4f4f5;
+            border-left: 6px solid #FFD700;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .slang-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 900;
+            color: #888;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .slang-text {
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* BUTTONS */
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 18px 0;
+            font-size: 16px;
+            font-weight: 800;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            border-radius: 12px;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 0 #1e40af;
+            transition: transform 0.1s;
+            touch-action: manipulation;
+        }
+
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+        
+        .btn-start { background: var(--primary); color: black; box-shadow: 0 4px 0 #2db30e; }
+        .btn-retry { background: #dc2626; box-shadow: 0 4px 0 #991b1b; }
+
+        /* START SCREEN */
+        .hero-title {
+            font-size: clamp(32px, 8vw, 56px); /* Responsive Font */
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: var(--primary);
+            text-shadow: 0 4px 20px rgba(57, 255, 20, 0.4);
+            line-height: 1.1;
+            text-align: center;
+        }
+
+        .hero-desc {
+            font-size: 16px;
+            color: #ccc;
+            text-align: center;
+            max-width: 400px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Tap Hint */
+        .tap-hint {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+            pointer-events: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse { 0% {opacity:0.3} 50% {opacity:0.8} 100% {opacity:0.3} }
+
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+    
+    <div id="score-board">🛡️ 0 / 8</div>
+    <div class="tap-hint" id="tap-hint" style="display:none;">TAP TO FLY</div>
+
+    <div id="start-screen" class="ui-layer">
+        <h1 class="hero-title">ПОВЕРИТЕЛНОСТ<br>НА ПЧЕЛИТЕ 🐝</h1>
+        <p class="hero-desc">
+            Никой не чете Общите условия. Затова ги направихме на игра.<br><br>
+            Избягвай 🦅 Орлите.<br>
+            Събирай 🛡️ Щитовете, за да научиш правата си.
+        </p>
+        <button class="btn btn-start" id="start-btn" style="max-width:300px;">ЗАПОЧНИ ИГРАТА</button>
+    </div>
+
+    <div id="policy-modal" class="ui-layer hidden">
+        <div class="modal">
+            <h2 id="modal-title">...</h2>
+            <p id="modal-content">...</p>
+            <div class="slang-box">
+                <span class="slang-label">Brain Rot Превод:</span>
+                <span class="slang-text" id="modal-slang">...</span>
+            </div>
+            <button class="btn" id="resume-btn">РАЗБРАХ 👌</button>
+        </div>
+    </div>
+
+    <div id="game-over-modal" class="ui-layer hidden">
+        <div class="modal" style="text-align: center;">
+            <h2 style="color: #ef4444;">GAME OVER</h2>
+            <p>Ти научи <strong id="learned-count" style="color:#222; font-size: 20px;">0</strong> от 8 правила.</p>
+            <div style="height:20px;"></div>
+            <button class="btn btn-retry" id="retry-btn">ОПИТАЙ ОТНОВО 🔄</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- CONFIG ---
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    // --- RESPONSIVE RESIZE ---
+    function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // --- GAME STATE ---
+    let state = 'START'; // START, PLAYING, PAUSED, GAMEOVER
+    let frames = 0;
+    let score = 0;
+    let gameSpeed = 5; // Base speed
+    let policyIndex = 0;
+
+    // --- CONTENT DATA (Source: privacy_policy.html) ---
+    const policies = [
+        {
+            title: "КОЙ Е ШЕФЪТ? (АДМИНИСТРАТОР)",
+            text: "P.E.D.A.L. е администратор на лични данни. Ние носим отговорност и водим регистър на дейностите.",
+            slang: "Ние сме Main Character-а. Ако има драма, пиши ни DM."
+        },
+        {
+            title: "ЗАЩО СЪБИРАМЕ ДАННИ? (ПРАВНО ОСНОВАНИЕ)",
+            text: "Обработваме данните на база 'Легитимен интерес' (за граждански контрол) и 'Съгласие' (за достъп до камера/GPS).",
+            slang: "Не е рандом. Имаме Legit Interest да оправим трафика. Ти даваш Consent за камерата."
+        },
+        {
+            title: "КАКВО ВЗИМАМЕ?",
+            text: "Снимки на нарушения, точна GPS локация и технически данни (IP адрес, модел телефон).",
+            slang: "Снимки + Координати. Тва е лута (Loot), който ни трябва за мапа."
+        },
+        {
+            title: "КОЛКО ДЪЛГО ГИ ПАЗИМ?",
+            text: "Данните НЕ се пазят вечно. Изтриват се автоматично след приключване на сигнала.",
+            slang: "Не сме вечни. Като свършим работа, данните се йийтват (Yeet) в кошчето."
+        },
+        {
+            title: "СИГУРНОСТ (SSL)",
+            text: "Данните са криптирани при предаване. Сървърите са в Европа.",
+            slang: "Секюритито е топ. Форт Нокс. Данните не лийкват."
+        },
+        {
+            title: "ИЗТРИВАНЕ (RIGHT TO BE FORGOTTEN)",
+            text: "Можеш да изтриеш акаунта си от Настройки. Всичко изчезва веднага.",
+            slang: "Можеш да ни гоустнеш (Ghost) когато искаш. Натискаш бутона и забравяме, че съществуваш."
+        },
+        {
+            title: "БИСКВИТКИ",
+            text: "Ползваме само задължителни бисквитки за работата на приложението. Без реклами.",
+            slang: "Бисквитките са диетични. Без криндж реклами."
+        },
+        {
+            title: "ТВОИТЕ ПРАВА",
+            text: "Можеш да подадеш жалба в КЗЛД ако смяташ, че правата ти са нарушени.",
+            slang: "Ако нещо не е вайб, снични ни на Федералните (КЗЛД)."
+        }
+    ];
+
+    // --- ENTITIES ---
+    const bee = {
+        x: 50, y: 0, r: 24, vy: 0, gravity: 0.6, lift: -9,
+        reset: function() { this.y = height/2; this.vy = 0; }
+    };
+
+    let enemies = [];
+    let items = [];
+    let particles = [];
+
+    class Enemy {
+        constructor() {
+            this.x = width;
+            this.y = Math.random() * (height - 100) + 50;
+            this.size = 40;
+            this.speed = gameSpeed + Math.random() * 2;
+        }
+        update() { this.x -= this.speed; }
+        draw() { ctx.font = "40px Arial"; ctx.fillText("🦅", this.x, this.y); }
+    }
+
+    class Item {
+        constructor() {
+            this.x = width;
+            this.y = Math.random() * (height - 100) + 50;
+        }
+        update() { this.x -= gameSpeed; }
+        draw() { 
+            // Pulse effect
+            const scale = 1 + Math.sin(frames * 0.1) * 0.1;
+            ctx.font = `${40 * scale}px Arial`; 
+            ctx.fillText("🛡️", this.x, this.y); 
+        }
+    }
+
+    class Particle {
+        constructor(x, y, color) {
+            this.x = x; this.y = y; this.color = color;
+            this.vx = (Math.random() - 0.5) * 10;
+            this.vy = (Math.random() - 0.5) * 10;
+            this.life = 1.0;
+        }
+        update() { this.x += this.vx; this.y += this.vy; this.life -= 0.05; }
+        draw() {
+            ctx.globalAlpha = this.life;
+            ctx.fillStyle = this.color;
+            ctx.beginPath(); ctx.arc(this.x, this.y, 4, 0, Math.PI*2); ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+    }
+
+    // --- INPUT HANDLING (Mobile Optimized) ---
+    function jump() {
+        if (state === 'PLAYING') {
+            bee.vy = bee.lift;
+        }
+    }
+
+    window.addEventListener('touchstart', (e) => {
+        if (e.target.tagName !== 'BUTTON') { 
+            e.preventDefault(); 
+            jump(); 
+        }
+    }, {passive: false});
+
+    window.addEventListener('mousedown', (e) => {
+        if (e.target.tagName !== 'BUTTON') jump();
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') jump();
+    });
+
+    // --- UI CONTROLLERS ---
+    document.getElementById('start-btn').onclick = startGame;
+    document.getElementById('retry-btn').onclick = resetGame;
+    document.getElementById('resume-btn').onclick = resumeGame;
+
+    function startGame() {
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('tap-hint').style.display = 'block';
+        resetGame();
+    }
+
+    function resetGame() {
+        state = 'PLAYING';
+        bee.reset();
+        enemies = [];
+        items = [];
+        score = 0;
+        policyIndex = 0;
+        gameSpeed = window.innerWidth < 600 ? 4 : 6; // Slower on mobile
+        updateHUD();
+        
+        // Hide Modals
+        document.getElementById('game-over-modal').classList.add('hidden');
+        document.getElementById('policy-modal').classList.add('hidden');
+        
+        requestAnimationFrame(loop);
+    }
+
+    function pauseGameForPolicy() {
+        state = 'PAUSED';
+        const p = policies[policyIndex];
+        
+        document.getElementById('modal-title').innerText = p.title;
+        document.getElementById('modal-content').innerText = p.text;
+        document.getElementById('modal-slang').innerText = p.slang;
+        
+        document.getElementById('policy-modal').classList.remove('hidden');
+        policyIndex++;
+    }
+
+    function resumeGame() {
+        document.getElementById('policy-modal').classList.add('hidden');
+        
+        // Clear immediate threats so player doesn't die instantly
+        enemies = enemies.filter(e => e.x > 200);
+        
+        state = 'PLAYING';
+        requestAnimationFrame(loop);
+    }
+
+    function gameOver() {
+        state = 'GAMEOVER';
+        document.getElementById('learned-count').innerText = score;
+        document.getElementById('game-over-modal').classList.remove('hidden');
+    }
+
+    function updateHUD() {
+        document.getElementById('score-board').innerText = `🛡️ ${score} / ${policies.length}`;
+    }
+
+    function spawnExplosion(x, y, color) {
+        for(let i=0; i<10; i++) particles.push(new Particle(x, y, color));
+    }
+
+    // --- MAIN LOOP ---
+    function loop() {
+        if (state !== 'PLAYING') return;
+
+        // Clear Screen
+        ctx.fillStyle = '#1e293b'; // Fallback
+        ctx.clearRect(0, 0, width, height);
+
+        frames++;
+
+        // Draw Background Stars
+        ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+        if(frames % 10 === 0) {
+            let sx = Math.random() * width;
+            let sy = Math.random() * height;
+            ctx.fillRect(sx, sy, 2, 2);
+        }
+
+        // --- BEE ---
+        bee.vy += bee.gravity;
+        bee.y += bee.vy;
+
+        // Floor/Ceiling Check
+        if (bee.y + bee.r >= height) { bee.y = height - bee.r; gameOver(); }
+        if (bee.y - bee.r <= 0) { bee.y = bee.r; bee.vy = 0; }
+
+        // Draw Bee
+        ctx.font = "40px Arial";
+        ctx.fillText("🐝", bee.x - 20, bee.y + 12);
+
+        // --- SPAWNERS ---
+        // Spawn Enemy every ~2 seconds
+        let enemyRate = Math.max(60, 100 - (score * 5)); 
+        if (frames % enemyRate === 0) enemies.push(new Enemy());
+
+        // Spawn Shield every ~3 seconds
+        if (frames % 180 === 0) items.push(new Item());
+
+        // --- LOGIC ---
+        // Update Enemies
+        for (let i = enemies.length - 1; i >= 0; i--) {
+            let e = enemies[i];
+            e.update();
+            e.draw();
+
+            // Collision (Simple Circle)
+            let dx = bee.x - e.x;
+            let dy = bee.y - e.y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+
+            if (dist < 40) {
+                spawnExplosion(bee.x, bee.y, '#ef4444');
+                gameOver();
+            }
+
+            if (e.x < -50) enemies.splice(i, 1);
+        }
+
+        // Update Items
+        for (let i = items.length - 1; i >= 0; i--) {
+            let item = items[i];
+            item.update();
+            item.draw();
+
+            let dx = bee.x - item.x;
+            let dy = bee.y - item.y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+
+            if (dist < 50) {
+                // COLLECTED!
+                score++;
+                updateHUD();
+                spawnExplosion(item.x, item.y, '#39ff14');
+                items.splice(i, 1);
+
+                // Show Policy if available
+                if (policyIndex < policies.length) {
+                    pauseGameForPolicy();
+                } else if (score === policies.length) {
+                    // Win Condition (optional, just keep running for high score)
+                    // You could add a 'You Win' modal here
+                }
+            } else if (item.x < -50) {
+                items.splice(i, 1);
+            }
+        }
+
+        // Particles
+        for (let i = particles.length - 1; i >= 0; i--) {
+            particles[i].update();
+            particles[i].draw();
+            if (particles[i].life <= 0) particles.splice(i, 1);
+        }
+
+        requestAnimationFrame(loop);
+    }
+</script>
+</body>
+</html>
