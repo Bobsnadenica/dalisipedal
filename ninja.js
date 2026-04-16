@@ -252,8 +252,6 @@ function renderViewerItem() {
     const stageEl = document.getElementById('ninja-viewer-stage');
     const countEl = document.getElementById('ninja-viewer-count');
     const dateEl = document.getElementById('ninja-viewer-date');
-    const prevBtn = document.getElementById('ninja-viewer-prev');
-    const nextBtn = document.getElementById('ninja-viewer-next');
 
     if (!item || !stageEl || !countEl || !dateEl) {
         return;
@@ -269,14 +267,6 @@ function renderViewerItem() {
 
     countEl.textContent = `${ninjaState.currentIndex + 1} / ${ninjaState.items.length}`;
     dateEl.textContent = formatDate(item.lastModified);
-
-    if (prevBtn) {
-        prevBtn.disabled = ninjaState.currentIndex === 0;
-    }
-
-    if (nextBtn) {
-        nextBtn.disabled = ninjaState.currentIndex >= ninjaState.items.length - 1;
-    }
 }
 
 function openViewer(index) {
@@ -305,16 +295,12 @@ function moveViewer(step) {
 function bindViewerEvents() {
     const viewerEl = document.getElementById('ninja-viewer');
     const closeBtn = document.getElementById('ninja-viewer-close');
-    const prevBtn = document.getElementById('ninja-viewer-prev');
-    const nextBtn = document.getElementById('ninja-viewer-next');
 
     if (!viewerEl) {
         return;
     }
 
     closeBtn?.addEventListener('click', closeViewer);
-    prevBtn?.addEventListener('click', () => moveViewer(-1));
-    nextBtn?.addEventListener('click', () => moveViewer(1));
 
     viewerEl.addEventListener('click', event => {
         if (event.target === viewerEl) {

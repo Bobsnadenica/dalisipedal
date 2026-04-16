@@ -37,6 +37,20 @@ body { background: var(--bg); color: var(--text-main); font-family: var(--font-m
     font-weight: 700;
 }
 
+.nav-social {
+    width: 42px;
+    height: 42px;
+    padding: 0 !important;
+    flex-shrink: 0;
+}
+
+.nav-social svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    fill: currentColor;
+}
+
 .nav-pill:hover {
     border-color: rgba(255, 255, 255, 0.16);
     transform: translateY(-1px);
@@ -344,6 +358,11 @@ footer { padding: 40px 0 100px; border-top: 1px solid rgba(255,255,255,0.05); te
         background: var(--primary) !important;
         border-color: transparent !important;
         padding: 8px 14px !important;
+    }
+
+    .nav-social {
+        width: 40px;
+        height: 40px;
     }
 
     .nav-fb, .nav-support { margin: 0; }

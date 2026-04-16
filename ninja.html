@@ -251,8 +251,7 @@
             font-size: 0.86rem;
         }
 
-        .ninja-viewer-close,
-        .ninja-viewer-nav {
+        .ninja-viewer-close {
             width: 46px;
             height: 46px;
             border-radius: 50%;
@@ -266,14 +265,7 @@
 
         .ninja-viewer-frame {
             display: grid;
-            grid-template-columns: auto minmax(0, 1fr) auto;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .ninja-viewer-nav:disabled {
-            opacity: 0.35;
-            cursor: default;
+            grid-template-columns: minmax(0, 1fr);
         }
 
         .ninja-viewer-stage {
@@ -317,28 +309,6 @@
             .ninja-title {
                 font-size: 2.35rem;
             }
-
-            .ninja-viewer-frame {
-                grid-template-columns: 1fr;
-            }
-
-            .ninja-viewer-nav {
-                position: absolute;
-                bottom: 22px;
-                z-index: 2;
-            }
-
-            .ninja-viewer-prev {
-                left: 20px;
-            }
-
-            .ninja-viewer-next {
-                right: 20px;
-            }
-
-            .ninja-viewer-shell {
-                position: relative;
-            }
         }
 
         @media (max-width: 520px) {
@@ -381,8 +351,16 @@
                 <a href="how_to_use.html">Как се използва?</a>
                 <a href="gallery.html" class="nav-pill nav-gallery">Галерия</a>
                 <a href="ninja.html" class="nav-pill nav-ninja" aria-current="page">Покемони и Нинджи</a>
-                <a href="https://www.facebook.com/profile.php?id=61573169923288" class="nav-pill nav-fb" target="_blank" rel="noopener noreferrer">Facebook</a>
-                <a href="https://www.tiktok.com/@dalisipedal" class="nav-pill nav-tiktok" target="_blank" rel="noopener noreferrer">Tik-Tok</a>
+                <a href="https://www.facebook.com/profile.php?id=61573169923288" class="nav-pill nav-fb nav-social" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M13.5 21v-7h2.4l.4-3h-2.8V9.5c0-1 .3-1.8 1.9-1.8h1.1V4.6c-.5-.1-1.4-.2-2.5-.2-2.5 0-4.2 1.5-4.2 4.4V11H7v3h2.8v7h3.7z"/>
+                    </svg>
+                </a>
+                <a href="https://www.tiktok.com/@dalisipedal" class="nav-pill nav-tiktok nav-social" target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M14 3c.3 1.7 1.3 3.1 2.9 3.9 1 .5 2.1.7 3.2.7v3.1c-1.5 0-3-.4-4.3-1.1v5.4c0 3.5-2.8 6.3-6.3 6.3S3.2 18.5 3.2 15s2.8-6.3 6.3-6.3c.3 0 .6 0 .9.1v3.2c-.3-.1-.6-.2-.9-.2-1.8 0-3.2 1.4-3.2 3.2s1.4 3.2 3.2 3.2 3.2-1.4 3.2-3.2V3H14z"/>
+                    </svg>
+                </a>
                 <a href="how_to.html">Как работи?</a>
                 <a href="index.html#download" class="btn-nav">Изтегли</a>
             </div>
@@ -430,13 +408,7 @@
                 </button>
             </div>
             <div class="ninja-viewer-frame">
-                <button id="ninja-viewer-prev" class="ninja-viewer-nav ninja-viewer-prev" type="button" aria-label="Предишен">
-                    <span class="material-icons-round">chevron_left</span>
-                </button>
                 <div id="ninja-viewer-stage" class="ninja-viewer-stage"></div>
-                <button id="ninja-viewer-next" class="ninja-viewer-nav ninja-viewer-next" type="button" aria-label="Следващ">
-                    <span class="material-icons-round">chevron_right</span>
-                </button>
             </div>
             <div class="ninja-viewer-meta">
                 <div id="ninja-viewer-date" class="ninja-viewer-date"></div>
