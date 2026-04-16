@@ -1,6 +1,6 @@
 const GALLERY_CONFIG = Object.freeze({
     manifestUrl: 'data/gallery-manifest.json',
-    batchSize: 10,
+    batchSize: 12,
     cacheKeyManifest: 'gallery_manifest_cache_v1',
     cacheKeySeen: 'gallery_seen_urls_v1',
     cacheDurationMs: 24 * 60 * 60 * 1000,

@@ -1,12 +1,15 @@
 const NINJA_CONFIG = Object.freeze({
     manifestUrl: 'data/ninja-manifest.json',
+    batchSize: 12,
     cacheKeyManifest: 'ninja_manifest_cache_v1',
     cacheDurationMs: 7 * 24 * 60 * 60 * 1000,
 });
 
 const ninjaState = {
+    manifestItems: [],
     items: [],
     currentIndex: 0,
+    nextBatchStart: 0,
     touchStartX: 0,
     touchDeltaX: 0,
 };
@@ -164,10 +167,45 @@ function renderGrid(items) {
     });
 }
 
-async function loadManifest({ forceRefresh = false } = {}) {
+function pickNextBatch() {
+    const items = ninjaState.manifestItems;
+    if (!items.length) {
+        return [];
+    }
+
+    if (items.length <= NINJA_CONFIG.batchSize) {
+        ninjaState.nextBatchStart = 0;
+        return [...items];
+    }
+
+    const batch = [];
+    for (let offset = 0; offset < NINJA_CONFIG.batchSize; offset += 1) {
+        const index = (ninjaState.nextBatchStart + offset) % items.length;
+        batch.push(items[index]);
+    }
+
+    ninjaState.nextBatchStart =
+        (ninjaState.nextBatchStart + NINJA_CONFIG.batchSize) % items.length;
+
+    return batch;
+}
+
+function renderNextBatch() {
+    const batch = pickNextBatch();
+    if (!batch.length) {
+        renderEmptyState('Пробвай пак след малко.');
+        return;
+    }
+
+    renderGrid(batch);
+}
+
+async function loadManifest() {
     try {
         const payload = await fetchManifest();
-        renderGrid(payload.items);
+        ninjaState.manifestItems = payload.items;
+        ninjaState.nextBatchStart = 0;
+        renderNextBatch();
         updateSummary(payload, 'network');
         saveManifestToCache({
             ...payload,
@@ -182,7 +220,9 @@ async function loadManifest({ forceRefresh = false } = {}) {
             (Date.now() - (cached.cachedAt || 0)) < NINJA_CONFIG.cacheDurationMs;
 
         if (cacheIsFresh) {
-            renderGrid(cached.items);
+            ninjaState.manifestItems = cached.items;
+            ninjaState.nextBatchStart = 0;
+            renderNextBatch();
             updateSummary(cached, 'cache');
             return true;
         }
@@ -320,7 +360,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const refreshBtn = document.getElementById('refresh-ninja-btn');
     refreshBtn?.addEventListener('click', () => {
-        loadManifest({ forceRefresh: true });
+        if (!ninjaState.manifestItems.length) {
+            loadManifest();
+            return;
+        }
+
+        renderNextBatch();
     });
 
     await loadManifest();
