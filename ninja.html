@@ -264,8 +264,45 @@
         }
 
         .ninja-viewer-frame {
+            position: relative;
             display: grid;
             grid-template-columns: minmax(0, 1fr);
+        }
+
+        .ninja-viewer-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(6, 14, 18, 0.76);
+            color: #fff;
+            display: none;
+            place-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(14px);
+            transition: transform 0.18s ease, background 0.18s ease, opacity 0.18s ease;
+            z-index: 2;
+        }
+
+        .ninja-viewer-nav:hover:not(:disabled) {
+            transform: translateY(-50%) scale(1.04);
+            background: rgba(10, 22, 28, 0.9);
+        }
+
+        .ninja-viewer-nav:disabled {
+            opacity: 0.28;
+            cursor: default;
+        }
+
+        .ninja-viewer-nav-prev {
+            left: 18px;
+        }
+
+        .ninja-viewer-nav-next {
+            right: 18px;
         }
 
         .ninja-viewer-stage {
@@ -299,6 +336,12 @@
         .ninja-viewer-date {
             font-family: var(--font-mono);
             font-size: 0.82rem;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .ninja-viewer-nav {
+                display: grid;
+            }
         }
 
         @media (max-width: 900px) {
@@ -408,7 +451,13 @@
                 </button>
             </div>
             <div class="ninja-viewer-frame">
+                <button id="ninja-viewer-prev" class="ninja-viewer-nav ninja-viewer-nav-prev" type="button" aria-label="Предишна снимка">
+                    <span class="material-icons-round">chevron_left</span>
+                </button>
                 <div id="ninja-viewer-stage" class="ninja-viewer-stage"></div>
+                <button id="ninja-viewer-next" class="ninja-viewer-nav ninja-viewer-nav-next" type="button" aria-label="Следваща снимка">
+                    <span class="material-icons-round">chevron_right</span>
+                </button>
             </div>
             <div class="ninja-viewer-meta">
                 <div id="ninja-viewer-date" class="ninja-viewer-date"></div>

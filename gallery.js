@@ -313,6 +313,8 @@ function renderViewerItem() {
     const dateEl = document.getElementById('gallery-viewer-date');
     const locationEl = document.getElementById('gallery-viewer-location');
     const countEl = document.getElementById('gallery-viewer-count');
+    const prevBtn = document.getElementById('gallery-viewer-prev');
+    const nextBtn = document.getElementById('gallery-viewer-next');
 
     if (!item || !stageEl || !dateEl || !locationEl || !countEl) {
         return;
@@ -341,6 +343,14 @@ function renderViewerItem() {
     locationEl.textContent = getLocationLabel(item);
     locationEl.href = getMapsUrl(item);
     countEl.textContent = `${galleryState.currentIndex + 1} / ${galleryState.currentBatch.length}`;
+
+    if (prevBtn) {
+        prevBtn.disabled = galleryState.currentIndex === 0;
+    }
+
+    if (nextBtn) {
+        nextBtn.disabled = galleryState.currentIndex >= galleryState.currentBatch.length - 1;
+    }
 }
 
 function openViewer(index) {
@@ -419,12 +429,16 @@ async function renderRandomBatch() {
 function bindViewerEvents() {
     const viewerEl = document.getElementById('gallery-viewer');
     const closeBtn = document.getElementById('gallery-viewer-close');
+    const prevBtn = document.getElementById('gallery-viewer-prev');
+    const nextBtn = document.getElementById('gallery-viewer-next');
 
     if (!viewerEl) {
         return;
     }
 
     closeBtn?.addEventListener('click', closeViewer);
+    prevBtn?.addEventListener('click', () => moveViewer(-1));
+    nextBtn?.addEventListener('click', () => moveViewer(1));
 
     viewerEl.addEventListener('click', event => {
         if (event.target === viewerEl) {

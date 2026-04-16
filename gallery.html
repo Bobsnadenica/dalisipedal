@@ -298,8 +298,45 @@
         }
 
         .gallery-viewer-frame {
+            position: relative;
             display: grid;
             grid-template-columns: minmax(0, 1fr);
+        }
+
+        .gallery-viewer-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(8, 8, 8, 0.72);
+            color: #fff;
+            display: none;
+            place-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(14px);
+            transition: transform 0.18s ease, background 0.18s ease, opacity 0.18s ease;
+            z-index: 2;
+        }
+
+        .gallery-viewer-nav:hover:not(:disabled) {
+            transform: translateY(-50%) scale(1.04);
+            background: rgba(18, 18, 18, 0.88);
+        }
+
+        .gallery-viewer-nav:disabled {
+            opacity: 0.28;
+            cursor: default;
+        }
+
+        .gallery-viewer-nav-prev {
+            left: 18px;
+        }
+
+        .gallery-viewer-nav-next {
+            right: 18px;
         }
 
         .gallery-viewer-stage {
@@ -344,6 +381,12 @@
 
         .gallery-viewer-location:hover {
             text-decoration: underline;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .gallery-viewer-nav {
+                display: grid;
+            }
         }
 
         @media (max-width: 900px) {
@@ -451,7 +494,13 @@
                 </button>
             </div>
             <div class="gallery-viewer-frame">
+                <button id="gallery-viewer-prev" class="gallery-viewer-nav gallery-viewer-nav-prev" type="button" aria-label="Предишна снимка или видео">
+                    <span class="material-icons-round">chevron_left</span>
+                </button>
                 <div id="gallery-viewer-stage" class="gallery-viewer-stage"></div>
+                <button id="gallery-viewer-next" class="gallery-viewer-nav gallery-viewer-nav-next" type="button" aria-label="Следваща снимка или видео">
+                    <span class="material-icons-round">chevron_right</span>
+                </button>
             </div>
             <div class="gallery-viewer-meta">
                 <div id="gallery-viewer-date" class="gallery-viewer-date"></div>
