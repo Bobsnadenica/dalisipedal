@@ -1,6 +1,6 @@
 const NINJA_CONFIG = Object.freeze({
     manifestUrl: 'data/ninja-manifest.json',
-    batchSize: 12,
+    batchSize: 20,
     cacheKeyManifest: 'ninja_manifest_cache_v1',
     cacheDurationMs: 7 * 24 * 60 * 60 * 1000,
 });
