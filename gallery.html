@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
+    <title>Галерия | П.Е.Д.А.Л.🤫</title>
+    <meta name="description" content="Публична галерия с произволни одобрени снимки и видеа от приложението П.Е.Д.А.Л.🤫.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.dalisipedal.com/gallery.html">
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <style>
+        body {
+            overflow-y: auto;
+        }
+
+        body.viewer-open {
+            overflow: hidden;
+        }
+
+        .gallery-shell {
+            max-width: 1240px;
+            margin: 108px auto 84px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .gallery-hero {
+            margin-bottom: 28px;
+        }
+
+        .gallery-panel {
+            background: linear-gradient(180deg, rgba(18, 18, 18, 0.95), rgba(10, 10, 10, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+            backdrop-filter: blur(18px);
+        }
+
+        .gallery-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(255, 193, 7, 0.12);
+            color: var(--primary);
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .gallery-title {
+            font-size: 3rem;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            margin-bottom: 16px;
+        }
+
+        .gallery-description {
+            color: var(--text-muted);
+            font-size: 1.04rem;
+            line-height: 1.72;
+            max-width: 820px;
+        }
+
+        .gallery-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .gallery-btn {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            padding: 12px 18px;
+            font: inherit;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gallery-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .gallery-btn-primary {
+            background: var(--primary);
+            color: #000;
+            border-color: transparent;
+        }
+
+        .gallery-btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+        }
+
+        .gallery-summary {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: #dcdcdc;
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-card {
+            background: linear-gradient(180deg, rgba(23, 23, 23, 0.96), rgba(12, 12, 12, 0.96));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            overflow: hidden;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 18px 38px rgba(0, 0, 0, 0.22);
+            transition: transform 0.18s ease, border-color 0.18s ease;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .gallery-card:hover,
+        .gallery-card:focus-visible {
+            transform: translateY(-4px);
+            border-color: rgba(255, 193, 7, 0.24);
+        }
+
+        .gallery-media {
+            position: relative;
+            aspect-ratio: 4 / 5;
+            background: #050505;
+            overflow: hidden;
+        }
+
+        .gallery-media img,
+        .gallery-media video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .media-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.64);
+            color: #fff;
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+        }
+
+        .gallery-body {
+            padding: 16px;
+            display: grid;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .gallery-date {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: #fff;
+        }
+
+        .gallery-location {
+            display: block;
+            color: #f6f0dd;
+            line-height: 1.55;
+            text-decoration: none;
+            font-weight: 600;
+            min-height: 48px;
+        }
+
+        .gallery-location:hover {
+            color: #fff6d8;
+            text-decoration: underline;
+        }
+
+        .gallery-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .gallery-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #d6d6d6;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .gallery-open {
+            border: 0;
+            background: transparent;
+            color: var(--primary);
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.84rem;
+            font-weight: 800;
+        }
+
+        .gallery-empty {
+            grid-column: 1 / -1;
+            padding: 44px 20px;
+            text-align: center;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px dashed rgba(255, 255, 255, 0.14);
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .gallery-viewer {
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(12px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .gallery-viewer.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .gallery-viewer-shell {
+            width: min(100%, 1120px);
+            display: grid;
+            gap: 18px;
+        }
+
+        .gallery-viewer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .gallery-viewer-count {
+            font-family: var(--font-mono);
+            color: #fff;
+            font-size: 0.86rem;
+        }
+
+        .gallery-viewer-close {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+        }
+
+        .gallery-viewer-frame {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .gallery-viewer-nav {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+        }
+
+        .gallery-viewer-nav:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        .gallery-viewer-stage {
+            min-height: 58vh;
+            max-height: 72vh;
+            border-radius: 28px;
+            overflow: hidden;
+            background: #040404;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: grid;
+            place-items: center;
+        }
+
+        .gallery-viewer-media {
+            width: 100%;
+            max-height: 72vh;
+            object-fit: contain;
+            display: block;
+            background: #000;
+        }
+
+        .gallery-viewer-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-viewer-date {
+            font-family: var(--font-mono);
+            color: #d8d8d8;
+            font-size: 0.82rem;
+        }
+
+        .gallery-viewer-location {
+            color: #fff3cf;
+            text-decoration: none;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .gallery-viewer-location:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 900px) {
+            .gallery-shell {
+                margin-top: 100px;
+            }
+
+            .gallery-title {
+                font-size: 2.35rem;
+            }
+
+            .gallery-viewer-frame {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-viewer-nav {
+                position: absolute;
+                bottom: 22px;
+                z-index: 2;
+            }
+
+            .gallery-viewer-prev {
+                left: 20px;
+            }
+
+            .gallery-viewer-next {
+                right: 20px;
+            }
+
+            .gallery-viewer-shell {
+                position: relative;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .gallery-shell {
+                padding: 0 16px;
+            }
+
+            .gallery-panel {
+                padding: 22px;
+                border-radius: 24px;
+            }
+
+            .gallery-title {
+                font-size: 2rem;
+            }
+
+            .gallery-viewer {
+                padding: 16px;
+            }
+
+            .gallery-viewer-stage {
+                min-height: 48vh;
+                max-height: 62vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow-top"></div>
+    <div class="bg-glow-bottom"></div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="app_icon.png" alt="П.Е.Д.А.Л.🤫" class="logo-icon-img">
+                <span class="logo-text">П.Е.Д.А.Л.🤫</span>
+            </a>
+            <div class="nav-links">
+                <a href="how_to_use.html">Как се използва?</a>
+                <a href="gallery.html" class="nav-pill nav-gallery" aria-current="page">Галерия</a>
+                <a href="ninja.html" class="nav-pill nav-ninja">Покемони и Нинджи</a>
+                <a href="https://www.facebook.com/profile.php?id=61573169923288" class="nav-pill nav-fb" target="_blank" rel="noopener noreferrer">Facebook</a>
+                <a href="https://www.tiktok.com/@dalisipedal" class="nav-pill nav-tiktok" target="_blank" rel="noopener noreferrer">Tik-Tok</a>
+                <a href="how_to.html">Как работи?</a>
+                <a href="index.html#download" class="btn-nav">Изтегли</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="gallery-shell">
+        <section class="gallery-hero">
+            <div class="gallery-panel">
+                <div class="gallery-kicker">
+                    <span class="material-icons-round">photo_library</span>
+                    <span>Публична галерия</span>
+                </div>
+                <h1 class="gallery-title">10 произволни одобрени снимки и видеа от П.Е.Д.А.Л.🤫</h1>
+                <p class="gallery-description">
+                    Галерията вече работи през локален публичен manifest вместо live AWS заявки от браузъра. Самите снимки и видеа идват през CloudFront, а локациите се показват с човешки адреси, когато ги има в публичните данни.
+                </p>
+                <div class="gallery-actions">
+                    <button id="refresh-gallery-btn" class="gallery-btn gallery-btn-primary" type="button">
+                        <span class="material-icons-round">shuffle</span>
+                        <span>Нови 10</span>
+                    </button>
+                    <a href="index.html" class="gallery-btn gallery-btn-secondary">
+                        <span class="material-icons-round">arrow_back</span>
+                        <span>Към началото</span>
+                    </a>
+                </div>
+                <div id="gallery-summary" class="gallery-summary">
+                    Зареждаме публичния manifest...
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery-grid" class="gallery-grid" aria-live="polite"></section>
+    </main>
+
+    <div id="gallery-viewer" class="gallery-viewer" aria-hidden="true">
+        <div class="gallery-viewer-shell">
+            <div class="gallery-viewer-top">
+                <div id="gallery-viewer-count" class="gallery-viewer-count">1 / 10</div>
+                <button id="gallery-viewer-close" class="gallery-viewer-close" type="button" aria-label="Затвори">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="gallery-viewer-frame">
+                <button id="gallery-viewer-prev" class="gallery-viewer-nav gallery-viewer-prev" type="button" aria-label="Предишен">
+                    <span class="material-icons-round">chevron_left</span>
+                </button>
+                <div id="gallery-viewer-stage" class="gallery-viewer-stage"></div>
+                <button id="gallery-viewer-next" class="gallery-viewer-nav gallery-viewer-next" type="button" aria-label="Следващ">
+                    <span class="material-icons-round">chevron_right</span>
+                </button>
+            </div>
+            <div class="gallery-viewer-meta">
+                <div id="gallery-viewer-date" class="gallery-viewer-date"></div>
+                <a id="gallery-viewer-location" class="gallery-viewer-location" href="#" target="_blank" rel="noopener noreferrer"></a>
+            </div>
+        </div>
+    </div>
+
+    <script src="gallery.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+name: Refresh Public Manifests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Generate manifests
+        env:
+          PEDAL_APPSYNC_ENDPOINT: ${{ secrets.PEDAL_APPSYNC_ENDPOINT }}
+          PEDAL_APPSYNC_API_KEY: ${{ secrets.PEDAL_APPSYNC_API_KEY }}
+          PEDAL_COGNITO_IDENTITY_POOL_ID: ${{ secrets.PEDAL_COGNITO_IDENTITY_POOL_ID }}
+          PEDAL_S3_BUCKET: ${{ secrets.PEDAL_S3_BUCKET }}
+          PEDAL_AWS_REGION: eu-central-1
+        run: node scripts/generate_public_manifests.mjs
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet -- data scripts/location-cache.json; then
+            echo "No manifest changes detected."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data scripts/location-cache.json
+          git commit -m "Refresh public manifests"
+          git push
