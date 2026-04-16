@@ -146,32 +146,52 @@ async function saveJsonFile(filePath, value) {
 }
 
 async function loadConfig() {
-    const {
-        PEDAL_APPSYNC_ENDPOINT,
-        PEDAL_APPSYNC_API_KEY,
-        PEDAL_COGNITO_IDENTITY_POOL_ID,
-        PEDAL_S3_BUCKET,
-    } = process.env;
+    const envConfig = {
+        PEDAL_APPSYNC_ENDPOINT: process.env.PEDAL_APPSYNC_ENDPOINT,
+        PEDAL_APPSYNC_API_KEY: process.env.PEDAL_APPSYNC_API_KEY,
+        PEDAL_COGNITO_IDENTITY_POOL_ID: process.env.PEDAL_COGNITO_IDENTITY_POOL_ID,
+        PEDAL_S3_BUCKET: process.env.PEDAL_S3_BUCKET,
+    };
+    const envEntries = Object.entries(envConfig);
+    const missingEnvKeys = envEntries
+        .filter(([, value]) => !value)
+        .map(([key]) => key);
 
-    if (
-        PEDAL_APPSYNC_ENDPOINT &&
-        PEDAL_APPSYNC_API_KEY &&
-        PEDAL_COGNITO_IDENTITY_POOL_ID &&
-        PEDAL_S3_BUCKET
-    ) {
+    if (missingEnvKeys.length === 0) {
         return {
-            appsyncEndpoint: PEDAL_APPSYNC_ENDPOINT,
-            appsyncApiKey: PEDAL_APPSYNC_API_KEY,
-            identityPoolId: PEDAL_COGNITO_IDENTITY_POOL_ID,
-            bucketName: PEDAL_S3_BUCKET,
+            appsyncEndpoint: envConfig.PEDAL_APPSYNC_ENDPOINT,
+            appsyncApiKey: envConfig.PEDAL_APPSYNC_API_KEY,
+            identityPoolId: envConfig.PEDAL_COGNITO_IDENTITY_POOL_ID,
+            bucketName: envConfig.PEDAL_S3_BUCKET,
         };
     }
 
-    const source = await readFile(localAppConfigPath, 'utf8');
+    const hasPartialEnvConfig = missingEnvKeys.length !== envEntries.length;
+    if (hasPartialEnvConfig) {
+        throw new Error(
+            `Missing manifest config: ${missingEnvKeys.join(', ')}. ` +
+            'In GitHub Actions, add these as repository secrets in the website repo before running the workflow.'
+        );
+    }
+
+    let source;
+    try {
+        source = await readFile(localAppConfigPath, 'utf8');
+    } catch (error) {
+        throw new Error(
+            'Missing manifest config. ' +
+            'This website repo does not contain Amplify config by itself, so CI must provide these repository secrets: ' +
+            `${envEntries.map(([key]) => key).join(', ')}. ` +
+            `Local fallback also failed because ${localAppConfigPath} was not found.`
+        );
+    }
+
     const match = source.match(/const amplifyconfig = '''([\s\S]*?)''';/);
 
     if (!match) {
-        throw new Error('Не успях да прочета amplifyconfiguration.dart.');
+        throw new Error(
+            `Не успях да прочета amplifyconfiguration.dart от ${localAppConfigPath}.`
+        );
     }
 
     const config = JSON.parse(match[1]);

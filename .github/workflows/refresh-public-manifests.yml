@@ -21,6 +21,20 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Validate required secrets
+        env:
+          PEDAL_APPSYNC_ENDPOINT: ${{ secrets.PEDAL_APPSYNC_ENDPOINT }}
+          PEDAL_APPSYNC_API_KEY: ${{ secrets.PEDAL_APPSYNC_API_KEY }}
+          PEDAL_COGNITO_IDENTITY_POOL_ID: ${{ secrets.PEDAL_COGNITO_IDENTITY_POOL_ID }}
+          PEDAL_S3_BUCKET: ${{ secrets.PEDAL_S3_BUCKET }}
+        run: |
+          for key in PEDAL_APPSYNC_ENDPOINT PEDAL_APPSYNC_API_KEY PEDAL_COGNITO_IDENTITY_POOL_ID PEDAL_S3_BUCKET; do
+            if [ -z "${!key}" ]; then
+              echo "::error::Missing required repository secret: $key"
+              exit 1
+            fi
+          done
+
       - name: Generate manifests
         env:
           PEDAL_APPSYNC_ENDPOINT: ${{ secrets.PEDAL_APPSYNC_ENDPOINT }}
