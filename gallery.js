@@ -143,11 +143,11 @@ function updateSummary(payload, source) {
     const itemCount = payload.itemCount || payload.items.length;
 
     if (source === 'cache') {
-        summaryEl.textContent = `Локален fallback cache: ${itemCount} файла, последно обновяване ${generatedAt}. Медията се зарежда през CloudFront.`;
+        summaryEl.textContent = `Локален fallback cache: ${itemCount} файла, последно обновяване ${generatedAt}.`;
         return;
     }
 
-    summaryEl.textContent = `Публичен manifest: ${itemCount} файла, обновен ${generatedAt}. Медията се зарежда през CloudFront, без live AWS заявки от браузъра.`;
+    summaryEl.textContent = `Публичен manifest: ${itemCount} файла, обновен ${generatedAt}.`;
 }
 
 function renderEmptyState(message) {

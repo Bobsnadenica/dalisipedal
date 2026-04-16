@@ -80,7 +80,7 @@ function updateSummary(payload, source) {
         return;
     }
 
-    summaryEl.textContent = `Публичен manifest: ${itemCount} изображения, обновен ${generatedAt}. Изображенията се зареждат през CloudFront.`;
+    summaryEl.textContent = `Публичен manifest: ${itemCount} изображения, обновен ${generatedAt}.`;
 }
 
 function renderEmptyState(message) {
