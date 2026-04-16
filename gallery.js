@@ -13,6 +13,7 @@ const galleryState = {
     seenUrls: new Set(),
     touchStartX: 0,
     touchDeltaX: 0,
+    canSeeComments: false,
 };
 
 function isVideoFile(item) {
@@ -307,6 +308,16 @@ function closeViewer() {
     }
 }
 
+function syncCommentsVisibility() {
+    const commentsEl = document.getElementById('gallery-viewer-comments');
+    if (!commentsEl) {
+        return;
+    }
+
+    commentsEl.hidden = !galleryState.canSeeComments;
+    commentsEl.setAttribute('aria-hidden', String(!galleryState.canSeeComments));
+}
+
 function renderViewerItem() {
     const item = galleryState.currentBatch[galleryState.currentIndex];
     const stageEl = document.getElementById('gallery-viewer-stage');
@@ -351,6 +362,8 @@ function renderViewerItem() {
     if (nextBtn) {
         nextBtn.disabled = galleryState.currentIndex >= galleryState.currentBatch.length - 1;
     }
+
+    syncCommentsVisibility();
 }
 
 function openViewer(index) {
@@ -481,6 +494,8 @@ function bindViewerEvents() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     restoreSeenUrls();
+    galleryState.canSeeComments =
+        window.PedalWebsiteAuth?.hasRegisteredUserSession() ?? false;
     bindViewerEvents();
 
     const refreshBtn = document.getElementById('refresh-gallery-btn');

@@ -358,6 +358,44 @@
             background: #000;
         }
 
+        .gallery-comments {
+            display: grid;
+            gap: 12px;
+            padding: 18px 20px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(10, 10, 10, 0.94));
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-comments[hidden] {
+            display: none;
+        }
+
+        .gallery-comments-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+        }
+
+        .gallery-comments-head .material-icons-round {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .gallery-comment-placeholder {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #e9e3d3;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
         .gallery-viewer-meta {
             display: flex;
             justify-content: space-between;
@@ -502,6 +540,13 @@
                     <span class="material-icons-round">chevron_right</span>
                 </button>
             </div>
+            <section id="gallery-viewer-comments" class="gallery-comments" hidden aria-hidden="true">
+                <div class="gallery-comments-head">
+                    <span class="material-icons-round">forum</span>
+                    <span>Коментари</span>
+                </div>
+                <div class="gallery-comment-placeholder">Очаквайте скоро, коментари</div>
+            </section>
             <div class="gallery-viewer-meta">
                 <div id="gallery-viewer-date" class="gallery-viewer-date"></div>
                 <a id="gallery-viewer-location" class="gallery-viewer-location" href="#" target="_blank" rel="noopener noreferrer"></a>
@@ -509,6 +554,7 @@
         </div>
     </div>
 
+    <script src="auth.js"></script>
     <script src="gallery.js"></script>
 </body>
 </html>

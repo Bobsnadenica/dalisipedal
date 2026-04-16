@@ -324,6 +324,44 @@
             background: #000;
         }
 
+        .ninja-comments {
+            display: grid;
+            gap: 12px;
+            padding: 18px 20px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(180deg, rgba(12, 21, 27, 0.96), rgba(8, 14, 18, 0.95));
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
+        }
+
+        .ninja-comments[hidden] {
+            display: none;
+        }
+
+        .ninja-comments-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #f2fdff;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+        }
+
+        .ninja-comments-head .material-icons-round {
+            color: #7ee7ff;
+            font-size: 1.1rem;
+        }
+
+        .ninja-comment-placeholder {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #dffbff;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
         .ninja-viewer-meta {
             display: flex;
             justify-content: space-between;
@@ -459,12 +497,20 @@
                     <span class="material-icons-round">chevron_right</span>
                 </button>
             </div>
+            <section id="ninja-viewer-comments" class="ninja-comments" hidden aria-hidden="true">
+                <div class="ninja-comments-head">
+                    <span class="material-icons-round">forum</span>
+                    <span>Коментари</span>
+                </div>
+                <div class="ninja-comment-placeholder">Очаквайте скоро, коментари</div>
+            </section>
             <div class="ninja-viewer-meta">
                 <div id="ninja-viewer-date" class="ninja-viewer-date"></div>
             </div>
         </div>
     </div>
 
+    <script src="auth.js"></script>
     <script src="ninja.js"></script>
 </body>
 </html>
