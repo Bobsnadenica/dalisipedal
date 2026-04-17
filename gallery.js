@@ -594,16 +594,16 @@ function updateCommentsAuthUi(authState = getAuthState()) {
     const logoutBtn = document.getElementById('gallery-comments-logout');
 
     if (noteEl) {
-        noteEl.textContent = authState.isLoggedIn
-            ? 'Вече сте влезли и можете да коментирате от същия PEDAL профил като в приложението.'
-            : 'Влезте с акаунта си в ПЕДАЛ, за да коментирате.';
+        noteEl.hidden = authState.isLoggedIn;
+        noteEl.textContent = 'Вход за коментар';
     }
 
     if (sessionEl) {
         sessionEl.hidden = !authState.isLoggedIn;
         sessionEl.textContent = authState.isLoggedIn
-            ? `Пишете като ${authState.displayName || authState.loginId || 'PEDAL потребител'}.`
+            ? `Влезли сте като ${authState.displayName || authState.loginId || 'PEDAL потребител'}`
             : '';
+        sessionEl.title = sessionEl.textContent;
     }
 
     if (formEl) {

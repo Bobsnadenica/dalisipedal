@@ -535,9 +535,9 @@
         .gallery-comments {
             width: 100%;
             height: 100%;
-            display: grid;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
-            align-content: start;
             padding: 22px 22px 18px;
             border-radius: 28px;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -766,55 +766,60 @@
         }
 
         .gallery-comments-note {
-            padding: 12px 14px;
-            border-radius: 18px;
+            align-self: flex-start;
+            padding: 8px 12px;
+            border-radius: 999px;
             background: rgba(255, 255, 255, 0.05);
             color: #d7d1c2;
-            line-height: 1.6;
-            font-size: 0.92rem;
-            max-width: 760px;
+            line-height: 1.4;
+            font-size: 0.8rem;
+            font-weight: 700;
+            max-width: 100%;
         }
 
         .pedal-comments-session {
-            padding: 12px 14px;
-            border-radius: 18px;
+            align-self: flex-start;
+            padding: 8px 12px;
+            border-radius: 999px;
             background: rgba(255, 193, 7, 0.1);
             border: 1px solid rgba(255, 193, 7, 0.14);
             color: #fff3cf;
-            line-height: 1.6;
-            font-size: 0.92rem;
+            line-height: 1.4;
+            font-size: 0.8rem;
             font-weight: 700;
-            max-width: 760px;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .pedal-comments-compose {
             display: grid;
-            gap: 12px;
-            padding: 14px;
+            gap: 10px;
+            padding: 12px 14px 14px;
             border-radius: 22px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: auto;
+            order: 4;
         }
 
         .pedal-comments-compose-label {
-            color: #fff6d7;
-            font-size: 0.84rem;
-            font-weight: 800;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
+            display: none;
         }
 
         .pedal-comments-compose-input {
             width: 100%;
-            min-height: 94px;
+            min-height: 56px;
+            max-height: 120px;
             resize: vertical;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 18px;
+            border-radius: 16px;
             background: rgba(255, 255, 255, 0.04);
             color: #fff;
-            padding: 14px 16px;
+            padding: 12px 14px;
             font: inherit;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .pedal-comments-compose-input::placeholder {
@@ -831,17 +836,18 @@
 
         .pedal-comments-compose-meta {
             color: rgba(255, 255, 255, 0.62);
-            font-size: 0.8rem;
+            font-size: 0.74rem;
             font-weight: 700;
         }
 
         .pedal-comments-compose-submit {
             border: 0;
             border-radius: 999px;
-            padding: 11px 16px;
+            padding: 10px 14px;
             background: var(--primary);
             color: #090909;
             font: inherit;
+            font-size: 0.86rem;
             font-weight: 900;
             cursor: pointer;
         }
@@ -864,15 +870,16 @@
         }
 
         .pedal-comments-status {
-            padding: 14px 16px;
-            border-radius: 18px;
+            padding: 10px 12px;
+            border-radius: 14px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.06);
             color: #e9e3d3;
-            line-height: 1.6;
+            line-height: 1.45;
             font-weight: 700;
-            font-size: 0.95rem;
-            max-width: 760px;
+            font-size: 0.84rem;
+            max-width: 100%;
+            order: 2;
         }
 
         .pedal-comments-status.is-error {
@@ -889,6 +896,8 @@
             overflow-y: auto;
             padding-right: 6px;
             align-content: start;
+            flex: 1 1 auto;
+            order: 3;
         }
 
         .pedal-comment-item {
