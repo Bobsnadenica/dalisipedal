@@ -519,7 +519,18 @@
             font-size: 0.96rem;
         }
 
-        .gallery-comment-placeholder {
+        .pedal-comments-count {
+            min-width: 28px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff6d7;
+            text-align: center;
+            font-size: 0.76rem;
+            font-weight: 800;
+        }
+
+        .pedal-comments-status {
             padding: 14px 16px;
             border-radius: 18px;
             background: rgba(255, 255, 255, 0.04);
@@ -527,6 +538,56 @@
             color: #e9e3d3;
             line-height: 1.6;
             font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .pedal-comments-status.is-error {
+            color: #ffd0d0;
+            border-color: rgba(255, 84, 84, 0.22);
+            background: rgba(255, 84, 84, 0.08);
+        }
+
+        .pedal-comments-list {
+            display: grid;
+            gap: 10px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .pedal-comment-item {
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .pedal-comment-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .pedal-comment-author {
+            color: #fff;
+            font-size: 0.92rem;
+            font-weight: 800;
+        }
+
+        .pedal-comment-date {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.76rem;
+            font-family: var(--font-mono);
+        }
+
+        .pedal-comment-body {
+            color: #e9e3d3;
+            line-height: 1.6;
+            font-size: 0.94rem;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
         .gallery-viewer-meta {
@@ -678,11 +739,13 @@
                     <div class="gallery-comments-title">
                         <span class="material-icons-round">forum</span>
                         <span>Коментари</span>
+                        <span id="gallery-comments-count" class="pedal-comments-count">0</span>
                     </div>
                     <button class="gallery-comments-login" type="button">Вход</button>
                 </div>
-                <div class="gallery-comments-note">Влезте с акаунта си в ПЕДАЛ за да коментирате</div>
-                <div class="gallery-comment-placeholder">Очаквайте скоро</div>
+                <div class="gallery-comments-note">Само регистрирани потребители могат да пишат коментари.</div>
+                <div id="gallery-comments-status" class="pedal-comments-status">Зареждаме коментари...</div>
+                <div id="gallery-comments-list" class="pedal-comments-list" aria-live="polite"></div>
             </section>
             <div class="gallery-viewer-meta">
                 <div id="gallery-viewer-date" class="gallery-viewer-date"></div>
@@ -720,6 +783,7 @@
         </div>
     </div>
 
+    <script src="pedal-comments.js"></script>
     <script src="gallery.js"></script>
 </body>
 </html>

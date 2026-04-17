@@ -12,6 +12,7 @@ const ninjaState = {
     nextBatchStart: 0,
     touchStartX: 0,
     touchDeltaX: 0,
+    commentsRequestId: 0,
 };
 
 function formatDate(timestamp) {
@@ -262,7 +263,103 @@ function closeLoginModal() {
     modalEl.setAttribute('aria-hidden', 'true');
 }
 
-function renderViewerItem() {
+function setCommentsStatus(message, options = {}) {
+    const statusEl = document.getElementById('ninja-comments-status');
+    if (!statusEl) {
+        return;
+    }
+
+    statusEl.className = 'pedal-comments-status';
+    if (options.isError) {
+        statusEl.classList.add('is-error');
+    }
+
+    statusEl.textContent = message || '';
+    statusEl.hidden = !message;
+}
+
+function buildCommentItem(comment) {
+    const itemEl = document.createElement('article');
+    itemEl.className = 'pedal-comment-item';
+
+    const headEl = document.createElement('div');
+    headEl.className = 'pedal-comment-head';
+
+    const authorEl = document.createElement('div');
+    authorEl.className = 'pedal-comment-author';
+    authorEl.textContent = comment.usernameSnapshot || 'Потребител';
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'pedal-comment-date';
+    dateEl.textContent = window.PedalComments?.formatCommentDate(comment.createdAt) || '';
+
+    const bodyEl = document.createElement('div');
+    bodyEl.className = 'pedal-comment-body';
+    bodyEl.textContent = comment.content || '';
+
+    headEl.appendChild(authorEl);
+    headEl.appendChild(dateEl);
+    itemEl.appendChild(headEl);
+    itemEl.appendChild(bodyEl);
+
+    return itemEl;
+}
+
+async function renderCommentsForCurrentItem(options = {}) {
+    const item = ninjaState.items[ninjaState.currentIndex];
+    const listEl = document.getElementById('ninja-comments-list');
+    const countEl = document.getElementById('ninja-comments-count');
+
+    if (!item || !listEl || !countEl) {
+        return;
+    }
+
+    const requestId = ninjaState.commentsRequestId + 1;
+    ninjaState.commentsRequestId = requestId;
+
+    listEl.innerHTML = '';
+    countEl.textContent = '0';
+    setCommentsStatus('Зареждаме коментари...');
+
+    if (!window.PedalComments) {
+        setCommentsStatus('Коментарите временно не са налични.', { isError: true });
+        return;
+    }
+
+    try {
+        const mediaKey = window.PedalComments.normalizeMediaKey(item.key || item.url);
+        const comments = await window.PedalComments.listComments(mediaKey, {
+            forceRefresh: Boolean(options.forceRefresh),
+        });
+
+        if (requestId !== ninjaState.commentsRequestId) {
+            return;
+        }
+
+        countEl.textContent = String(comments.length);
+
+        if (!comments.length) {
+            setCommentsStatus('Още няма коментари.');
+            return;
+        }
+
+        setCommentsStatus('');
+        comments.forEach(comment => {
+            listEl.appendChild(buildCommentItem(comment));
+        });
+    } catch (error) {
+        if (requestId !== ninjaState.commentsRequestId) {
+            return;
+        }
+
+        console.warn('Ninja comments failed to load:', error);
+        listEl.innerHTML = '';
+        countEl.textContent = '0';
+        setCommentsStatus('Не успяхме да заредим коментарите.', { isError: true });
+    }
+}
+
+function renderViewerItem(options = {}) {
     const item = ninjaState.items[ninjaState.currentIndex];
     const stageEl = document.getElementById('ninja-viewer-stage');
     const countEl = document.getElementById('ninja-viewer-count');
@@ -293,6 +390,9 @@ function renderViewerItem() {
         nextBtn.disabled = ninjaState.currentIndex >= ninjaState.items.length - 1;
     }
 
+    renderCommentsForCurrentItem({
+        forceRefresh: Boolean(options.forceRefresh),
+    });
 }
 
 function openViewer(index) {
@@ -305,7 +405,7 @@ function openViewer(index) {
     viewerEl.classList.add('is-open');
     viewerEl.setAttribute('aria-hidden', 'false');
     document.body.classList.add('viewer-open');
-    renderViewerItem();
+    renderViewerItem({ forceRefresh: true });
 }
 
 function moveViewer(step) {

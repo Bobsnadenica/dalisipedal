@@ -13,6 +13,7 @@ const galleryState = {
     seenUrls: new Set(),
     touchStartX: 0,
     touchDeltaX: 0,
+    commentsRequestId: 0,
 };
 
 function isVideoFile(item) {
@@ -320,7 +321,103 @@ function closeLoginModal() {
     modalEl.setAttribute('aria-hidden', 'true');
 }
 
-function renderViewerItem() {
+function setCommentsStatus(message, options = {}) {
+    const statusEl = document.getElementById('gallery-comments-status');
+    if (!statusEl) {
+        return;
+    }
+
+    statusEl.className = 'pedal-comments-status';
+    if (options.isError) {
+        statusEl.classList.add('is-error');
+    }
+
+    statusEl.textContent = message || '';
+    statusEl.hidden = !message;
+}
+
+function buildCommentItem(comment) {
+    const itemEl = document.createElement('article');
+    itemEl.className = 'pedal-comment-item';
+
+    const headEl = document.createElement('div');
+    headEl.className = 'pedal-comment-head';
+
+    const authorEl = document.createElement('div');
+    authorEl.className = 'pedal-comment-author';
+    authorEl.textContent = comment.usernameSnapshot || 'Потребител';
+
+    const dateEl = document.createElement('div');
+    dateEl.className = 'pedal-comment-date';
+    dateEl.textContent = window.PedalComments?.formatCommentDate(comment.createdAt) || '';
+
+    const bodyEl = document.createElement('div');
+    bodyEl.className = 'pedal-comment-body';
+    bodyEl.textContent = comment.content || '';
+
+    headEl.appendChild(authorEl);
+    headEl.appendChild(dateEl);
+    itemEl.appendChild(headEl);
+    itemEl.appendChild(bodyEl);
+
+    return itemEl;
+}
+
+async function renderCommentsForCurrentItem(options = {}) {
+    const item = galleryState.currentBatch[galleryState.currentIndex];
+    const listEl = document.getElementById('gallery-comments-list');
+    const countEl = document.getElementById('gallery-comments-count');
+
+    if (!item || !listEl || !countEl) {
+        return;
+    }
+
+    const requestId = galleryState.commentsRequestId + 1;
+    galleryState.commentsRequestId = requestId;
+
+    listEl.innerHTML = '';
+    countEl.textContent = '0';
+    setCommentsStatus('Зареждаме коментари...');
+
+    if (!window.PedalComments) {
+        setCommentsStatus('Коментарите временно не са налични.', { isError: true });
+        return;
+    }
+
+    try {
+        const mediaKey = window.PedalComments.normalizeMediaKey(item.key || item.url);
+        const comments = await window.PedalComments.listComments(mediaKey, {
+            forceRefresh: Boolean(options.forceRefresh),
+        });
+
+        if (requestId !== galleryState.commentsRequestId) {
+            return;
+        }
+
+        countEl.textContent = String(comments.length);
+
+        if (!comments.length) {
+            setCommentsStatus('Още няма коментари.');
+            return;
+        }
+
+        setCommentsStatus('');
+        comments.forEach(comment => {
+            listEl.appendChild(buildCommentItem(comment));
+        });
+    } catch (error) {
+        if (requestId !== galleryState.commentsRequestId) {
+            return;
+        }
+
+        console.warn('Gallery comments failed to load:', error);
+        listEl.innerHTML = '';
+        countEl.textContent = '0';
+        setCommentsStatus('Не успяхме да заредим коментарите.', { isError: true });
+    }
+}
+
+function renderViewerItem(options = {}) {
     const item = galleryState.currentBatch[galleryState.currentIndex];
     const stageEl = document.getElementById('gallery-viewer-stage');
     const dateEl = document.getElementById('gallery-viewer-date');
@@ -365,6 +462,9 @@ function renderViewerItem() {
         nextBtn.disabled = galleryState.currentIndex >= galleryState.currentBatch.length - 1;
     }
 
+    renderCommentsForCurrentItem({
+        forceRefresh: Boolean(options.forceRefresh),
+    });
 }
 
 function openViewer(index) {
@@ -378,7 +478,7 @@ function openViewer(index) {
     viewerEl.classList.add('is-open');
     viewerEl.setAttribute('aria-hidden', 'false');
     document.body.classList.add('viewer-open');
-    renderViewerItem();
+    renderViewerItem({ forceRefresh: true });
 }
 
 function moveViewer(step) {
