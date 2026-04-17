@@ -1,13 +1,23 @@
 
+const DEMO_MANIFEST_URL = 'data/gallery-manifest.json';
+const FALLBACK_ENTRY = Object.freeze({
+    id: 1,
+    img: 'app_icon.png',
+    plate: 'Публичен сигнал',
+    status: 'approved',
+    date: 'Няма дата',
+    location: 'Нови снимки се зареждат скоро',
+    timestamp: '',
+    isFallback: true,
+});
 
-const DB = [
-    { id: 1, img: "car1.jpeg", plate: "CB XXXX XX", status: "approved", date: "02.01.2026" },
-    { id: 2, img: "car2.JPG", plate: "CO XXXX XX", status: "pending", date: "05.01.2026" },
-    { id: 3, img: "car3.jpeg", plate: "CA XXXX XX", status: "approved", date: "28.12.2025" },
-    { id: 4, img: "car4.jpeg", plate: "CB XXXX XX", status: "pending", date: "06.01.2026" },
-    { id: 5, img: "car5.jpeg", plate: "E XXXX XX", status: "approved", date: "15.12.2025" }, 
-    { id: 6, img: "car6.JPG", plate: "PB XXXX XX", status: "pending", date: "06.01.2026" }
-];
+let DB = [];
+const demoState = {
+    entries: [],
+    featuredDay: null,
+    featuredMonth: null,
+    loadPromise: null,
+};
 
 
 let map = null;
@@ -33,9 +43,12 @@ function goBack(targetView) {
 function showLoader(callback) {
     const loader = document.getElementById('global-loader');
     loader.classList.add('active');
-    setTimeout(() => {
-        loader.classList.remove('active');
-        callback();
+    setTimeout(async () => {
+        try {
+            await callback();
+        } finally {
+            loader.classList.remove('active');
+        }
     }, 600);
 }
 
@@ -52,14 +65,122 @@ function mockAction(name) {
 }
 
 function getRandomEntry() {
+    if (!DB.length) {
+        return FALLBACK_ENTRY;
+    }
+
     return DB[Math.floor(Math.random() * DB.length)];
+}
+
+function formatDemoDate(timestamp) {
+    if (!timestamp) {
+        return 'Няма дата';
+    }
+
+    const parsed = new Date(timestamp);
+    if (Number.isNaN(parsed.getTime())) {
+        return 'Няма дата';
+    }
+
+    return new Intl.DateTimeFormat('bg-BG', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    }).format(parsed);
+}
+
+function maskPlateFromKey(key) {
+    const parts = (key || '').split('/');
+    const region = parts[1] || 'BG';
+    const serial = parts[2] || '0000XX';
+    const visible = serial.slice(0, Math.min(4, serial.length));
+    const masked = serial.length > 4 ? `${visible} **` : visible;
+    return `${region} ${masked}`.trim();
+}
+
+function normalizeManifestItem(item, index) {
+    return {
+        id: index + 1,
+        img: item.url,
+        plate: maskPlateFromKey(item.key),
+        status: 'approved',
+        date: formatDemoDate(item.timestamp),
+        location: item.locationLabel || 'Локацията не е налична',
+        timestamp: item.timestamp || '',
+    };
+}
+
+function updateWidget(idPrefix, entry) {
+    const imageEl = document.getElementById(`${idPrefix}-img`);
+    const locationEl = document.getElementById(`${idPrefix}-location`);
+
+    if (imageEl) {
+        imageEl.src = entry.img;
+        imageEl.alt = entry.location || 'Публичен сигнал';
+    }
+
+    if (locationEl) {
+        locationEl.textContent = entry.location || 'Локацията не е налична';
+    }
+}
+
+function hydrateDashboardWidgets() {
+    updateWidget('demo-day', demoState.featuredDay || FALLBACK_ENTRY);
+    updateWidget('demo-month', demoState.featuredMonth || FALLBACK_ENTRY);
+}
+
+async function loadDemoEntries() {
+    if (demoState.loadPromise) {
+        return demoState.loadPromise;
+    }
+
+    demoState.loadPromise = (async () => {
+        try {
+            const response = await fetch(DEMO_MANIFEST_URL, { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const payload = await response.json();
+            const photoItems = Array.isArray(payload.items)
+                ? payload.items.filter(item => item && !item.isVideo && item.url)
+                : [];
+
+            const entries = photoItems.slice(0, 60).map(normalizeManifestItem);
+            if (!entries.length) {
+                throw new Error('No photo entries available');
+            }
+
+            DB = entries;
+            demoState.entries = entries;
+            demoState.featuredDay = getRandomEntry();
+            demoState.featuredMonth =
+                entries[Math.min(14, entries.length - 1)] || demoState.featuredDay;
+
+            if (demoState.featuredMonth.id === demoState.featuredDay.id && entries.length > 1) {
+                demoState.featuredMonth = entries[1];
+            }
+        } catch (error) {
+            console.warn('Demo manifest failed to load:', error);
+            DB = [FALLBACK_ENTRY];
+            demoState.entries = DB;
+            demoState.featuredDay = FALLBACK_ENTRY;
+            demoState.featuredMonth = FALLBACK_ENTRY;
+        }
+
+        hydrateDashboardWidgets();
+        return DB;
+    })();
+
+    return demoState.loadPromise;
 }
 
 
 function simulateUpload() {
     triggerFlash();
     setTimeout(() => {
-        showLoader(() => {
+        showLoader(async () => {
+            await loadDemoEntries();
             const entry = getRandomEntry();
             document.getElementById('selected-img-preview').src = entry.img;
             document.getElementById('plate-input').value = entry.plate;
@@ -69,34 +190,39 @@ function simulateUpload() {
 }
 
 function openMySignals() {
-    const container = document.getElementById('signal-list-container');
-    container.innerHTML = ''; 
+    showLoader(async () => {
+        await loadDemoEntries();
 
-    DB.forEach(item => {
-        const statusClass = item.status === 'approved' ? 'approved' : 'pending';
-        const statusText = item.status === 'approved' ? 'Одобрен' : 'Обработка';
-        
-        const html = `
-            <div class="signal-item" onclick="openViewer(${item.id})">
-                <img src="${item.img}" alt="signal">
-                <div class="signal-info">
-                    <div class="signal-top">
-                        <span class="plate-badge">${item.plate}</span>
-                        <span class="status-text ${statusClass}">${statusText}</span>
+        const container = document.getElementById('signal-list-container');
+        container.innerHTML = '';
+
+        DB.forEach(item => {
+            const statusClass = item.status === 'approved' ? 'approved' : 'pending';
+            const statusText = item.status === 'approved' ? 'Одобрен' : 'Обработка';
+
+            const html = `
+                <div class="signal-item" onclick="openViewer(${item.id})">
+                    <img src="${item.img}" alt="signal">
+                    <div class="signal-info">
+                        <div class="signal-top">
+                            <span class="plate-badge">${item.plate}</span>
+                            <span class="status-text ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="signal-date">${item.date}</div>
                     </div>
-                    <div class="signal-date">${item.date}</div>
                 </div>
-            </div>
-        `;
-        container.innerHTML += html;
-    });
+            `;
+            container.innerHTML += html;
+        });
 
-    setView('mysignals');
+        setView('mysignals');
+    });
 }
 
 
 function openMap() {
-    showLoader(() => {
+    showLoader(async () => {
+        await loadDemoEntries();
         setView('map');
         
         setTimeout(() => {
@@ -159,7 +285,8 @@ function openMap() {
 
 
 function openRandom() {
-    showLoader(() => {
+    showLoader(async () => {
+        await loadDemoEntries();
         const entry = getRandomEntry();
         renderViewer(entry);
         setView('viewer');
@@ -167,9 +294,9 @@ function openRandom() {
 }
 
 function openPodMonth() {
-    showLoader(() => {
-
-        const entry = DB.find(x => x.img.includes('car5')) || DB[4];
+    showLoader(async () => {
+        await loadDemoEntries();
+        const entry = demoState.featuredMonth || getRandomEntry();
         
         if(entry) {
             renderViewer(entry);
@@ -452,6 +579,10 @@ function updatePinDots() {
 }
 
 function openViewer(id) {
+    if (!DB.length) {
+        return;
+    }
+
     const entry = DB.find(x => x.id === id);
     if(entry) {
         renderViewer(entry);
@@ -491,6 +622,8 @@ function submitReport() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    loadDemoEntries();
+
     setInterval(() => {
         const now = new Date();
         document.getElementById('clock').innerText = 
