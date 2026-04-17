@@ -12,7 +12,6 @@ const ninjaState = {
     nextBatchStart: 0,
     touchStartX: 0,
     touchDeltaX: 0,
-    canSeeComments: false,
 };
 
 function formatDate(timestamp) {
@@ -137,12 +136,7 @@ function buildCard(item, index) {
     date.className = 'ninja-date';
     date.textContent = formatDate(item.lastModified);
 
-    const label = document.createElement('div');
-    label.className = 'ninja-label';
-    label.innerHTML = '<span class="material-icons-round">swipe</span><span>Плъзни за още</span>';
-
     body.appendChild(date);
-    body.appendChild(label);
 
     card.appendChild(media);
     card.appendChild(body);
@@ -248,16 +242,6 @@ function closeViewer() {
     document.body.classList.remove('viewer-open');
 }
 
-function syncCommentsVisibility() {
-    const commentsEl = document.getElementById('ninja-viewer-comments');
-    if (!commentsEl) {
-        return;
-    }
-
-    commentsEl.hidden = !ninjaState.canSeeComments;
-    commentsEl.setAttribute('aria-hidden', String(!ninjaState.canSeeComments));
-}
-
 function renderViewerItem() {
     const item = ninjaState.items[ninjaState.currentIndex];
     const stageEl = document.getElementById('ninja-viewer-stage');
@@ -289,7 +273,6 @@ function renderViewerItem() {
         nextBtn.disabled = ninjaState.currentIndex >= ninjaState.items.length - 1;
     }
 
-    syncCommentsVisibility();
 }
 
 function openViewer(index) {
@@ -369,8 +352,6 @@ function bindViewerEvents() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    ninjaState.canSeeComments =
-        window.PedalWebsiteAuth?.hasRegisteredUserSession() ?? false;
     bindViewerEvents();
 
     const refreshBtn = document.getElementById('refresh-ninja-btn');

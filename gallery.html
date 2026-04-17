@@ -209,21 +209,9 @@
 
         .gallery-card-footer {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             gap: 12px;
-        }
-
-        .gallery-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.05);
-            color: #d6d6d6;
-            font-size: 0.78rem;
-            font-weight: 700;
         }
 
         .gallery-open {
@@ -368,12 +356,16 @@
             box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .gallery-comments[hidden] {
-            display: none;
-        }
-
         .gallery-comments-head {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-comments-title {
+            display: inline-flex;
             align-items: center;
             gap: 10px;
             color: #fff;
@@ -381,9 +373,26 @@
             letter-spacing: 0.01em;
         }
 
-        .gallery-comments-head .material-icons-round {
+        .gallery-comments-title .material-icons-round {
             color: var(--primary);
             font-size: 1.1rem;
+        }
+
+        .gallery-comments-login {
+            border: 1px solid rgba(255, 193, 7, 0.24);
+            background: rgba(255, 193, 7, 0.14);
+            color: #fff1c3;
+            border-radius: 999px;
+            padding: 10px 16px;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .gallery-comments-note {
+            color: #d7d1c2;
+            line-height: 1.6;
+            font-size: 0.96rem;
         }
 
         .gallery-comment-placeholder {
@@ -393,7 +402,7 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
             color: #e9e3d3;
             line-height: 1.6;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .gallery-viewer-meta {
@@ -540,12 +549,16 @@
                     <span class="material-icons-round">chevron_right</span>
                 </button>
             </div>
-            <section id="gallery-viewer-comments" class="gallery-comments" hidden aria-hidden="true">
+            <section id="gallery-viewer-comments" class="gallery-comments">
                 <div class="gallery-comments-head">
-                    <span class="material-icons-round">forum</span>
-                    <span>Коментари</span>
+                    <div class="gallery-comments-title">
+                        <span class="material-icons-round">forum</span>
+                        <span>Коментари</span>
+                    </div>
+                    <button class="gallery-comments-login" type="button">Вход</button>
                 </div>
-                <div class="gallery-comment-placeholder">Очаквайте скоро, коментари</div>
+                <div class="gallery-comments-note">Влезте с акаунта си в ПЕДАЛ за да коментирате</div>
+                <div class="gallery-comment-placeholder">Очаквайте скоро</div>
             </section>
             <div class="gallery-viewer-meta">
                 <div id="gallery-viewer-date" class="gallery-viewer-date"></div>
@@ -554,7 +567,6 @@
         </div>
     </div>
 
-    <script src="auth.js"></script>
     <script src="gallery.js"></script>
 </body>
 </html>

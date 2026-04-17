@@ -13,7 +13,6 @@ const galleryState = {
     seenUrls: new Set(),
     touchStartX: 0,
     touchDeltaX: 0,
-    canSeeComments: false,
 };
 
 function isVideoFile(item) {
@@ -246,12 +245,6 @@ function buildCard(item, index) {
     const footer = document.createElement('div');
     footer.className = 'gallery-card-footer';
 
-    const footerLabel = document.createElement('div');
-    footerLabel.className = 'gallery-pill';
-    footerLabel.innerHTML = isVideoFile(item)
-        ? '<span class="material-icons-round">movie</span><span>Плъзни за още</span>'
-        : '<span class="material-icons-round">swipe</span><span>Плъзни за още</span>';
-
     const openLabel = document.createElement('button');
     openLabel.className = 'gallery-open';
     openLabel.type = 'button';
@@ -261,7 +254,6 @@ function buildCard(item, index) {
         openViewer(index);
     });
 
-    footer.appendChild(footerLabel);
     footer.appendChild(openLabel);
 
     body.appendChild(date);
@@ -306,16 +298,6 @@ function closeViewer() {
     if (stageEl) {
         stageEl.innerHTML = '';
     }
-}
-
-function syncCommentsVisibility() {
-    const commentsEl = document.getElementById('gallery-viewer-comments');
-    if (!commentsEl) {
-        return;
-    }
-
-    commentsEl.hidden = !galleryState.canSeeComments;
-    commentsEl.setAttribute('aria-hidden', String(!galleryState.canSeeComments));
 }
 
 function renderViewerItem() {
@@ -363,7 +345,6 @@ function renderViewerItem() {
         nextBtn.disabled = galleryState.currentIndex >= galleryState.currentBatch.length - 1;
     }
 
-    syncCommentsVisibility();
 }
 
 function openViewer(index) {
@@ -494,8 +475,6 @@ function bindViewerEvents() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     restoreSeenUrls();
-    galleryState.canSeeComments =
-        window.PedalWebsiteAuth?.hasRegisteredUserSession() ?? false;
     bindViewerEvents();
 
     const refreshBtn = document.getElementById('refresh-gallery-btn');

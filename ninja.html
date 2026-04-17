@@ -193,15 +193,6 @@
             color: #dffbff;
         }
 
-        .ninja-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.72);
-        }
-
         .ninja-empty {
             grid-column: 1 / -1;
             border-radius: 24px;
@@ -334,12 +325,16 @@
             box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
         }
 
-        .ninja-comments[hidden] {
-            display: none;
-        }
-
         .ninja-comments-head {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .ninja-comments-title {
+            display: inline-flex;
             align-items: center;
             gap: 10px;
             color: #f2fdff;
@@ -347,9 +342,26 @@
             letter-spacing: 0.01em;
         }
 
-        .ninja-comments-head .material-icons-round {
+        .ninja-comments-title .material-icons-round {
             color: #7ee7ff;
             font-size: 1.1rem;
+        }
+
+        .ninja-comments-login {
+            border: 1px solid rgba(126, 231, 255, 0.24);
+            background: rgba(126, 231, 255, 0.14);
+            color: #e5fbff;
+            border-radius: 999px;
+            padding: 10px 16px;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .ninja-comments-note {
+            color: #d5eef3;
+            line-height: 1.6;
+            font-size: 0.96rem;
         }
 
         .ninja-comment-placeholder {
@@ -359,7 +371,7 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
             color: #dffbff;
             line-height: 1.6;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .ninja-viewer-meta {
@@ -497,12 +509,16 @@
                     <span class="material-icons-round">chevron_right</span>
                 </button>
             </div>
-            <section id="ninja-viewer-comments" class="ninja-comments" hidden aria-hidden="true">
+            <section id="ninja-viewer-comments" class="ninja-comments">
                 <div class="ninja-comments-head">
-                    <span class="material-icons-round">forum</span>
-                    <span>Коментари</span>
+                    <div class="ninja-comments-title">
+                        <span class="material-icons-round">forum</span>
+                        <span>Коментари</span>
+                    </div>
+                    <button class="ninja-comments-login" type="button">Вход</button>
                 </div>
-                <div class="ninja-comment-placeholder">Очаквайте скоро, коментари</div>
+                <div class="ninja-comments-note">Влезте с акаунта си в ПЕДАЛ за да коментирате</div>
+                <div class="ninja-comment-placeholder">Очаквайте скоро</div>
             </section>
             <div class="ninja-viewer-meta">
                 <div id="ninja-viewer-date" class="ninja-viewer-date"></div>
@@ -510,7 +526,6 @@
         </div>
     </div>
 
-    <script src="auth.js"></script>
     <script src="ninja.js"></script>
 </body>
 </html>
