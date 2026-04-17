@@ -2,22 +2,17 @@
     const CONFIG = Object.freeze({
         graphqlEndpoint: 'https://5otrnlraozcdni6ekx27cy5exe.appsync-api.eu-central-1.amazonaws.com/graphql',
         apiKey: 'da2-6lagph7zcvfuzicgqenbfvyyqi',
-        cacheTtlMs: 60 * 1000,
+        cacheTtlMs: 2 * 60 * 1000,
         defaultLimit: 100,
     });
+    const DEBUG_PREFIX = '[PEDAL comments]';
 
     const COMMENTS_BY_MEDIA_KEY_QUERY = `
-        query CommentsByMediaKey(
-            $mediaKey: String!
-            $sortDirection: ModelSortDirection
-            $filter: ModelMediaCommentFilterInput
-            $limit: Int
-            $nextToken: String
-        ) {
+        query CommentsByMediaKey($mediaKey: String!, $limit: Int, $nextToken: String) {
             commentsByMediaKey(
                 mediaKey: $mediaKey
-                sortDirection: $sortDirection
-                filter: $filter
+                sortDirection: ASC
+                filter: { status: { eq: ACTIVE } }
                 limit: $limit
                 nextToken: $nextToken
             ) {
@@ -37,6 +32,14 @@
     `;
 
     const commentsCache = new Map();
+
+    function logDebug(message, details = {}) {
+        console.info(`${DEBUG_PREFIX} ${message}`, details);
+    }
+
+    function logError(message, details = {}) {
+        console.error(`${DEBUG_PREFIX} ${message}`, details);
+    }
 
     function normalizeMediaKey(value) {
         const trimmed = String(value || '').trim();
@@ -73,27 +76,65 @@
         }).format(parsed);
     }
 
-    async function graphQlRequest(document, variables) {
-        const response = await fetch(CONFIG.graphqlEndpoint, {
-            method: 'POST',
-            cache: 'no-store',
-            headers: {
-                'content-type': 'application/json',
-                'x-api-key': CONFIG.apiKey,
-            },
-            body: JSON.stringify({
-                query: document,
-                variables,
-            }),
-        });
+    async function graphQlRequest(document, variables, context = {}) {
+        const requestDetails = {
+            endpoint: CONFIG.graphqlEndpoint,
+            hasApiKeyHeader: Boolean(CONFIG.apiKey),
+            mediaKey: context.mediaKey || null,
+        };
 
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+        logDebug('Sending GraphQL request.', requestDetails);
+
+        let response;
+        try {
+            response = await fetch(CONFIG.graphqlEndpoint, {
+                method: 'POST',
+                mode: 'cors',
+                credentials: 'omit',
+                cache: 'no-store',
+                headers: {
+                    'content-type': 'application/json',
+                    'x-api-key': CONFIG.apiKey,
+                },
+                body: JSON.stringify({
+                    query: document,
+                    variables,
+                }),
+            });
+        } catch (error) {
+            logError('Network request failed before GraphQL response.', {
+                ...requestDetails,
+                error,
+            });
+            throw error;
         }
 
-        const payload = await response.json();
-        if (Array.isArray(payload.errors) && payload.errors.length) {
-            throw new Error(payload.errors[0]?.message || 'GraphQL request failed');
+        let payload = null;
+        try {
+            payload = await response.json();
+        } catch (error) {
+            logError('Failed to parse GraphQL response body.', {
+                ...requestDetails,
+                httpStatus: response.status,
+                error,
+            });
+            throw error;
+        }
+
+        if (!response.ok || (Array.isArray(payload.errors) && payload.errors.length)) {
+            logError('GraphQL request failed.', {
+                ...requestDetails,
+                httpStatus: response.status,
+                graphQlErrors: payload.errors || null,
+            });
+
+            const error = new Error(
+                payload.errors?.map(item => item?.message).filter(Boolean).join(' | ')
+                || `HTTP ${response.status}`
+            );
+            error.graphQlErrors = payload.errors || null;
+            error.httpStatus = response.status;
+            throw error;
         }
 
         return payload.data || {};
@@ -117,13 +158,18 @@
             return cached.items;
         }
 
+        logDebug('Loading comments thread.', {
+            mediaKey: normalizedMediaKey,
+            endpoint: CONFIG.graphqlEndpoint,
+            hasApiKeyHeader: Boolean(CONFIG.apiKey),
+        });
+
         const data = await graphQlRequest(COMMENTS_BY_MEDIA_KEY_QUERY, {
             mediaKey: normalizedMediaKey,
-            sortDirection: 'ASC',
             limit,
-            filter: {
-                status: { eq: 'ACTIVE' },
-            },
+            nextToken: null,
+        }, {
+            mediaKey: normalizedMediaKey,
         });
 
         const items = Array.isArray(data.commentsByMediaKey?.items)

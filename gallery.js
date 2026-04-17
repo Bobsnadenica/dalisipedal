@@ -629,7 +629,7 @@ function openViewer(index, items = galleryState.currentBatch) {
     viewerEl.classList.add('is-open');
     viewerEl.setAttribute('aria-hidden', 'false');
     document.body.classList.add('viewer-open');
-    renderViewerItem({ forceRefresh: true });
+    renderViewerItem();
 }
 
 function moveViewer(step) {
