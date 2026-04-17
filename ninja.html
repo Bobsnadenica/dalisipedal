@@ -319,34 +319,35 @@
 
         .ninja-comments-layer {
             position: absolute;
-            inset: 18px;
+            inset: 0;
             z-index: 4;
             display: flex;
-            align-items: flex-end;
-            justify-content: flex-end;
+            align-items: stretch;
+            justify-content: stretch;
             pointer-events: none;
             opacity: 0;
-            transform: translateY(10px);
+            transform: scale(0.985);
             transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
         .ninja-comments-layer.is-open {
             pointer-events: auto;
             opacity: 1;
-            transform: translateY(0);
+            transform: scale(1);
         }
 
         .ninja-comments {
-            width: min(420px, 100%);
-            max-height: min(78%, 520px);
+            width: 100%;
+            height: 100%;
             display: grid;
             gap: 12px;
-            padding: 18px 18px 16px;
-            border-radius: 26px;
+            align-content: start;
+            padding: 22px 22px 18px;
+            border-radius: 28px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            background: linear-gradient(180deg, rgba(12, 21, 27, 0.9), rgba(8, 14, 18, 0.95));
+            background: linear-gradient(180deg, rgba(9, 18, 24, 0.62), rgba(7, 16, 22, 0.88) 24%, rgba(6, 12, 16, 0.96) 100%);
             box-shadow: 0 24px 44px rgba(0, 0, 0, 0.34);
-            backdrop-filter: blur(18px);
+            backdrop-filter: blur(22px) saturate(1.05);
             overflow: hidden;
         }
 
@@ -356,6 +357,8 @@
             justify-content: space-between;
             gap: 14px;
             flex-wrap: wrap;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .ninja-comments-title {
@@ -573,6 +576,7 @@
             color: #d5eef3;
             line-height: 1.6;
             font-size: 0.92rem;
+            max-width: 760px;
         }
 
         .pedal-comments-session {
@@ -584,6 +588,7 @@
             line-height: 1.6;
             font-size: 0.92rem;
             font-weight: 700;
+            max-width: 760px;
         }
 
         .pedal-comments-compose {
@@ -671,6 +676,7 @@
             line-height: 1.6;
             font-weight: 700;
             font-size: 0.95rem;
+            max-width: 760px;
         }
 
         .pedal-comments-status.is-error {
@@ -682,9 +688,11 @@
         .pedal-comments-list {
             display: grid;
             gap: 10px;
-            max-height: min(240px, 28vh);
+            min-height: 0;
+            max-height: none;
             overflow-y: auto;
-            padding-right: 4px;
+            padding-right: 6px;
+            align-content: start;
         }
 
         .pedal-comment-item {
@@ -796,15 +804,17 @@
             }
 
             .ninja-comments-layer {
-                inset: 12px;
-                align-items: flex-end;
+                inset: 0;
+                align-items: stretch;
                 justify-content: stretch;
             }
 
             .ninja-comments {
                 width: 100%;
-                max-height: min(68vh, 460px);
+                height: 100%;
+                max-height: none;
                 border-radius: 24px;
+                padding: 18px 16px 16px;
             }
 
             .ninja-comments-head {
