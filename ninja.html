@@ -358,6 +358,128 @@
             cursor: pointer;
         }
 
+        .ninja-login-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1400;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(14px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .ninja-login-modal.is-open {
+            display: flex;
+        }
+
+        .ninja-login-panel {
+            width: min(100%, 520px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(180deg, rgba(12, 21, 27, 0.98), rgba(7, 13, 16, 0.98));
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        .ninja-login-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 22px 22px 14px;
+        }
+
+        .ninja-login-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #f2fdff;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .ninja-login-title .material-icons-round {
+            color: #7ee7ff;
+        }
+
+        .ninja-login-close {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+        }
+
+        .ninja-login-body {
+            display: grid;
+            gap: 18px;
+            padding: 0 22px 22px;
+        }
+
+        .ninja-login-copy {
+            color: #d8eef2;
+            line-height: 1.7;
+            font-size: 0.97rem;
+        }
+
+        .ninja-login-form {
+            display: grid;
+            gap: 14px;
+        }
+
+        .ninja-login-field {
+            display: grid;
+            gap: 8px;
+        }
+
+        .ninja-login-label {
+            color: #e5fbff;
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .ninja-login-input {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            padding: 14px 16px;
+            font: inherit;
+        }
+
+        .ninja-login-input::placeholder {
+            color: rgba(255, 255, 255, 0.38);
+        }
+
+        .ninja-login-submit {
+            border: 0;
+            border-radius: 16px;
+            padding: 14px 18px;
+            background: #7ee7ff;
+            color: #041015;
+            font: inherit;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .ninja-login-soon {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(126, 231, 255, 0.1);
+            border: 1px solid rgba(126, 231, 255, 0.16);
+            color: #dffbff;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
         .ninja-comments-note {
             color: #d5eef3;
             line-height: 1.6;
@@ -522,6 +644,35 @@
             </section>
             <div class="ninja-viewer-meta">
                 <div id="ninja-viewer-date" class="ninja-viewer-date"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ninja-login-modal" class="ninja-login-modal" aria-hidden="true">
+        <div class="ninja-login-panel" role="dialog" aria-modal="true" aria-labelledby="ninja-login-title">
+            <div class="ninja-login-head">
+                <div id="ninja-login-title" class="ninja-login-title">
+                    <span class="material-icons-round">lock_open</span>
+                    <span>Вход</span>
+                </div>
+                <button id="ninja-login-close" class="ninja-login-close" type="button" aria-label="Затвори">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="ninja-login-body">
+                <div class="ninja-login-copy">Влезте с акаунта си от апликацията П.Е.Д.А.Л. Ако нямате такъв, изтеглете си апликацията и си направете за да коментирате.</div>
+                <form class="ninja-login-form">
+                    <div class="ninja-login-field">
+                        <label class="ninja-login-label" for="ninja-login-username">Потребителско име</label>
+                        <input id="ninja-login-username" class="ninja-login-input" type="text" placeholder="Въведете потребителско име">
+                    </div>
+                    <div class="ninja-login-field">
+                        <label class="ninja-login-label" for="ninja-login-password">Парола</label>
+                        <input id="ninja-login-password" class="ninja-login-input" type="password" placeholder="Въведете парола">
+                    </div>
+                    <button class="ninja-login-submit" type="submit">Вход</button>
+                </form>
+                <div class="ninja-login-soon">Очаквайте скоро</div>
             </div>
         </div>
     </div>

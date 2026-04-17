@@ -242,6 +242,26 @@ function closeViewer() {
     document.body.classList.remove('viewer-open');
 }
 
+function openLoginModal() {
+    const modalEl = document.getElementById('ninja-login-modal');
+    if (!modalEl) {
+        return;
+    }
+
+    modalEl.classList.add('is-open');
+    modalEl.setAttribute('aria-hidden', 'false');
+}
+
+function closeLoginModal() {
+    const modalEl = document.getElementById('ninja-login-modal');
+    if (!modalEl) {
+        return;
+    }
+
+    modalEl.classList.remove('is-open');
+    modalEl.setAttribute('aria-hidden', 'true');
+}
+
 function renderViewerItem() {
     const item = ninjaState.items[ninjaState.currentIndex];
     const stageEl = document.getElementById('ninja-viewer-stage');
@@ -303,6 +323,10 @@ function bindViewerEvents() {
     const closeBtn = document.getElementById('ninja-viewer-close');
     const prevBtn = document.getElementById('ninja-viewer-prev');
     const nextBtn = document.getElementById('ninja-viewer-next');
+    const loginBtn = document.querySelector('.ninja-comments-login');
+    const loginModal = document.getElementById('ninja-login-modal');
+    const loginCloseBtn = document.getElementById('ninja-login-close');
+    const loginForm = document.querySelector('.ninja-login-form');
 
     if (!viewerEl) {
         return;
@@ -311,10 +335,21 @@ function bindViewerEvents() {
     closeBtn?.addEventListener('click', closeViewer);
     prevBtn?.addEventListener('click', () => moveViewer(-1));
     nextBtn?.addEventListener('click', () => moveViewer(1));
+    loginBtn?.addEventListener('click', openLoginModal);
+    loginCloseBtn?.addEventListener('click', closeLoginModal);
+    loginForm?.addEventListener('submit', event => {
+        event.preventDefault();
+    });
 
     viewerEl.addEventListener('click', event => {
         if (event.target === viewerEl) {
             closeViewer();
+        }
+    });
+
+    loginModal?.addEventListener('click', event => {
+        if (event.target === loginModal) {
+            closeLoginModal();
         }
     });
 
@@ -342,7 +377,11 @@ function bindViewerEvents() {
         }
 
         if (event.key === 'Escape') {
-            closeViewer();
+            if (loginModal?.classList.contains('is-open')) {
+                closeLoginModal();
+            } else {
+                closeViewer();
+            }
         } else if (event.key === 'ArrowLeft') {
             moveViewer(-1);
         } else if (event.key === 'ArrowRight') {

@@ -389,6 +389,128 @@
             cursor: pointer;
         }
 
+        .gallery-login-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1400;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(14px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .gallery-login-modal.is-open {
+            display: flex;
+        }
+
+        .gallery-login-panel {
+            width: min(100%, 520px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(180deg, rgba(19, 19, 19, 0.98), rgba(8, 8, 8, 0.98));
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        .gallery-login-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 22px 22px 14px;
+        }
+
+        .gallery-login-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .gallery-login-title .material-icons-round {
+            color: var(--primary);
+        }
+
+        .gallery-login-close {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+        }
+
+        .gallery-login-body {
+            display: grid;
+            gap: 18px;
+            padding: 0 22px 22px;
+        }
+
+        .gallery-login-copy {
+            color: #e6dec9;
+            line-height: 1.7;
+            font-size: 0.97rem;
+        }
+
+        .gallery-login-form {
+            display: grid;
+            gap: 14px;
+        }
+
+        .gallery-login-field {
+            display: grid;
+            gap: 8px;
+        }
+
+        .gallery-login-label {
+            color: #fff5d6;
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .gallery-login-input {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            padding: 14px 16px;
+            font: inherit;
+        }
+
+        .gallery-login-input::placeholder {
+            color: rgba(255, 255, 255, 0.38);
+        }
+
+        .gallery-login-submit {
+            border: 0;
+            border-radius: 16px;
+            padding: 14px 18px;
+            background: var(--primary);
+            color: #080808;
+            font: inherit;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .gallery-login-soon {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.16);
+            color: #fff0bf;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
         .gallery-comments-note {
             color: #d7d1c2;
             line-height: 1.6;
@@ -563,6 +685,35 @@
             <div class="gallery-viewer-meta">
                 <div id="gallery-viewer-date" class="gallery-viewer-date"></div>
                 <a id="gallery-viewer-location" class="gallery-viewer-location" href="#" target="_blank" rel="noopener noreferrer"></a>
+            </div>
+        </div>
+    </div>
+
+    <div id="gallery-login-modal" class="gallery-login-modal" aria-hidden="true">
+        <div class="gallery-login-panel" role="dialog" aria-modal="true" aria-labelledby="gallery-login-title">
+            <div class="gallery-login-head">
+                <div id="gallery-login-title" class="gallery-login-title">
+                    <span class="material-icons-round">lock_open</span>
+                    <span>Вход</span>
+                </div>
+                <button id="gallery-login-close" class="gallery-login-close" type="button" aria-label="Затвори">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="gallery-login-body">
+                <div class="gallery-login-copy">Влезте с акаунта си от апликацията П.Е.Д.А.Л. Ако нямате такъв, изтеглете си апликацията и си направете за да коментирате.</div>
+                <form class="gallery-login-form">
+                    <div class="gallery-login-field">
+                        <label class="gallery-login-label" for="gallery-login-username">Потребителско име</label>
+                        <input id="gallery-login-username" class="gallery-login-input" type="text" placeholder="Въведете потребителско име">
+                    </div>
+                    <div class="gallery-login-field">
+                        <label class="gallery-login-label" for="gallery-login-password">Парола</label>
+                        <input id="gallery-login-password" class="gallery-login-input" type="password" placeholder="Въведете парола">
+                    </div>
+                    <button class="gallery-login-submit" type="submit">Вход</button>
+                </form>
+                <div class="gallery-login-soon">Очаквайте скоро</div>
             </div>
         </div>
     </div>

@@ -300,6 +300,26 @@ function closeViewer() {
     }
 }
 
+function openLoginModal() {
+    const modalEl = document.getElementById('gallery-login-modal');
+    if (!modalEl) {
+        return;
+    }
+
+    modalEl.classList.add('is-open');
+    modalEl.setAttribute('aria-hidden', 'false');
+}
+
+function closeLoginModal() {
+    const modalEl = document.getElementById('gallery-login-modal');
+    if (!modalEl) {
+        return;
+    }
+
+    modalEl.classList.remove('is-open');
+    modalEl.setAttribute('aria-hidden', 'true');
+}
+
 function renderViewerItem() {
     const item = galleryState.currentBatch[galleryState.currentIndex];
     const stageEl = document.getElementById('gallery-viewer-stage');
@@ -425,6 +445,10 @@ function bindViewerEvents() {
     const closeBtn = document.getElementById('gallery-viewer-close');
     const prevBtn = document.getElementById('gallery-viewer-prev');
     const nextBtn = document.getElementById('gallery-viewer-next');
+    const loginBtn = document.querySelector('.gallery-comments-login');
+    const loginModal = document.getElementById('gallery-login-modal');
+    const loginCloseBtn = document.getElementById('gallery-login-close');
+    const loginForm = document.querySelector('.gallery-login-form');
 
     if (!viewerEl) {
         return;
@@ -433,10 +457,21 @@ function bindViewerEvents() {
     closeBtn?.addEventListener('click', closeViewer);
     prevBtn?.addEventListener('click', () => moveViewer(-1));
     nextBtn?.addEventListener('click', () => moveViewer(1));
+    loginBtn?.addEventListener('click', openLoginModal);
+    loginCloseBtn?.addEventListener('click', closeLoginModal);
+    loginForm?.addEventListener('submit', event => {
+        event.preventDefault();
+    });
 
     viewerEl.addEventListener('click', event => {
         if (event.target === viewerEl) {
             closeViewer();
+        }
+    });
+
+    loginModal?.addEventListener('click', event => {
+        if (event.target === loginModal) {
+            closeLoginModal();
         }
     });
 
@@ -464,7 +499,11 @@ function bindViewerEvents() {
         }
 
         if (event.key === 'Escape') {
-            closeViewer();
+            if (loginModal?.classList.contains('is-open')) {
+                closeLoginModal();
+            } else {
+                closeViewer();
+            }
         } else if (event.key === 'ArrowLeft') {
             moveViewer(-1);
         } else if (event.key === 'ArrowRight') {
