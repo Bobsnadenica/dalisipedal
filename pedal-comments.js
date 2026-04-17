@@ -31,6 +31,28 @@
         }
     `;
 
+    const SYNC_MEDIA_COMMENTS_QUERY = `
+        query SyncMediaComments($filter: ModelMediaCommentFilterInput, $limit: Int, $nextToken: String) {
+            syncMediaComments(
+                filter: $filter
+                limit: $limit
+                nextToken: $nextToken
+            ) {
+                items {
+                    id
+                    mediaKey
+                    userId
+                    usernameSnapshot
+                    content
+                    status
+                    createdAt
+                    updatedAt
+                }
+                nextToken
+            }
+        }
+    `;
+
     const commentsCache = new Map();
 
     function logDebug(message, details = {}) {
@@ -39,6 +61,19 @@
 
     function logError(message, details = {}) {
         console.error(`${DEBUG_PREFIX} ${message}`, details);
+    }
+
+    function isUnauthorizedError(error) {
+        const message = String(error?.message || '').toLowerCase();
+        return message.includes('not authorized') || message.includes('unauthorized');
+    }
+
+    function sortCommentsAscending(items) {
+        return [...items].sort((left, right) => {
+            const leftTime = Date.parse(left?.createdAt || '') || 0;
+            const rightTime = Date.parse(right?.createdAt || '') || 0;
+            return leftTime - rightTime;
+        });
     }
 
     function normalizeMediaKey(value) {
@@ -164,17 +199,48 @@
             hasApiKeyHeader: Boolean(CONFIG.apiKey),
         });
 
-        const data = await graphQlRequest(COMMENTS_BY_MEDIA_KEY_QUERY, {
-            mediaKey: normalizedMediaKey,
-            limit,
-            nextToken: null,
-        }, {
-            mediaKey: normalizedMediaKey,
-        });
+        let items = [];
 
-        const items = Array.isArray(data.commentsByMediaKey?.items)
-            ? data.commentsByMediaKey.items.filter(Boolean)
-            : [];
+        try {
+            const data = await graphQlRequest(COMMENTS_BY_MEDIA_KEY_QUERY, {
+                mediaKey: normalizedMediaKey,
+                limit,
+                nextToken: null,
+            }, {
+                mediaKey: normalizedMediaKey,
+            });
+
+            items = Array.isArray(data.commentsByMediaKey?.items)
+                ? data.commentsByMediaKey.items.filter(Boolean)
+                : [];
+        } catch (error) {
+            if (!isUnauthorizedError(error)) {
+                throw error;
+            }
+
+            logDebug('Primary commentsByMediaKey read is unauthorized; trying public syncMediaComments fallback.', {
+                mediaKey: normalizedMediaKey,
+                endpoint: CONFIG.graphqlEndpoint,
+                hasApiKeyHeader: Boolean(CONFIG.apiKey),
+            });
+
+            const fallbackData = await graphQlRequest(SYNC_MEDIA_COMMENTS_QUERY, {
+                filter: {
+                    mediaKey: { eq: normalizedMediaKey },
+                    status: { eq: 'ACTIVE' },
+                },
+                limit,
+                nextToken: null,
+            }, {
+                mediaKey: normalizedMediaKey,
+            });
+
+            items = Array.isArray(fallbackData.syncMediaComments?.items)
+                ? fallbackData.syncMediaComments.items.filter(Boolean)
+                : [];
+        }
+
+        items = sortCommentsAscending(items);
 
         commentsCache.set(normalizedMediaKey, {
             items,
