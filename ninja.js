@@ -9,6 +9,7 @@ const ninjaState = {
     manifestItems: [],
     items: [],
     currentIndex: 0,
+    commentsPanelOpen: false,
     nextBatchStart: 0,
     touchStartX: 0,
     touchDeltaX: 0,
@@ -241,6 +242,9 @@ function closeViewer() {
     viewerEl.classList.remove('is-open');
     viewerEl.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('viewer-open');
+    ninjaState.commentsPanelOpen = false;
+    setCommentsOverlayOpen(false);
+    resetCommentsPanel();
 }
 
 function openLoginModal() {
@@ -278,6 +282,44 @@ function setCommentsStatus(message, options = {}) {
     statusEl.hidden = !message;
 }
 
+function setCommentsCount(count) {
+    const value = String(Math.max(0, Number(count) || 0));
+    const ids = ['ninja-comments-count', 'ninja-comments-toggle-count'];
+    ids.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    });
+}
+
+function resetCommentsPanel() {
+    const listEl = document.getElementById('ninja-comments-list');
+    if (listEl) {
+        listEl.innerHTML = '';
+    }
+
+    setCommentsCount(0);
+    setCommentsStatus('');
+}
+
+function setCommentsOverlayOpen(isOpen, options = {}) {
+    const layerEl = document.getElementById('ninja-comments-layer');
+    const toggleBtn = document.getElementById('ninja-comments-toggle');
+    if (!layerEl || !toggleBtn) {
+        return;
+    }
+
+    ninjaState.commentsPanelOpen = Boolean(isOpen);
+    layerEl.classList.toggle('is-open', ninjaState.commentsPanelOpen);
+    layerEl.setAttribute('aria-hidden', ninjaState.commentsPanelOpen ? 'false' : 'true');
+    toggleBtn.setAttribute('aria-expanded', ninjaState.commentsPanelOpen ? 'true' : 'false');
+
+    if (ninjaState.commentsPanelOpen) {
+        renderCommentsForCurrentItem(options);
+    }
+}
+
 function buildCommentItem(comment) {
     const itemEl = document.createElement('article');
     itemEl.className = 'pedal-comment-item';
@@ -308,9 +350,8 @@ function buildCommentItem(comment) {
 async function renderCommentsForCurrentItem(options = {}) {
     const item = ninjaState.items[ninjaState.currentIndex];
     const listEl = document.getElementById('ninja-comments-list');
-    const countEl = document.getElementById('ninja-comments-count');
 
-    if (!item || !listEl || !countEl) {
+    if (!item || !listEl) {
         return;
     }
 
@@ -318,7 +359,7 @@ async function renderCommentsForCurrentItem(options = {}) {
     ninjaState.commentsRequestId = requestId;
 
     listEl.innerHTML = '';
-    countEl.textContent = '0';
+    setCommentsCount(0);
     setCommentsStatus('Зареждаме коментари...');
 
     if (!window.PedalComments) {
@@ -336,7 +377,7 @@ async function renderCommentsForCurrentItem(options = {}) {
             return;
         }
 
-        countEl.textContent = String(comments.length);
+        setCommentsCount(comments.length);
 
         if (!comments.length) {
             setCommentsStatus('Още няма коментари.');
@@ -354,7 +395,7 @@ async function renderCommentsForCurrentItem(options = {}) {
 
         console.warn('Ninja comments failed to load:', error);
         listEl.innerHTML = '';
-        countEl.textContent = '0';
+        setCommentsCount(0);
         setCommentsStatus('Не успяхме да заредим коментарите.', { isError: true });
     }
 }
@@ -390,13 +431,18 @@ function renderViewerItem(options = {}) {
         nextBtn.disabled = ninjaState.currentIndex >= ninjaState.items.length - 1;
     }
 
-    renderCommentsForCurrentItem({
-        forceRefresh: Boolean(options.forceRefresh),
-    });
+    if (ninjaState.commentsPanelOpen) {
+        renderCommentsForCurrentItem({
+            forceRefresh: Boolean(options.forceRefresh),
+        });
+    } else {
+        resetCommentsPanel();
+    }
 }
 
 function openViewer(index) {
     ninjaState.currentIndex = index;
+    ninjaState.commentsPanelOpen = false;
     const viewerEl = document.getElementById('ninja-viewer');
     if (!viewerEl) {
         return;
@@ -405,6 +451,7 @@ function openViewer(index) {
     viewerEl.classList.add('is-open');
     viewerEl.setAttribute('aria-hidden', 'false');
     document.body.classList.add('viewer-open');
+    setCommentsOverlayOpen(false);
     renderViewerItem();
 }
 
@@ -423,6 +470,9 @@ function bindViewerEvents() {
     const closeBtn = document.getElementById('ninja-viewer-close');
     const prevBtn = document.getElementById('ninja-viewer-prev');
     const nextBtn = document.getElementById('ninja-viewer-next');
+    const commentsToggleBtn = document.getElementById('ninja-comments-toggle');
+    const commentsLayer = document.getElementById('ninja-comments-layer');
+    const commentsCloseBtn = document.getElementById('ninja-comments-close');
     const loginBtn = document.querySelector('.ninja-comments-login');
     const loginModal = document.getElementById('ninja-login-modal');
     const loginCloseBtn = document.getElementById('ninja-login-close');
@@ -435,6 +485,11 @@ function bindViewerEvents() {
     closeBtn?.addEventListener('click', closeViewer);
     prevBtn?.addEventListener('click', () => moveViewer(-1));
     nextBtn?.addEventListener('click', () => moveViewer(1));
+    commentsToggleBtn?.addEventListener('click', event => {
+        event.stopPropagation();
+        setCommentsOverlayOpen(!ninjaState.commentsPanelOpen);
+    });
+    commentsCloseBtn?.addEventListener('click', () => setCommentsOverlayOpen(false));
     loginBtn?.addEventListener('click', openLoginModal);
     loginCloseBtn?.addEventListener('click', closeLoginModal);
     loginForm?.addEventListener('submit', event => {
@@ -453,12 +508,29 @@ function bindViewerEvents() {
         }
     });
 
+    commentsLayer?.addEventListener('click', event => {
+        if (event.target === commentsLayer) {
+            setCommentsOverlayOpen(false);
+        }
+    });
+
     viewerEl.addEventListener('touchstart', event => {
+        if (event.target instanceof Element
+            && (event.target.closest('#ninja-viewer-comments')
+                || event.target.closest('#ninja-comments-toggle'))) {
+            ninjaState.touchDeltaX = 0;
+            return;
+        }
         ninjaState.touchStartX = event.changedTouches[0].clientX;
         ninjaState.touchDeltaX = 0;
     });
 
     viewerEl.addEventListener('touchmove', event => {
+        if (event.target instanceof Element
+            && (event.target.closest('#ninja-viewer-comments')
+                || event.target.closest('#ninja-comments-toggle'))) {
+            return;
+        }
         ninjaState.touchDeltaX =
             event.changedTouches[0].clientX - ninjaState.touchStartX;
     });
@@ -469,6 +541,7 @@ function bindViewerEvents() {
         } else if (ninjaState.touchDeltaX >= 40) {
             moveViewer(-1);
         }
+        ninjaState.touchDeltaX = 0;
     });
 
     document.addEventListener('keydown', event => {
@@ -479,6 +552,8 @@ function bindViewerEvents() {
         if (event.key === 'Escape') {
             if (loginModal?.classList.contains('is-open')) {
                 closeLoginModal();
+            } else if (ninjaState.commentsPanelOpen) {
+                setCommentsOverlayOpen(false);
             } else {
                 closeViewer();
             }

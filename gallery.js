@@ -12,6 +12,7 @@ const galleryState = {
     viewerItems: [],
     featuredItems: [],
     currentIndex: 0,
+    commentsPanelOpen: false,
     seenUrls: new Set(),
     touchStartX: 0,
     touchDeltaX: 0,
@@ -441,6 +442,10 @@ function closeViewer() {
     if (stageEl) {
         stageEl.innerHTML = '';
     }
+
+    galleryState.commentsPanelOpen = false;
+    setCommentsOverlayOpen(false);
+    resetCommentsPanel();
 }
 
 function openLoginModal() {
@@ -478,6 +483,44 @@ function setCommentsStatus(message, options = {}) {
     statusEl.hidden = !message;
 }
 
+function setCommentsCount(count) {
+    const value = String(Math.max(0, Number(count) || 0));
+    const ids = ['gallery-comments-count', 'gallery-comments-toggle-count'];
+    ids.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    });
+}
+
+function resetCommentsPanel() {
+    const listEl = document.getElementById('gallery-comments-list');
+    if (listEl) {
+        listEl.innerHTML = '';
+    }
+
+    setCommentsCount(0);
+    setCommentsStatus('');
+}
+
+function setCommentsOverlayOpen(isOpen, options = {}) {
+    const layerEl = document.getElementById('gallery-comments-layer');
+    const toggleBtn = document.getElementById('gallery-comments-toggle');
+    if (!layerEl || !toggleBtn) {
+        return;
+    }
+
+    galleryState.commentsPanelOpen = Boolean(isOpen);
+    layerEl.classList.toggle('is-open', galleryState.commentsPanelOpen);
+    layerEl.setAttribute('aria-hidden', galleryState.commentsPanelOpen ? 'false' : 'true');
+    toggleBtn.setAttribute('aria-expanded', galleryState.commentsPanelOpen ? 'true' : 'false');
+
+    if (galleryState.commentsPanelOpen) {
+        renderCommentsForCurrentItem(options);
+    }
+}
+
 function buildCommentItem(comment) {
     const itemEl = document.createElement('article');
     itemEl.className = 'pedal-comment-item';
@@ -508,9 +551,8 @@ function buildCommentItem(comment) {
 async function renderCommentsForCurrentItem(options = {}) {
     const item = galleryState.viewerItems[galleryState.currentIndex];
     const listEl = document.getElementById('gallery-comments-list');
-    const countEl = document.getElementById('gallery-comments-count');
 
-    if (!item || !listEl || !countEl) {
+    if (!item || !listEl) {
         return;
     }
 
@@ -518,7 +560,7 @@ async function renderCommentsForCurrentItem(options = {}) {
     galleryState.commentsRequestId = requestId;
 
     listEl.innerHTML = '';
-    countEl.textContent = '0';
+    setCommentsCount(0);
     setCommentsStatus('Зареждаме коментари...');
 
     if (!window.PedalComments) {
@@ -536,7 +578,7 @@ async function renderCommentsForCurrentItem(options = {}) {
             return;
         }
 
-        countEl.textContent = String(comments.length);
+        setCommentsCount(comments.length);
 
         if (!comments.length) {
             setCommentsStatus('Още няма коментари.');
@@ -554,7 +596,7 @@ async function renderCommentsForCurrentItem(options = {}) {
 
         console.warn('Gallery comments failed to load:', error);
         listEl.innerHTML = '';
-        countEl.textContent = '0';
+        setCommentsCount(0);
         setCommentsStatus('Не успяхме да заредим коментарите.', { isError: true });
     }
 }
@@ -612,14 +654,19 @@ function renderViewerItem(options = {}) {
         nextBtn.disabled = galleryState.currentIndex >= galleryState.viewerItems.length - 1;
     }
 
-    renderCommentsForCurrentItem({
-        forceRefresh: Boolean(options.forceRefresh),
-    });
+    if (galleryState.commentsPanelOpen) {
+        renderCommentsForCurrentItem({
+            forceRefresh: Boolean(options.forceRefresh),
+        });
+    } else {
+        resetCommentsPanel();
+    }
 }
 
 function openViewer(index, items = galleryState.currentBatch) {
     galleryState.viewerItems = items;
     galleryState.currentIndex = index;
+    galleryState.commentsPanelOpen = false;
 
     const viewerEl = document.getElementById('gallery-viewer');
     if (!viewerEl) {
@@ -629,6 +676,7 @@ function openViewer(index, items = galleryState.currentBatch) {
     viewerEl.classList.add('is-open');
     viewerEl.setAttribute('aria-hidden', 'false');
     document.body.classList.add('viewer-open');
+    setCommentsOverlayOpen(false);
     renderViewerItem();
 }
 
@@ -699,6 +747,9 @@ function bindViewerEvents() {
     const closeBtn = document.getElementById('gallery-viewer-close');
     const prevBtn = document.getElementById('gallery-viewer-prev');
     const nextBtn = document.getElementById('gallery-viewer-next');
+    const commentsToggleBtn = document.getElementById('gallery-comments-toggle');
+    const commentsLayer = document.getElementById('gallery-comments-layer');
+    const commentsCloseBtn = document.getElementById('gallery-comments-close');
     const loginBtn = document.querySelector('.gallery-comments-login');
     const loginModal = document.getElementById('gallery-login-modal');
     const loginCloseBtn = document.getElementById('gallery-login-close');
@@ -711,6 +762,11 @@ function bindViewerEvents() {
     closeBtn?.addEventListener('click', closeViewer);
     prevBtn?.addEventListener('click', () => moveViewer(-1));
     nextBtn?.addEventListener('click', () => moveViewer(1));
+    commentsToggleBtn?.addEventListener('click', event => {
+        event.stopPropagation();
+        setCommentsOverlayOpen(!galleryState.commentsPanelOpen);
+    });
+    commentsCloseBtn?.addEventListener('click', () => setCommentsOverlayOpen(false));
     loginBtn?.addEventListener('click', openLoginModal);
     loginCloseBtn?.addEventListener('click', closeLoginModal);
     loginForm?.addEventListener('submit', event => {
@@ -729,12 +785,29 @@ function bindViewerEvents() {
         }
     });
 
+    commentsLayer?.addEventListener('click', event => {
+        if (event.target === commentsLayer) {
+            setCommentsOverlayOpen(false);
+        }
+    });
+
     viewerEl.addEventListener('touchstart', event => {
+        if (event.target instanceof Element
+            && (event.target.closest('#gallery-viewer-comments')
+                || event.target.closest('#gallery-comments-toggle'))) {
+            galleryState.touchDeltaX = 0;
+            return;
+        }
         galleryState.touchStartX = event.changedTouches[0].clientX;
         galleryState.touchDeltaX = 0;
     });
 
     viewerEl.addEventListener('touchmove', event => {
+        if (event.target instanceof Element
+            && (event.target.closest('#gallery-viewer-comments')
+                || event.target.closest('#gallery-comments-toggle'))) {
+            return;
+        }
         galleryState.touchDeltaX =
             event.changedTouches[0].clientX - galleryState.touchStartX;
     });
@@ -745,6 +818,7 @@ function bindViewerEvents() {
         } else if (galleryState.touchDeltaX >= 40) {
             moveViewer(-1);
         }
+        galleryState.touchDeltaX = 0;
     });
 
     document.addEventListener('keydown', event => {
@@ -755,6 +829,8 @@ function bindViewerEvents() {
         if (event.key === 'Escape') {
             if (loginModal?.classList.contains('is-open')) {
                 closeLoginModal();
+            } else if (galleryState.commentsPanelOpen) {
+                setCommentsOverlayOpen(false);
             } else {
                 closeViewer();
             }

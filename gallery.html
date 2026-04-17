@@ -513,21 +513,44 @@
             background: #000;
         }
 
+        .gallery-comments-layer {
+            position: absolute;
+            inset: 18px;
+            z-index: 4;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .gallery-comments-layer.is-open {
+            pointer-events: auto;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .gallery-comments {
+            width: min(420px, 100%);
+            max-height: min(78%, 520px);
             display: grid;
             gap: 12px;
-            padding: 18px 20px;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(10, 10, 10, 0.94));
-            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+            padding: 18px 18px 16px;
+            border-radius: 26px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(180deg, rgba(18, 18, 18, 0.9), rgba(10, 10, 10, 0.94));
+            box-shadow: 0 24px 44px rgba(0, 0, 0, 0.34);
+            backdrop-filter: blur(18px);
+            overflow: hidden;
         }
 
         .gallery-comments-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 14px;
             flex-wrap: wrap;
         }
 
@@ -545,6 +568,48 @@
             font-size: 1.1rem;
         }
 
+        .gallery-comments-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gallery-comments-toggle {
+            position: absolute;
+            left: 18px;
+            bottom: 18px;
+            z-index: 5;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(8, 8, 8, 0.8);
+            color: #fff;
+            border-radius: 999px;
+            padding: 12px 16px;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+            backdrop-filter: blur(14px);
+            transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
+        }
+
+        .gallery-comments-toggle:hover {
+            transform: translateY(-1px);
+            background: rgba(18, 18, 18, 0.88);
+        }
+
+        .gallery-comments-toggle[aria-expanded="true"] {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+        }
+
+        .gallery-comments-toggle .material-icons-round {
+            color: var(--primary);
+            font-size: 1.05rem;
+        }
+
         .gallery-comments-login {
             border: 1px solid rgba(255, 193, 7, 0.24);
             background: rgba(255, 193, 7, 0.14);
@@ -554,6 +619,18 @@
             font: inherit;
             font-weight: 800;
             cursor: pointer;
+        }
+
+        .gallery-comments-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
         }
 
         .gallery-login-modal {
@@ -679,9 +756,12 @@
         }
 
         .gallery-comments-note {
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.05);
             color: #d7d1c2;
             line-height: 1.6;
-            font-size: 0.96rem;
+            font-size: 0.92rem;
         }
 
         .pedal-comments-count {
@@ -715,16 +795,16 @@
         .pedal-comments-list {
             display: grid;
             gap: 10px;
-            max-height: 260px;
+            max-height: min(280px, 32vh);
             overflow-y: auto;
             padding-right: 4px;
         }
 
         .pedal-comment-item {
             padding: 12px 14px;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .pedal-comment-head {
@@ -831,6 +911,34 @@
                 min-height: 48vh;
                 max-height: 62vh;
             }
+
+            .gallery-comments-layer {
+                inset: 12px;
+                align-items: flex-end;
+                justify-content: stretch;
+            }
+
+            .gallery-comments {
+                width: 100%;
+                max-height: min(68vh, 460px);
+                border-radius: 24px;
+            }
+
+            .gallery-comments-head {
+                align-items: flex-start;
+            }
+
+            .gallery-comments-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .gallery-comments-toggle {
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
@@ -922,23 +1030,35 @@
                     <span class="material-icons-round">chevron_left</span>
                 </button>
                 <div id="gallery-viewer-stage" class="gallery-viewer-stage"></div>
+                <div id="gallery-comments-layer" class="gallery-comments-layer" aria-hidden="true">
+                    <section id="gallery-viewer-comments" class="gallery-comments" role="dialog" aria-label="Коментари">
+                        <div class="gallery-comments-head">
+                            <div class="gallery-comments-title">
+                                <span class="material-icons-round">forum</span>
+                                <span>Коментари</span>
+                                <span id="gallery-comments-count" class="pedal-comments-count">0</span>
+                            </div>
+                            <div class="gallery-comments-actions">
+                                <button class="gallery-comments-login" type="button">Вход</button>
+                                <button id="gallery-comments-close" class="gallery-comments-close" type="button" aria-label="Затвори коментарите">
+                                    <span class="material-icons-round">close</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-comments-note">Влезте с акаунта си в ПЕДАЛ, за да коментирате.</div>
+                        <div id="gallery-comments-status" class="pedal-comments-status" hidden>Зареждаме коментари...</div>
+                        <div id="gallery-comments-list" class="pedal-comments-list" aria-live="polite"></div>
+                    </section>
+                </div>
+                <button id="gallery-comments-toggle" class="gallery-comments-toggle" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="gallery-comments-layer">
+                    <span class="material-icons-round">forum</span>
+                    <span>Коментари</span>
+                    <span id="gallery-comments-toggle-count" class="pedal-comments-count">0</span>
+                </button>
                 <button id="gallery-viewer-next" class="gallery-viewer-nav gallery-viewer-nav-next" type="button" aria-label="Следваща снимка или видео">
                     <span class="material-icons-round">chevron_right</span>
                 </button>
             </div>
-            <section id="gallery-viewer-comments" class="gallery-comments">
-                <div class="gallery-comments-head">
-                    <div class="gallery-comments-title">
-                        <span class="material-icons-round">forum</span>
-                        <span>Коментари</span>
-                        <span id="gallery-comments-count" class="pedal-comments-count">0</span>
-                    </div>
-                    <button class="gallery-comments-login" type="button">Вход</button>
-                </div>
-                <div class="gallery-comments-note">Само регистрирани потребители могат да пишат коментари.</div>
-                <div id="gallery-comments-status" class="pedal-comments-status">Зареждаме коментари...</div>
-                <div id="gallery-comments-list" class="pedal-comments-list" aria-live="polite"></div>
-            </section>
             <div class="gallery-viewer-meta">
                 <div id="gallery-viewer-date" class="gallery-viewer-date"></div>
                 <a id="gallery-viewer-location" class="gallery-viewer-location" href="#" target="_blank" rel="noopener noreferrer"></a>

@@ -3,7 +3,7 @@
         graphqlEndpoint: 'https://5otrnlraozcdni6ekx27cy5exe.appsync-api.eu-central-1.amazonaws.com/graphql',
         apiKey: 'da2-6lagph7zcvfuzicgqenbfvyyqi',
         cacheTtlMs: 2 * 60 * 1000,
-        defaultLimit: 100,
+        defaultLimit: 50,
     });
     const DEBUG_PREFIX = '[PEDAL comments]';
 
@@ -182,7 +182,10 @@
         }
 
         const forceRefresh = Boolean(options.forceRefresh);
-        const limit = Number.isFinite(options.limit) ? options.limit : CONFIG.defaultLimit;
+        const requestedLimit = Number.isFinite(options.limit)
+            ? Math.trunc(options.limit)
+            : CONFIG.defaultLimit;
+        const limit = Math.max(1, Math.min(requestedLimit, CONFIG.defaultLimit));
 
         const cached = commentsCache.get(normalizedMediaKey);
         if (
