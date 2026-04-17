@@ -242,9 +242,25 @@ function closeViewer() {
     viewerEl.classList.remove('is-open');
     viewerEl.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('viewer-open');
+
+    closeLoginModal();
+    ninjaState.commentsRequestId += 1;
     ninjaState.commentsPanelOpen = false;
     setCommentsOverlayOpen(false);
     resetCommentsPanel();
+}
+
+function getAuthState() {
+    return window.PedalAuth?.getAuthState?.() || {
+        isReady: false,
+        isLoading: false,
+        isLoggedIn: false,
+        requiresNewPassword: false,
+        displayName: '',
+        loginId: '',
+        statusMessage: '',
+        errorMessage: '',
+    };
 }
 
 function openLoginModal() {
@@ -253,8 +269,20 @@ function openLoginModal() {
         return;
     }
 
+    const authState = getAuthState();
+    if (authState.isLoggedIn) {
+        document.getElementById('ninja-comment-input')?.focus();
+        return;
+    }
+
     modalEl.classList.add('is-open');
     modalEl.setAttribute('aria-hidden', 'false');
+    syncLoginModalUi(authState);
+
+    const usernameInput = document.getElementById('ninja-login-username');
+    if (usernameInput && !authState.requiresNewPassword) {
+        usernameInput.focus();
+    }
 }
 
 function closeLoginModal() {
@@ -265,6 +293,132 @@ function closeLoginModal() {
 
     modalEl.classList.remove('is-open');
     modalEl.setAttribute('aria-hidden', 'true');
+
+    const passwordInput = document.getElementById('ninja-login-password');
+    if (passwordInput) {
+        passwordInput.value = '';
+    }
+}
+
+function setLoginStatus(message, options = {}) {
+    const statusEl = document.getElementById('ninja-login-status');
+    if (!statusEl) {
+        return;
+    }
+
+    statusEl.className = 'ninja-login-status';
+    if (options.isError) {
+        statusEl.classList.add('is-error');
+    }
+
+    statusEl.textContent = message || '';
+    statusEl.hidden = !message;
+}
+
+function syncLoginModalUi(authState = getAuthState()) {
+    const copyEl = document.querySelector('.ninja-login-copy');
+    const usernameInput = document.getElementById('ninja-login-username');
+    const passwordInput = document.getElementById('ninja-login-password');
+    const passwordLabel = document.getElementById('ninja-login-password-label');
+    const submitBtn = document.getElementById('ninja-login-submit');
+
+    if (copyEl) {
+        copyEl.textContent = authState.requiresNewPassword
+            ? 'Сигурността изисква да зададете нова парола за този профил.'
+            : 'Влезте с акаунта си от апликацията П.Е.Д.А.Л. Ако нямате такъв, изтеглете си апликацията и си направете за да коментирате.';
+    }
+
+    if (usernameInput) {
+        if (authState.requiresNewPassword && authState.loginId) {
+            usernameInput.value = authState.loginId;
+        }
+        usernameInput.disabled = authState.requiresNewPassword || authState.isLoading;
+    }
+
+    if (passwordLabel) {
+        passwordLabel.textContent = authState.requiresNewPassword ? 'Нова парола' : 'Парола';
+    }
+
+    if (passwordInput) {
+        passwordInput.placeholder = authState.requiresNewPassword
+            ? 'Въведете новата парола'
+            : 'Въведете парола';
+        passwordInput.autocomplete = authState.requiresNewPassword ? 'new-password' : 'current-password';
+        passwordInput.disabled = authState.isLoading;
+    }
+
+    if (submitBtn) {
+        submitBtn.disabled = authState.isLoading;
+        submitBtn.textContent = authState.isLoading
+            ? (authState.requiresNewPassword ? 'Запазваме...' : 'Влизаме...')
+            : (authState.requiresNewPassword ? 'Смени парола' : 'Вход');
+    }
+
+    if (authState.errorMessage) {
+        setLoginStatus(authState.errorMessage, { isError: true });
+    } else if (authState.statusMessage) {
+        setLoginStatus(authState.statusMessage);
+    } else {
+        setLoginStatus('');
+    }
+}
+
+function updateComposerCounter() {
+    const inputEl = document.getElementById('ninja-comment-input');
+    const metaEl = document.getElementById('ninja-comments-compose-meta');
+    if (!inputEl || !metaEl) {
+        return;
+    }
+
+    metaEl.textContent = `${inputEl.value.trim().length} / 500`;
+}
+
+function setComposerBusy(isBusy) {
+    const inputEl = document.getElementById('ninja-comment-input');
+    const submitBtn = document.getElementById('ninja-comment-submit');
+    if (inputEl) {
+        inputEl.disabled = isBusy;
+    }
+
+    if (submitBtn) {
+        submitBtn.disabled = isBusy;
+        submitBtn.textContent = isBusy ? 'Публикуваме...' : 'Публикувай';
+    }
+}
+
+function updateCommentsAuthUi(authState = getAuthState()) {
+    const noteEl = document.getElementById('ninja-comments-note');
+    const sessionEl = document.getElementById('ninja-comments-session');
+    const formEl = document.getElementById('ninja-comments-form');
+    const loginBtn = document.querySelector('.ninja-comments-login');
+    const logoutBtn = document.getElementById('ninja-comments-logout');
+
+    if (noteEl) {
+        noteEl.textContent = authState.isLoggedIn
+            ? 'Вече сте влезли и можете да коментирате от същия PEDAL профил като в приложението.'
+            : 'Влезте с акаунта си в ПЕДАЛ, за да коментирате.';
+    }
+
+    if (sessionEl) {
+        sessionEl.hidden = !authState.isLoggedIn;
+        sessionEl.textContent = authState.isLoggedIn
+            ? `Пишете като ${authState.displayName || authState.loginId || 'PEDAL потребител'}.`
+            : '';
+    }
+
+    if (formEl) {
+        formEl.hidden = !authState.isLoggedIn;
+    }
+
+    if (loginBtn) {
+        loginBtn.hidden = authState.isLoggedIn;
+    }
+
+    if (logoutBtn) {
+        logoutBtn.hidden = !authState.isLoggedIn;
+    }
+
+    updateComposerCounter();
 }
 
 function setCommentsStatus(message, options = {}) {
@@ -301,6 +455,8 @@ function resetCommentsPanel() {
 
     setCommentsCount(0);
     setCommentsStatus('');
+    updateCommentsAuthUi();
+    updateComposerCounter();
 }
 
 function setCommentsOverlayOpen(isOpen, options = {}) {
@@ -316,6 +472,7 @@ function setCommentsOverlayOpen(isOpen, options = {}) {
     toggleBtn.setAttribute('aria-expanded', ninjaState.commentsPanelOpen ? 'true' : 'false');
 
     if (ninjaState.commentsPanelOpen) {
+        updateCommentsAuthUi();
         renderCommentsForCurrentItem(options);
     }
 }
@@ -331,6 +488,9 @@ function buildCommentItem(comment) {
     authorEl.className = 'pedal-comment-author';
     authorEl.textContent = comment.usernameSnapshot || 'Потребител';
 
+    const metaEl = document.createElement('div');
+    metaEl.className = 'pedal-comment-meta';
+
     const dateEl = document.createElement('div');
     dateEl.className = 'pedal-comment-date';
     dateEl.textContent = window.PedalComments?.formatCommentDate(comment.createdAt) || '';
@@ -339,16 +499,51 @@ function buildCommentItem(comment) {
     bodyEl.className = 'pedal-comment-body';
     bodyEl.textContent = comment.content || '';
 
+    metaEl.appendChild(dateEl);
+
+    if (window.PedalComments?.canDeleteComment?.(comment)) {
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'pedal-comment-delete';
+        deleteBtn.type = 'button';
+        deleteBtn.textContent = 'Изтрий';
+        deleteBtn.addEventListener('click', async event => {
+            event.stopPropagation();
+            const confirmed = window.confirm('Да изтрием ли този коментар?');
+            if (!confirmed) {
+                return;
+            }
+
+            deleteBtn.disabled = true;
+            deleteBtn.textContent = '...';
+            try {
+                await deleteCurrentComment(comment.id);
+            } finally {
+                deleteBtn.disabled = false;
+                deleteBtn.textContent = 'Изтрий';
+            }
+        });
+        metaEl.appendChild(deleteBtn);
+    }
+
     headEl.appendChild(authorEl);
-    headEl.appendChild(dateEl);
+    headEl.appendChild(metaEl);
     itemEl.appendChild(headEl);
     itemEl.appendChild(bodyEl);
 
     return itemEl;
 }
 
+function getCurrentViewerItem() {
+    return ninjaState.items[ninjaState.currentIndex] || null;
+}
+
+function getCurrentViewerMediaKey() {
+    const item = getCurrentViewerItem();
+    return window.PedalComments?.normalizeMediaKey?.(item?.key || item?.url || '') || '';
+}
+
 async function renderCommentsForCurrentItem(options = {}) {
-    const item = ninjaState.items[ninjaState.currentIndex];
+    const item = getCurrentViewerItem();
     const listEl = document.getElementById('ninja-comments-list');
 
     if (!item || !listEl) {
@@ -361,6 +556,7 @@ async function renderCommentsForCurrentItem(options = {}) {
     listEl.innerHTML = '';
     setCommentsCount(0);
     setCommentsStatus('Зареждаме коментари...');
+    updateCommentsAuthUi();
 
     if (!window.PedalComments) {
         setCommentsStatus('Коментарите временно не са налични.', { isError: true });
@@ -368,7 +564,7 @@ async function renderCommentsForCurrentItem(options = {}) {
     }
 
     try {
-        const mediaKey = window.PedalComments.normalizeMediaKey(item.key || item.url);
+        const mediaKey = getCurrentViewerMediaKey();
         const comments = await window.PedalComments.listComments(mediaKey, {
             forceRefresh: Boolean(options.forceRefresh),
         });
@@ -380,7 +576,7 @@ async function renderCommentsForCurrentItem(options = {}) {
         setCommentsCount(comments.length);
 
         if (!comments.length) {
-            setCommentsStatus('Още няма коментари.');
+            setCommentsStatus(getAuthState().isLoggedIn ? 'Все още няма коментари. Бъдете първи.' : 'Още няма коментари.');
             return;
         }
 
@@ -400,8 +596,128 @@ async function renderCommentsForCurrentItem(options = {}) {
     }
 }
 
+async function submitCurrentComment(event) {
+    event.preventDefault();
+
+    const authState = getAuthState();
+    if (!authState.isLoggedIn) {
+        openLoginModal();
+        return;
+    }
+
+    const inputEl = document.getElementById('ninja-comment-input');
+    if (!inputEl) {
+        return;
+    }
+
+    const content = inputEl.value.trim();
+    if (!content) {
+        setCommentsStatus('Напишете коментар преди публикуване.', { isError: true });
+        return;
+    }
+
+    const mediaKey = getCurrentViewerMediaKey();
+    if (!mediaKey) {
+        setCommentsStatus('Липсва валидна снимка за коментара.', { isError: true });
+        return;
+    }
+
+    setComposerBusy(true);
+    setCommentsStatus('Публикуваме коментара...');
+
+    try {
+        await window.PedalComments.postComment(mediaKey, content);
+        inputEl.value = '';
+        updateComposerCounter();
+        await renderCommentsForCurrentItem({ forceRefresh: true });
+        inputEl.focus();
+    } catch (error) {
+        setCommentsStatus(error?.message || 'Не успяхме да публикуваме коментара.', { isError: true });
+    } finally {
+        setComposerBusy(false);
+    }
+}
+
+async function deleteCurrentComment(commentId) {
+    const mediaKey = getCurrentViewerMediaKey();
+    setCommentsStatus('Изтриваме коментара...');
+
+    try {
+        await window.PedalComments.removeComment(commentId, mediaKey);
+        await renderCommentsForCurrentItem({ forceRefresh: true });
+    } catch (error) {
+        setCommentsStatus(error?.message || 'Не успяхме да изтрием коментара.', { isError: true });
+    }
+}
+
+async function submitLogin(event) {
+    event.preventDefault();
+
+    if (!window.PedalAuth) {
+        setLoginStatus('Входът временно не е наличен.', { isError: true });
+        return;
+    }
+
+    const authState = getAuthState();
+    const usernameInput = document.getElementById('ninja-login-username');
+    const passwordInput = document.getElementById('ninja-login-password');
+    const username = usernameInput?.value || '';
+    const password = passwordInput?.value || '';
+
+    try {
+        if (authState.requiresNewPassword) {
+            await window.PedalAuth.completeNewPassword(password);
+        } else {
+            await window.PedalAuth.signIn(username, password);
+        }
+
+        const nextState = getAuthState();
+        syncLoginModalUi(nextState);
+
+        if (nextState.isLoggedIn) {
+            closeLoginModal();
+            updateCommentsAuthUi(nextState);
+            if (ninjaState.commentsPanelOpen) {
+                await renderCommentsForCurrentItem();
+            }
+            document.getElementById('ninja-comment-input')?.focus();
+            return;
+        }
+
+        if (passwordInput) {
+            passwordInput.value = '';
+        }
+    } catch (error) {
+        setLoginStatus(error?.message || 'Не успяхме да ви впишем.', { isError: true });
+    }
+}
+
+async function logoutCurrentUser() {
+    if (!window.PedalAuth) {
+        return;
+    }
+
+    await window.PedalAuth.signOut();
+    updateCommentsAuthUi();
+    if (ninjaState.commentsPanelOpen) {
+        await renderCommentsForCurrentItem();
+    }
+}
+
+function handleAuthStateChange(authState = getAuthState()) {
+    syncLoginModalUi(authState);
+    updateCommentsAuthUi(authState);
+
+    if (authState.isLoggedIn) {
+        const modalEl = document.getElementById('ninja-login-modal');
+        if (modalEl?.classList.contains('is-open') && !authState.requiresNewPassword) {
+            closeLoginModal();
+        }
+    }
+}
+
 function renderViewerItem(options = {}) {
-    const item = ninjaState.items[ninjaState.currentIndex];
+    const item = getCurrentViewerItem();
     const stageEl = document.getElementById('ninja-viewer-stage');
     const countEl = document.getElementById('ninja-viewer-count');
     const dateEl = document.getElementById('ninja-viewer-date');
@@ -474,9 +790,12 @@ function bindViewerEvents() {
     const commentsLayer = document.getElementById('ninja-comments-layer');
     const commentsCloseBtn = document.getElementById('ninja-comments-close');
     const loginBtn = document.querySelector('.ninja-comments-login');
+    const logoutBtn = document.getElementById('ninja-comments-logout');
     const loginModal = document.getElementById('ninja-login-modal');
     const loginCloseBtn = document.getElementById('ninja-login-close');
     const loginForm = document.querySelector('.ninja-login-form');
+    const commentForm = document.getElementById('ninja-comments-form');
+    const commentInput = document.getElementById('ninja-comment-input');
 
     if (!viewerEl) {
         return;
@@ -491,10 +810,11 @@ function bindViewerEvents() {
     });
     commentsCloseBtn?.addEventListener('click', () => setCommentsOverlayOpen(false));
     loginBtn?.addEventListener('click', openLoginModal);
+    logoutBtn?.addEventListener('click', logoutCurrentUser);
     loginCloseBtn?.addEventListener('click', closeLoginModal);
-    loginForm?.addEventListener('submit', event => {
-        event.preventDefault();
-    });
+    loginForm?.addEventListener('submit', submitLogin);
+    commentForm?.addEventListener('submit', submitCurrentComment);
+    commentInput?.addEventListener('input', updateComposerCounter);
 
     viewerEl.addEventListener('click', event => {
         if (event.target === viewerEl) {
@@ -567,6 +887,14 @@ function bindViewerEvents() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     bindViewerEvents();
+    updateComposerCounter();
+
+    if (window.PedalAuth?.subscribe) {
+        window.PedalAuth.subscribe(handleAuthStateChange);
+        await window.PedalAuth.init();
+    } else {
+        handleAuthStateChange();
+    }
 
     const refreshBtn = document.getElementById('refresh-ninja-btn');
     refreshBtn?.addEventListener('click', () => {

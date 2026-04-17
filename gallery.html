@@ -610,7 +610,8 @@
             font-size: 1.05rem;
         }
 
-        .gallery-comments-login {
+        .gallery-comments-login,
+        .gallery-comments-logout {
             border: 1px solid rgba(255, 193, 7, 0.24);
             background: rgba(255, 193, 7, 0.14);
             color: #fff1c3;
@@ -745,7 +746,7 @@
             cursor: pointer;
         }
 
-        .gallery-login-soon {
+        .gallery-login-status {
             padding: 14px 16px;
             border-radius: 18px;
             background: rgba(255, 193, 7, 0.1);
@@ -755,6 +756,12 @@
             line-height: 1.6;
         }
 
+        .gallery-login-status.is-error {
+            background: rgba(255, 84, 84, 0.08);
+            border-color: rgba(255, 84, 84, 0.22);
+            color: #ffd5d5;
+        }
+
         .gallery-comments-note {
             padding: 12px 14px;
             border-radius: 18px;
@@ -762,6 +769,82 @@
             color: #d7d1c2;
             line-height: 1.6;
             font-size: 0.92rem;
+        }
+
+        .pedal-comments-session {
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.14);
+            color: #fff3cf;
+            line-height: 1.6;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+
+        .pedal-comments-compose {
+            display: grid;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .pedal-comments-compose-label {
+            color: #fff6d7;
+            font-size: 0.84rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .pedal-comments-compose-input {
+            width: 100%;
+            min-height: 94px;
+            resize: vertical;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            padding: 14px 16px;
+            font: inherit;
+            line-height: 1.6;
+        }
+
+        .pedal-comments-compose-input::placeholder {
+            color: rgba(255, 255, 255, 0.38);
+        }
+
+        .pedal-comments-compose-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .pedal-comments-compose-meta {
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .pedal-comments-compose-submit {
+            border: 0;
+            border-radius: 999px;
+            padding: 11px 16px;
+            background: var(--primary);
+            color: #090909;
+            font: inherit;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .pedal-comments-compose-submit:disabled,
+        .gallery-login-submit:disabled {
+            opacity: 0.6;
+            cursor: wait;
         }
 
         .pedal-comments-count {
@@ -795,7 +878,7 @@
         .pedal-comments-list {
             display: grid;
             gap: 10px;
-            max-height: min(280px, 32vh);
+            max-height: min(240px, 28vh);
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -813,6 +896,14 @@
             justify-content: space-between;
             gap: 12px;
             margin-bottom: 6px;
+        }
+
+        .pedal-comment-meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
         .pedal-comment-author {
@@ -833,6 +924,18 @@
             font-size: 0.94rem;
             white-space: pre-wrap;
             word-break: break-word;
+        }
+
+        .pedal-comment-delete {
+            border: 0;
+            border-radius: 999px;
+            padding: 7px 10px;
+            background: rgba(255, 84, 84, 0.14);
+            color: #ffd2d2;
+            font: inherit;
+            font-size: 0.74rem;
+            font-weight: 800;
+            cursor: pointer;
         }
 
         .gallery-viewer-meta {
@@ -1040,12 +1143,22 @@
                             </div>
                             <div class="gallery-comments-actions">
                                 <button class="gallery-comments-login" type="button">Вход</button>
+                                <button id="gallery-comments-logout" class="gallery-comments-logout" type="button" hidden>Изход</button>
                                 <button id="gallery-comments-close" class="gallery-comments-close" type="button" aria-label="Затвори коментарите">
                                     <span class="material-icons-round">close</span>
                                 </button>
                             </div>
                         </div>
-                        <div class="gallery-comments-note">Влезте с акаунта си в ПЕДАЛ, за да коментирате.</div>
+                        <div id="gallery-comments-note" class="gallery-comments-note">Влезте с акаунта си в ПЕДАЛ, за да коментирате.</div>
+                        <div id="gallery-comments-session" class="pedal-comments-session" hidden></div>
+                        <form id="gallery-comments-form" class="pedal-comments-compose" hidden>
+                            <label class="pedal-comments-compose-label" for="gallery-comment-input">Напиши коментар</label>
+                            <textarea id="gallery-comment-input" class="pedal-comments-compose-input" rows="3" maxlength="500" placeholder="Напиши нещо по сигнала..."></textarea>
+                            <div class="pedal-comments-compose-footer">
+                                <div id="gallery-comments-compose-meta" class="pedal-comments-compose-meta">0 / 500</div>
+                                <button id="gallery-comment-submit" class="pedal-comments-compose-submit" type="submit">Публикувай</button>
+                            </div>
+                        </form>
                         <div id="gallery-comments-status" class="pedal-comments-status" hidden>Зареждаме коментари...</div>
                         <div id="gallery-comments-list" class="pedal-comments-list" aria-live="polite"></div>
                     </section>
@@ -1081,21 +1194,23 @@
                 <div class="gallery-login-copy">Влезте с акаунта си от апликацията П.Е.Д.А.Л. Ако нямате такъв, изтеглете си апликацията и си направете за да коментирате.</div>
                 <form class="gallery-login-form">
                     <div class="gallery-login-field">
-                        <label class="gallery-login-label" for="gallery-login-username">Потребителско име</label>
-                        <input id="gallery-login-username" class="gallery-login-input" type="text" placeholder="Въведете потребителско име">
+                        <label id="gallery-login-username-label" class="gallery-login-label" for="gallery-login-username">Имейл или телефон</label>
+                        <input id="gallery-login-username" class="gallery-login-input" type="text" autocomplete="username" placeholder="Въведете имейл или телефон">
                     </div>
                     <div class="gallery-login-field">
-                        <label class="gallery-login-label" for="gallery-login-password">Парола</label>
-                        <input id="gallery-login-password" class="gallery-login-input" type="password" placeholder="Въведете парола">
+                        <label id="gallery-login-password-label" class="gallery-login-label" for="gallery-login-password">Парола</label>
+                        <input id="gallery-login-password" class="gallery-login-input" type="password" autocomplete="current-password" placeholder="Въведете парола">
                     </div>
-                    <button class="gallery-login-submit" type="submit">Вход</button>
+                    <button id="gallery-login-submit" class="gallery-login-submit" type="submit">Вход</button>
                 </form>
-                <div class="gallery-login-soon">Очаквайте скоро</div>
+                <div id="gallery-login-status" class="gallery-login-status" hidden></div>
             </div>
         </div>
     </div>
 
-    <script src="pedal-comments.js?v=2"></script>
-    <script src="gallery.js"></script>
+    <script src="vendor/amazon-cognito-identity.min.js"></script>
+    <script src="pedal-auth.js?v=1"></script>
+    <script src="pedal-comments.js?v=3"></script>
+    <script src="gallery.js?v=1"></script>
 </body>
 </html>

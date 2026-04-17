@@ -414,7 +414,8 @@
             font-size: 1.05rem;
         }
 
-        .ninja-comments-login {
+        .ninja-comments-login,
+        .ninja-comments-logout {
             border: 1px solid rgba(126, 231, 255, 0.24);
             background: rgba(126, 231, 255, 0.14);
             color: #e5fbff;
@@ -549,7 +550,7 @@
             cursor: pointer;
         }
 
-        .ninja-login-soon {
+        .ninja-login-status {
             padding: 14px 16px;
             border-radius: 18px;
             background: rgba(126, 231, 255, 0.1);
@@ -559,6 +560,12 @@
             line-height: 1.6;
         }
 
+        .ninja-login-status.is-error {
+            background: rgba(255, 84, 84, 0.08);
+            border-color: rgba(255, 84, 84, 0.22);
+            color: #ffd8d8;
+        }
+
         .ninja-comments-note {
             padding: 12px 14px;
             border-radius: 18px;
@@ -566,6 +573,82 @@
             color: #d5eef3;
             line-height: 1.6;
             font-size: 0.92rem;
+        }
+
+        .pedal-comments-session {
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: rgba(126, 231, 255, 0.1);
+            border: 1px solid rgba(126, 231, 255, 0.14);
+            color: #dffbff;
+            line-height: 1.6;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+
+        .pedal-comments-compose {
+            display: grid;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .pedal-comments-compose-label {
+            color: #dffbff;
+            font-size: 0.84rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .pedal-comments-compose-input {
+            width: 100%;
+            min-height: 94px;
+            resize: vertical;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            padding: 14px 16px;
+            font: inherit;
+            line-height: 1.6;
+        }
+
+        .pedal-comments-compose-input::placeholder {
+            color: rgba(255, 255, 255, 0.38);
+        }
+
+        .pedal-comments-compose-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .pedal-comments-compose-meta {
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .pedal-comments-compose-submit {
+            border: 0;
+            border-radius: 999px;
+            padding: 11px 16px;
+            background: #7ee7ff;
+            color: #041015;
+            font: inherit;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .pedal-comments-compose-submit:disabled,
+        .ninja-login-submit:disabled {
+            opacity: 0.6;
+            cursor: wait;
         }
 
         .pedal-comments-count {
@@ -599,7 +682,7 @@
         .pedal-comments-list {
             display: grid;
             gap: 10px;
-            max-height: min(280px, 32vh);
+            max-height: min(240px, 28vh);
             overflow-y: auto;
             padding-right: 4px;
         }
@@ -617,6 +700,14 @@
             justify-content: space-between;
             gap: 12px;
             margin-bottom: 6px;
+        }
+
+        .pedal-comment-meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
         .pedal-comment-author {
@@ -637,6 +728,18 @@
             font-size: 0.94rem;
             white-space: pre-wrap;
             word-break: break-word;
+        }
+
+        .pedal-comment-delete {
+            border: 0;
+            border-radius: 999px;
+            padding: 7px 10px;
+            background: rgba(255, 84, 84, 0.14);
+            color: #ffd8d8;
+            font: inherit;
+            font-size: 0.74rem;
+            font-weight: 800;
+            cursor: pointer;
         }
 
         .ninja-viewer-meta {
@@ -808,12 +911,22 @@
                             </div>
                             <div class="ninja-comments-actions">
                                 <button class="ninja-comments-login" type="button">Вход</button>
+                                <button id="ninja-comments-logout" class="ninja-comments-logout" type="button" hidden>Изход</button>
                                 <button id="ninja-comments-close" class="ninja-comments-close" type="button" aria-label="Затвори коментарите">
                                     <span class="material-icons-round">close</span>
                                 </button>
                             </div>
                         </div>
-                        <div class="ninja-comments-note">Влезте с акаунта си в ПЕДАЛ, за да коментирате.</div>
+                        <div id="ninja-comments-note" class="ninja-comments-note">Влезте с акаунта си в ПЕДАЛ, за да коментирате.</div>
+                        <div id="ninja-comments-session" class="pedal-comments-session" hidden></div>
+                        <form id="ninja-comments-form" class="pedal-comments-compose" hidden>
+                            <label class="pedal-comments-compose-label" for="ninja-comment-input">Напиши коментар</label>
+                            <textarea id="ninja-comment-input" class="pedal-comments-compose-input" rows="3" maxlength="500" placeholder="Напиши нещо по снимката..."></textarea>
+                            <div class="pedal-comments-compose-footer">
+                                <div id="ninja-comments-compose-meta" class="pedal-comments-compose-meta">0 / 500</div>
+                                <button id="ninja-comment-submit" class="pedal-comments-compose-submit" type="submit">Публикувай</button>
+                            </div>
+                        </form>
                         <div id="ninja-comments-status" class="pedal-comments-status" hidden>Зареждаме коментари...</div>
                         <div id="ninja-comments-list" class="pedal-comments-list" aria-live="polite"></div>
                     </section>
@@ -848,21 +961,23 @@
                 <div class="ninja-login-copy">Влезте с акаунта си от апликацията П.Е.Д.А.Л. Ако нямате такъв, изтеглете си апликацията и си направете за да коментирате.</div>
                 <form class="ninja-login-form">
                     <div class="ninja-login-field">
-                        <label class="ninja-login-label" for="ninja-login-username">Потребителско име</label>
-                        <input id="ninja-login-username" class="ninja-login-input" type="text" placeholder="Въведете потребителско име">
+                        <label id="ninja-login-username-label" class="ninja-login-label" for="ninja-login-username">Имейл или телефон</label>
+                        <input id="ninja-login-username" class="ninja-login-input" type="text" autocomplete="username" placeholder="Въведете имейл или телефон">
                     </div>
                     <div class="ninja-login-field">
-                        <label class="ninja-login-label" for="ninja-login-password">Парола</label>
-                        <input id="ninja-login-password" class="ninja-login-input" type="password" placeholder="Въведете парола">
+                        <label id="ninja-login-password-label" class="ninja-login-label" for="ninja-login-password">Парола</label>
+                        <input id="ninja-login-password" class="ninja-login-input" type="password" autocomplete="current-password" placeholder="Въведете парола">
                     </div>
-                    <button class="ninja-login-submit" type="submit">Вход</button>
+                    <button id="ninja-login-submit" class="ninja-login-submit" type="submit">Вход</button>
                 </form>
-                <div class="ninja-login-soon">Очаквайте скоро</div>
+                <div id="ninja-login-status" class="ninja-login-status" hidden></div>
             </div>
         </div>
     </div>
 
-    <script src="pedal-comments.js?v=2"></script>
-    <script src="ninja.js"></script>
+    <script src="vendor/amazon-cognito-identity.min.js"></script>
+    <script src="pedal-auth.js?v=1"></script>
+    <script src="pedal-comments.js?v=3"></script>
+    <script src="ninja.js?v=1"></script>
 </body>
 </html>

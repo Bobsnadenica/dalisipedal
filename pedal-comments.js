@@ -4,6 +4,7 @@
         apiKey: 'da2-6lagph7zcvfuzicgqenbfvyyqi',
         cacheTtlMs: 2 * 60 * 1000,
         defaultLimit: 50,
+        maxCommentLength: 500,
     });
     const DEBUG_PREFIX = '[PEDAL comments]';
 
@@ -53,6 +54,27 @@
         }
     `;
 
+    const POST_MEDIA_COMMENT_MUTATION = `
+        mutation PostMediaComment($mediaKey: String!, $content: String!) {
+            postMediaComment(mediaKey: $mediaKey, content: $content) {
+                id
+                mediaKey
+                userId
+                usernameSnapshot
+                content
+                status
+                createdAt
+                updatedAt
+            }
+        }
+    `;
+
+    const REMOVE_MEDIA_COMMENT_MUTATION = `
+        mutation RemoveMediaComment($id: ID!) {
+            removeMediaComment(id: $id)
+        }
+    `;
+
     const commentsCache = new Map();
 
     function logDebug(message, details = {}) {
@@ -90,7 +112,8 @@
             return decodeURIComponent(path);
         }
 
-        return trimmed.startsWith('/') ? trimmed.slice(1) : trimmed;
+        const pathOnly = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed;
+        return decodeURIComponent(pathOnly);
     }
 
     function formatCommentDate(timestamp) {
@@ -111,10 +134,61 @@
         }).format(parsed);
     }
 
+    function getAuthState() {
+        return global.PedalAuth?.getAuthState?.() || null;
+    }
+
+    function getAuthorizationToken() {
+        return global.PedalAuth?.getAuthorizationToken?.() || '';
+    }
+
+    function canDeleteComment(comment) {
+        const authState = getAuthState();
+        if (!authState?.isLoggedIn) {
+            return false;
+        }
+
+        if (authState.isAdmin) {
+            return true;
+        }
+
+        const ownerId = String(comment?.userId || '').trim();
+        if (!ownerId) {
+            return false;
+        }
+
+        const candidates = [
+            authState.userId,
+            authState.sub,
+            authState.email,
+            authState.loginId,
+            authState.cognitoUsername,
+        ]
+            .map(value => String(value || '').trim())
+            .filter(Boolean);
+
+        return candidates.includes(ownerId);
+    }
+
     async function graphQlRequest(document, variables, context = {}) {
+        const headers = {
+            'content-type': 'application/json',
+        };
+
+        if (context.authMode === 'userPool') {
+            if (!context.authorizationToken) {
+                throw new Error('Липсва активна потребителска сесия.');
+            }
+            headers.Authorization = context.authorizationToken;
+        } else if (CONFIG.apiKey) {
+            headers['x-api-key'] = CONFIG.apiKey;
+        }
+
         const requestDetails = {
             endpoint: CONFIG.graphqlEndpoint,
-            hasApiKeyHeader: Boolean(CONFIG.apiKey),
+            authMode: context.authMode || 'apiKey',
+            hasApiKeyHeader: Boolean(headers['x-api-key']),
+            hasAuthorizationHeader: Boolean(headers.Authorization),
             mediaKey: context.mediaKey || null,
         };
 
@@ -127,10 +201,7 @@
                 mode: 'cors',
                 credentials: 'omit',
                 cache: 'no-store',
-                headers: {
-                    'content-type': 'application/json',
-                    'x-api-key': CONFIG.apiKey,
-                },
+                headers,
                 body: JSON.stringify({
                     query: document,
                     variables,
@@ -211,6 +282,7 @@
                 nextToken: null,
             }, {
                 mediaKey: normalizedMediaKey,
+                authMode: 'apiKey',
             });
 
             items = Array.isArray(data.commentsByMediaKey?.items)
@@ -236,6 +308,7 @@
                 nextToken: null,
             }, {
                 mediaKey: normalizedMediaKey,
+                authMode: 'apiKey',
             });
 
             items = Array.isArray(fallbackData.syncMediaComments?.items)
@@ -253,6 +326,68 @@
         return items;
     }
 
+    async function postComment(mediaKey, content) {
+        const normalizedMediaKey = normalizeMediaKey(mediaKey);
+        const trimmedContent = String(content || '').trim();
+
+        if (!normalizedMediaKey) {
+            throw new Error('Липсва валиден media key за коментара.');
+        }
+
+        if (!trimmedContent) {
+            throw new Error('Напишете коментар.');
+        }
+
+        if (trimmedContent.length > CONFIG.maxCommentLength) {
+            throw new Error(`Коментарът не може да е над ${CONFIG.maxCommentLength} символа.`);
+        }
+
+        const authorizationToken = getAuthorizationToken();
+        if (!authorizationToken) {
+            throw new Error('Трябва да сте влезли в профила си.');
+        }
+
+        const data = await graphQlRequest(POST_MEDIA_COMMENT_MUTATION, {
+            mediaKey: normalizedMediaKey,
+            content: trimmedContent,
+        }, {
+            authMode: 'userPool',
+            authorizationToken,
+            mediaKey: normalizedMediaKey,
+        });
+
+        clearCommentsCache(normalizedMediaKey);
+        return data.postMediaComment || null;
+    }
+
+    async function removeComment(id, mediaKey = '') {
+        const commentId = String(id || '').trim();
+        if (!commentId) {
+            throw new Error('Липсва id на коментара.');
+        }
+
+        const authorizationToken = getAuthorizationToken();
+        if (!authorizationToken) {
+            throw new Error('Трябва да сте влезли в профила си.');
+        }
+
+        const normalizedMediaKey = normalizeMediaKey(mediaKey);
+
+        const data = await graphQlRequest(REMOVE_MEDIA_COMMENT_MUTATION, {
+            id: commentId,
+        }, {
+            authMode: 'userPool',
+            authorizationToken,
+            mediaKey: normalizedMediaKey,
+        });
+
+        if (normalizedMediaKey) {
+            clearCommentsCache(normalizedMediaKey);
+        }
+
+        return Boolean(data.removeMediaComment);
+    }
+
     function clearCommentsCache(mediaKey) {
         if (!mediaKey) {
             commentsCache.clear();
@@ -264,8 +399,11 @@
 
     global.PedalComments = {
         listComments,
+        postComment,
+        removeComment,
         clearCommentsCache,
         normalizeMediaKey,
         formatCommentDate,
+        canDeleteComment,
     };
 })(window);
