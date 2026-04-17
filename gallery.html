@@ -120,6 +120,171 @@
             line-height: 1.65;
         }
 
+        .gallery-featured-section {
+            margin-bottom: 30px;
+        }
+
+        .gallery-featured-head {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .gallery-featured-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffe39b;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .gallery-featured-heading {
+            font-size: 1.6rem;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+        }
+
+        .gallery-featured-copy {
+            color: var(--text-muted);
+            max-width: 720px;
+            line-height: 1.7;
+        }
+
+        .gallery-featured-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .featured-pedal-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            min-height: 340px;
+            background: #090909;
+            box-shadow: 0 22px 42px rgba(0, 0, 0, 0.24);
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+            outline: none;
+        }
+
+        .featured-pedal-card:hover,
+        .featured-pedal-card:focus-visible {
+            transform: translateY(-4px);
+            box-shadow: 0 26px 52px rgba(0, 0, 0, 0.28);
+        }
+
+        .featured-pedal-card.week:hover,
+        .featured-pedal-card.week:focus-visible {
+            border-color: rgba(255, 193, 7, 0.32);
+        }
+
+        .featured-pedal-card.month:hover,
+        .featured-pedal-card.month:focus-visible {
+            border-color: rgba(175, 82, 222, 0.36);
+        }
+
+        .featured-pedal-media {
+            position: absolute;
+            inset: 0;
+            background: #050505;
+        }
+
+        .featured-pedal-media::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(5, 5, 5, 0.08) 0%, rgba(5, 5, 5, 0.42) 46%, rgba(5, 5, 5, 0.94) 100%);
+            pointer-events: none;
+        }
+
+        .featured-pedal-media img,
+        .featured-pedal-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            background: #000;
+        }
+
+        .featured-pedal-overlay {
+            position: relative;
+            z-index: 1;
+            min-height: 340px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 18px;
+        }
+
+        .featured-pedal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            align-self: flex-start;
+            padding: 8px 12px;
+            border-radius: 999px;
+            color: #fff;
+            font-size: 0.76rem;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+        }
+
+        .featured-pedal-badge.week {
+            background: rgba(255, 193, 7, 0.22);
+            border: 1px solid rgba(255, 193, 7, 0.24);
+            color: #fff0bf;
+        }
+
+        .featured-pedal-badge.month {
+            background: rgba(175, 82, 222, 0.22);
+            border: 1px solid rgba(175, 82, 222, 0.24);
+            color: #f3ddff;
+        }
+
+        .featured-pedal-content {
+            display: grid;
+            gap: 10px;
+        }
+
+        .featured-pedal-date {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .featured-pedal-title {
+            font-size: 1.42rem;
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+        }
+
+        .featured-pedal-subtitle {
+            color: rgba(255, 255, 255, 0.74);
+            font-size: 0.96rem;
+            line-height: 1.6;
+            max-width: 32ch;
+        }
+
+        .featured-pedal-open {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            align-self: flex-start;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 0.84rem;
+            font-weight: 800;
+        }
+
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -629,6 +794,10 @@
             .gallery-title {
                 font-size: 2.35rem;
             }
+
+            .gallery-featured-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 520px) {
@@ -643,6 +812,15 @@
 
             .gallery-title {
                 font-size: 2rem;
+            }
+
+            .gallery-featured-heading {
+                font-size: 1.34rem;
+            }
+
+            .featured-pedal-card,
+            .featured-pedal-overlay {
+                min-height: 300px;
             }
 
             .gallery-viewer {
@@ -712,6 +890,20 @@
                     Зареждаме публичния manifest...
                 </div>
             </div>
+        </section>
+
+        <section id="gallery-featured-section" class="gallery-featured-section" hidden>
+            <div class="gallery-featured-head">
+                <div class="gallery-featured-kicker">
+                    <span class="material-icons-round">workspace_premium</span>
+                    <span>Избрани от приложението</span>
+                </div>
+                <h2 class="gallery-featured-heading">П.Е.Д.А.Л. на седмицата и П.Е.Д.А.Л. на месеца</h2>
+                <p class="gallery-featured-copy">
+                    Същите специално избрани кадри, които показвате и в приложението.
+                </p>
+            </div>
+            <div id="gallery-featured-grid" class="gallery-featured-grid" aria-live="polite"></div>
         </section>
 
         <section id="gallery-grid" class="gallery-grid" aria-live="polite"></section>

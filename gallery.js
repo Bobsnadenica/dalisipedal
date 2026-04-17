@@ -9,12 +9,31 @@ const GALLERY_CONFIG = Object.freeze({
 const galleryState = {
     manifestItems: [],
     currentBatch: [],
+    viewerItems: [],
+    featuredItems: [],
     currentIndex: 0,
     seenUrls: new Set(),
     touchStartX: 0,
     touchDeltaX: 0,
     commentsRequestId: 0,
 };
+
+const FEATURED_PEDAL_COPY = Object.freeze({
+    week: {
+        cardClass: 'week',
+        badgeIcon: 'wb_sunny',
+        badgeText: 'Седмицата',
+        title: '☀️ П.Е.Д.А.Л. на Седмицата',
+        subtitle: 'Избрана изцепка за седмицата',
+    },
+    month: {
+        cardClass: 'month',
+        badgeIcon: 'emoji_events',
+        badgeText: 'Месеца',
+        title: '🏆 П.Е.Д.А.Л. на Месеца',
+        subtitle: 'Шампионът на нахалството',
+    },
+});
 
 function isVideoFile(item) {
     return Boolean(item?.isVideo);
@@ -48,8 +67,19 @@ function formatDate(timestamp) {
     }).format(parsed);
 }
 
+function getItemTimestamp(item) {
+    return item?.timestamp || item?.lastModified || '';
+}
+
 function getLocationLabel(item) {
     return item.locationLabel || item.location || 'Локацията не е налична';
+}
+
+function hasLocationData(item) {
+    const label = item?.locationLabel || item?.location;
+    return Boolean(label) || (
+        Number.isFinite(item?.latitude) && Number.isFinite(item?.longitude)
+    );
 }
 
 function getMapsQuery(item) {
@@ -233,7 +263,7 @@ function buildCard(item, index) {
 
     const date = document.createElement('div');
     date.className = 'gallery-date';
-    date.textContent = formatDate(item.timestamp);
+    date.textContent = formatDate(getItemTimestamp(item));
 
     const location = document.createElement('a');
     location.className = 'gallery-location';
@@ -265,6 +295,118 @@ function buildCard(item, index) {
     card.appendChild(body);
 
     return card;
+}
+
+function normalizeFeaturedItem(kind, item) {
+    if (!item?.url) {
+        return null;
+    }
+
+    const copy = FEATURED_PEDAL_COPY[kind];
+    if (!copy) {
+        return null;
+    }
+
+    return {
+        ...item,
+        featuredKind: kind,
+        featuredTitle: copy.title,
+        featuredSubtitle: copy.subtitle,
+        featuredBadgeText: copy.badgeText,
+        featuredBadgeIcon: copy.badgeIcon,
+        featuredCardClass: copy.cardClass,
+    };
+}
+
+function buildFeaturedCard(item, index) {
+    const card = document.createElement('article');
+    card.className = `featured-pedal-card ${item.featuredCardClass}`;
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.addEventListener('click', () => openViewer(index, galleryState.featuredItems));
+    card.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openViewer(index, galleryState.featuredItems);
+        }
+    });
+
+    const media = document.createElement('div');
+    media.className = 'featured-pedal-media';
+    media.appendChild(createMediaPreview(item));
+
+    const overlay = document.createElement('div');
+    overlay.className = 'featured-pedal-overlay';
+
+    const badge = document.createElement('div');
+    badge.className = `featured-pedal-badge ${item.featuredCardClass}`;
+    badge.innerHTML = `
+        <span class="material-icons-round">${item.featuredBadgeIcon}</span>
+        <span>${item.featuredBadgeText}</span>
+    `;
+
+    const content = document.createElement('div');
+    content.className = 'featured-pedal-content';
+
+    const date = document.createElement('div');
+    date.className = 'featured-pedal-date';
+    date.textContent = formatDate(getItemTimestamp(item));
+
+    const title = document.createElement('div');
+    title.className = 'featured-pedal-title';
+    title.textContent = item.featuredTitle;
+
+    const subtitle = document.createElement('div');
+    subtitle.className = 'featured-pedal-subtitle';
+    subtitle.textContent = item.featuredSubtitle;
+
+    const open = document.createElement('div');
+    open.className = 'featured-pedal-open';
+    open.innerHTML = `
+        <span class="material-icons-round">open_in_full</span>
+        <span>Отвори</span>
+    `;
+
+    content.appendChild(date);
+    content.appendChild(title);
+    content.appendChild(subtitle);
+    content.appendChild(open);
+
+    overlay.appendChild(badge);
+    overlay.appendChild(content);
+
+    card.appendChild(media);
+    card.appendChild(overlay);
+
+    return card;
+}
+
+function renderFeaturedSection(featured) {
+    const sectionEl = document.getElementById('gallery-featured-section');
+    const gridEl = document.getElementById('gallery-featured-grid');
+
+    if (!sectionEl || !gridEl) {
+        return;
+    }
+
+    const items = [
+        normalizeFeaturedItem('week', featured?.week),
+        normalizeFeaturedItem('month', featured?.month),
+    ].filter(Boolean);
+
+    galleryState.featuredItems = items;
+
+    if (!items.length) {
+        sectionEl.hidden = true;
+        gridEl.innerHTML = '';
+        return;
+    }
+
+    sectionEl.hidden = false;
+    gridEl.innerHTML = '';
+    items.forEach((item, index) => {
+        gridEl.appendChild(buildFeaturedCard(item, index));
+    });
 }
 
 function renderGallery(items) {
@@ -364,7 +506,7 @@ function buildCommentItem(comment) {
 }
 
 async function renderCommentsForCurrentItem(options = {}) {
-    const item = galleryState.currentBatch[galleryState.currentIndex];
+    const item = galleryState.viewerItems[galleryState.currentIndex];
     const listEl = document.getElementById('gallery-comments-list');
     const countEl = document.getElementById('gallery-comments-count');
 
@@ -418,7 +560,7 @@ async function renderCommentsForCurrentItem(options = {}) {
 }
 
 function renderViewerItem(options = {}) {
-    const item = galleryState.currentBatch[galleryState.currentIndex];
+    const item = galleryState.viewerItems[galleryState.currentIndex];
     const stageEl = document.getElementById('gallery-viewer-stage');
     const dateEl = document.getElementById('gallery-viewer-date');
     const locationEl = document.getElementById('gallery-viewer-location');
@@ -449,17 +591,25 @@ function renderViewerItem(options = {}) {
         stageEl.appendChild(image);
     }
 
-    dateEl.textContent = formatDate(item.timestamp);
-    locationEl.textContent = getLocationLabel(item);
-    locationEl.href = getMapsUrl(item);
-    countEl.textContent = `${galleryState.currentIndex + 1} / ${galleryState.currentBatch.length}`;
+    dateEl.textContent = formatDate(getItemTimestamp(item));
+    countEl.textContent = `${galleryState.currentIndex + 1} / ${galleryState.viewerItems.length}`;
+
+    if (hasLocationData(item)) {
+        locationEl.hidden = false;
+        locationEl.textContent = getLocationLabel(item);
+        locationEl.href = getMapsUrl(item);
+    } else {
+        locationEl.hidden = true;
+        locationEl.textContent = '';
+        locationEl.removeAttribute('href');
+    }
 
     if (prevBtn) {
         prevBtn.disabled = galleryState.currentIndex === 0;
     }
 
     if (nextBtn) {
-        nextBtn.disabled = galleryState.currentIndex >= galleryState.currentBatch.length - 1;
+        nextBtn.disabled = galleryState.currentIndex >= galleryState.viewerItems.length - 1;
     }
 
     renderCommentsForCurrentItem({
@@ -467,7 +617,8 @@ function renderViewerItem(options = {}) {
     });
 }
 
-function openViewer(index) {
+function openViewer(index, items = galleryState.currentBatch) {
+    galleryState.viewerItems = items;
     galleryState.currentIndex = index;
 
     const viewerEl = document.getElementById('gallery-viewer');
@@ -483,7 +634,7 @@ function openViewer(index) {
 
 function moveViewer(step) {
     const nextIndex = galleryState.currentIndex + step;
-    if (nextIndex < 0 || nextIndex >= galleryState.currentBatch.length) {
+    if (nextIndex < 0 || nextIndex >= galleryState.viewerItems.length) {
         return;
     }
 
@@ -495,6 +646,7 @@ async function loadManifest() {
     try {
         const payload = await fetchManifest();
         galleryState.manifestItems = payload.items;
+        renderFeaturedSection(payload.featured);
         updateSummary(payload, 'network');
         saveManifestToCache({
             ...payload,
@@ -510,10 +662,12 @@ async function loadManifest() {
 
         if (cacheIsFresh) {
             galleryState.manifestItems = cached.items;
+            renderFeaturedSection(cached.featured);
             updateSummary(cached, 'cache');
             return true;
         }
 
+        renderFeaturedSection(null);
         renderEmptyState('Не успяхме да заредим публичния manifest. Опитай пак след малко.');
         const summaryEl = document.getElementById('gallery-summary');
         if (summaryEl) {

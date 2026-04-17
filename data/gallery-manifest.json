@@ -2,6 +2,20 @@
   "version": 1,
   "generatedAt": "2026-04-16T20:28:28.086Z",
   "itemCount": 498,
+  "featured": {
+    "week": {
+      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1775381185024.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1775381185024.jpg",
+      "lastModified": "2026-04-05T09:26:26.000Z",
+      "isVideo": false
+    },
+    "month": {
+      "key": "pedal_of_the_month/pedal_1775381235327.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1775381235327.jpg",
+      "lastModified": "2026-04-05T09:27:16.000Z",
+      "isVideo": false
+    }
+  },
   "items": [
     {
       "key": "approved/CO/5647BP/20260415_145631_145bdc.jpg",

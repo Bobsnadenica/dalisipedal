@@ -17,6 +17,8 @@ const CLOUD_FRONT_BASE_URL = 'https://d3g9kruk81dvbk.cloudfront.net';
 const AWS_REGION = process.env.PEDAL_AWS_REGION || 'eu-central-1';
 const GALLERY_LIMIT = 600;
 const NINJA_LIMIT = 50;
+const FEATURED_MONTH_PREFIX = 'pedal_of_the_month/';
+const FEATURED_WEEK_PREFIX = 'pedal_of_the_month/pedal_of_the_day/';
 const GEOCODE_DELAY_MS = 1100;
 const MANIFEST_VERSION = 1;
 const APP_USER_AGENT =
@@ -324,7 +326,11 @@ function isSupportedNinjaFile(fileName) {
     return /\.(jpg|jpeg|png|webp)$/i.test(fileName);
 }
 
-async function buildGalleryManifest(config, geocodeCache) {
+function isSupportedFeaturedFile(fileName) {
+    return /\.(jpg|jpeg|png|webp|mp4|mov|m4v|webm)$/i.test(fileName);
+}
+
+async function buildGalleryManifest(config, geocodeCache, featured = null) {
     const rawItems = await fetchAllPhotoMetadata(config);
     const unique = new Map();
     let processedCoords = 0;
@@ -380,6 +386,10 @@ async function buildGalleryManifest(config, geocodeCache) {
         version: MANIFEST_VERSION,
         generatedAt: new Date().toISOString(),
         itemCount: items.length,
+        featured: featured || {
+            week: null,
+            month: null,
+        },
         items,
     };
 }
@@ -515,17 +525,16 @@ async function listS3Objects({ bucketName, credentials, prefix, continuationToke
     return parseS3ListXml(await response.text());
 }
 
-async function buildNinjaManifest(config) {
-    const credentials = await getGuestCredentials(config.identityPoolId);
+async function listAllS3Objects({ bucketName, credentials, prefix }) {
     const objects = [];
     let continuationToken = '';
     let hasMore = true;
 
     while (hasMore) {
         const page = await listS3Objects({
-            bucketName: config.bucketName,
+            bucketName,
             credentials,
-            prefix: 'approved/ninja/',
+            prefix,
             continuationToken,
         });
 
@@ -533,6 +542,67 @@ async function buildNinjaManifest(config) {
         hasMore = page.isTruncated && Boolean(page.nextContinuationToken);
         continuationToken = page.nextContinuationToken;
     }
+
+    return objects;
+}
+
+function buildFeaturedPedalEntry(objects, { prefix, excludeSubPaths = false }) {
+    const items = objects
+        .filter(item => item.Key && item.Size > 0 && isSupportedFeaturedFile(item.Key))
+        .filter(item => {
+            if (!excludeSubPaths) {
+                return true;
+            }
+
+            const relativePath = item.Key.slice(prefix.length);
+            return !relativePath.includes('/');
+        })
+        .sort((left, right) => new Date(right.LastModified) - new Date(left.LastModified));
+
+    if (!items.length) {
+        return null;
+    }
+
+    const latest = items[0];
+    return {
+        key: latest.Key,
+        url: `${CLOUD_FRONT_BASE_URL}/${encodeCloudFrontKey(latest.Key)}`,
+        lastModified: latest.LastModified,
+        isVideo: /\.(mp4|mov|m4v|webm)$/i.test(latest.Key),
+    };
+}
+
+async function buildGalleryFeatured(config, credentials) {
+    const [monthObjects, weekObjects] = await Promise.all([
+        listAllS3Objects({
+            bucketName: config.bucketName,
+            credentials,
+            prefix: FEATURED_MONTH_PREFIX,
+        }),
+        listAllS3Objects({
+            bucketName: config.bucketName,
+            credentials,
+            prefix: FEATURED_WEEK_PREFIX,
+        }),
+    ]);
+
+    return {
+        week: buildFeaturedPedalEntry(weekObjects, {
+            prefix: FEATURED_WEEK_PREFIX,
+        }),
+        month: buildFeaturedPedalEntry(monthObjects, {
+            prefix: FEATURED_MONTH_PREFIX,
+            excludeSubPaths: true,
+        }),
+    };
+}
+
+async function buildNinjaManifest(config, credentials) {
+    const objects = await listAllS3Objects({
+        bucketName: config.bucketName,
+        credentials,
+        prefix: 'approved/ninja/',
+    });
 
     const items = objects
         .filter(item => item.Key && item.Size > 0 && isSupportedNinjaFile(item.Key))
@@ -555,14 +625,22 @@ async function buildNinjaManifest(config) {
 async function main() {
     const config = await loadConfig();
     const geocodeCache = await loadJsonFile(geocodeCachePath, {});
+    const guestCredentials = await getGuestCredentials(config.identityPoolId);
+
+    console.log('Building featured PEDAL picks...');
+    const galleryFeatured = await buildGalleryFeatured(config, guestCredentials);
 
     console.log('Building gallery manifest...');
-    const galleryManifest = await buildGalleryManifest(config, geocodeCache);
+    const galleryManifest = await buildGalleryManifest(
+        config,
+        geocodeCache,
+        galleryFeatured
+    );
     await saveJsonFile(galleryManifestPath, galleryManifest);
     await saveJsonFile(geocodeCachePath, geocodeCache);
 
     console.log('Building ninja manifest...');
-    const ninjaManifest = await buildNinjaManifest(config);
+    const ninjaManifest = await buildNinjaManifest(config, guestCredentials);
     await saveJsonFile(ninjaManifestPath, ninjaManifest);
     await saveJsonFile(geocodeCachePath, geocodeCache);
 
@@ -571,6 +649,8 @@ async function main() {
             {
                 galleryItems: galleryManifest.itemCount,
                 ninjaItems: ninjaManifest.itemCount,
+                featuredWeek: galleryManifest.featured?.week?.key ?? null,
+                featuredMonth: galleryManifest.featured?.month?.key ?? null,
                 generatedAt: galleryManifest.generatedAt,
             },
             null,
