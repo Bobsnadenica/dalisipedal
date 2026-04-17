@@ -213,9 +213,9 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.2s ease;
-            display: grid;
-            place-items: center;
+            display: block;
             padding: 24px;
+            overflow-y: auto;
         }
 
         .ninja-viewer.is-open {
@@ -225,7 +225,9 @@
 
         .ninja-viewer-shell {
             width: min(100%, 1080px);
+            margin: 0 auto;
             display: grid;
+            align-content: start;
             gap: 18px;
         }
 
