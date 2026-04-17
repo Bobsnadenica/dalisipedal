@@ -89,6 +89,15 @@ function formatDemoDate(timestamp) {
     }).format(parsed);
 }
 
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 function maskPlateFromKey(key) {
     const parts = (key || '').split('/');
     const region = parts[1] || 'BG';
@@ -198,21 +207,40 @@ function openMySignals() {
 
         DB.forEach(item => {
             const statusClass = item.status === 'approved' ? 'approved' : 'pending';
-            const statusText = item.status === 'approved' ? 'Одобрен' : 'Обработка';
+            const statusIcon = item.status === 'approved' ? 'cloud_done' : 'edit_note';
+            const statusText = item.status === 'approved' ? 'Качен в ПЕДАЛ' : 'Чернова (локален)';
+            const footerText = item.status === 'approved' ? 'Публичен сигнал' : 'Изчаква обработка';
+            const safeImg = escapeHtml(item.img);
+            const safePlate = escapeHtml(item.plate);
+            const safeDate = escapeHtml(item.date);
+            const safeLocation = escapeHtml(item.location || 'Локацията не е налична');
 
             const html = `
                 <div class="signal-item" onclick="openViewer(${item.id})">
-                    <img src="${item.img}" alt="signal">
+                    <div class="signal-thumb">
+                        <img src="${safeImg}" alt="${safePlate}">
+                    </div>
                     <div class="signal-info">
                         <div class="signal-top">
-                            <span class="plate-badge">${item.plate}</span>
+                            <span class="plate-badge">
+                                <span class="plate-badge-bar"></span>
+                                <span class="plate-badge-text">${safePlate}</span>
+                            </span>
+                            <span class="signal-date">${safeDate}</span>
+                        </div>
+                        <div class="signal-status-row">
+                            <span class="material-icons-round signal-status-icon ${statusClass}">${statusIcon}</span>
                             <span class="status-text ${statusClass}">${statusText}</span>
                         </div>
-                        <div class="signal-date">${item.date}</div>
+                        <div class="signal-location" title="${safeLocation}">${safeLocation}</div>
+                        <div class="signal-footer">
+                            <span class="signal-footer-badge ${statusClass}">${footerText}</span>
+                            <span class="material-icons-round signal-chevron">chevron_right</span>
+                        </div>
                     </div>
                 </div>
             `;
-            container.innerHTML += html;
+            container.insertAdjacentHTML('beforeend', html);
         });
 
         setView('mysignals');
