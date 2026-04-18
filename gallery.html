@@ -1024,12 +1024,12 @@
             }
 
             .gallery-viewer {
-                padding: 16px;
+                padding: 12px;
             }
 
             .gallery-viewer-stage {
-                min-height: 48vh;
-                max-height: 62vh;
+                min-height: 68vh;
+                max-height: 76vh;
             }
 
             .gallery-comments-layer {
@@ -1043,16 +1043,73 @@
                 height: 100%;
                 max-height: none;
                 border-radius: 24px;
-                padding: 18px 16px 16px;
+                padding: 14px 14px 12px;
+                gap: 8px;
             }
 
             .gallery-comments-head {
-                align-items: flex-start;
+                align-items: center;
+                flex-wrap: nowrap;
+                padding-bottom: 8px;
             }
 
             .gallery-comments-actions {
-                width: 100%;
-                justify-content: space-between;
+                width: auto;
+                justify-content: flex-end;
+                gap: 8px;
+                margin-left: auto;
+            }
+
+            .gallery-comments-title {
+                min-width: 0;
+                gap: 8px;
+                font-size: 0.95rem;
+            }
+
+            .gallery-comments-login,
+            .gallery-comments-logout {
+                padding: 8px 12px;
+                font-size: 0.78rem;
+            }
+
+            .gallery-comments-close {
+                width: 36px;
+                height: 36px;
+            }
+
+            .gallery-comments-note,
+            .pedal-comments-session {
+                padding: 6px 10px;
+                font-size: 0.74rem;
+            }
+
+            .pedal-comments-compose {
+                padding: 10px 10px 12px;
+                gap: 8px;
+            }
+
+            .pedal-comments-compose-input {
+                min-height: 46px;
+                max-height: 88px;
+                padding: 10px 12px;
+            }
+
+            .pedal-comments-compose-meta {
+                display: none;
+            }
+
+            .pedal-comments-status {
+                padding: 8px 10px;
+                font-size: 0.78rem;
+            }
+
+            .pedal-comment-item {
+                padding: 10px 12px;
+            }
+
+            .pedal-comment-body {
+                font-size: 0.9rem;
+                line-height: 1.5;
             }
 
             .gallery-comments-toggle {

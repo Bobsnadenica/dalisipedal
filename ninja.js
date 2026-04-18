@@ -401,7 +401,7 @@ function updateCommentsAuthUi(authState = getAuthState()) {
     if (sessionEl) {
         sessionEl.hidden = !authState.isLoggedIn;
         sessionEl.textContent = authState.isLoggedIn
-            ? `Влезли сте като ${authState.displayName || authState.loginId || 'PEDAL потребител'}`
+            ? `${authState.displayName || authState.loginId || 'PEDAL профил'}`
             : '';
         sessionEl.title = sessionEl.textContent;
     }
