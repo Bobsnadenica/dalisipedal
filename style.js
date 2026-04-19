@@ -17,6 +17,31 @@ const demoState = {
     featuredDay: null,
     featuredMonth: null,
     loadPromise: null,
+    plan: 'FREE',
+    isLoggedIn: true,
+    username: 'dalisi.demo',
+    chatMessages: [
+        {
+            role: 'bot',
+            text: 'Здрасти. Аз съм PEDAL demo асистентът. Питай ме за upgrade, камери, сигнали или игрите.',
+        },
+    ],
+    activeGame: 'parking',
+    parkingGame: {
+        order: [],
+        round: 0,
+        score: 0,
+        selectedOption: null,
+        complete: false,
+    },
+    radarGame: {
+        active: false,
+        score: 0,
+        timeLeft: 20,
+        targetIndex: -1,
+        timerId: null,
+        spawnId: null,
+    },
 };
 
 
@@ -24,8 +49,109 @@ let map = null;
 let userMarker = null;
 let signalsGenerated = false;
 let secretPin = "";
+let camsMap = null;
+let camsLayer = null;
+let chatReplyTimeout = null;
+
+const DEMO_PLANS = [
+    {
+        id: 'FREE',
+        name: 'FREE',
+        price: '0 лв',
+        accent: 'default',
+        copy: 'Базовият достъп за ежедневни сигнали и разглеждане.',
+        features: ['Произволни сигнали', 'Карта и камери', 'Чат помощник'],
+    },
+    {
+        id: 'PRO',
+        name: 'PRO',
+        price: '7.99 лв',
+        accent: 'pro',
+        copy: 'По-бърз workflow, приоритетен изглед и по-богат профил.',
+        features: ['Приоритетен upload flow', 'Повече статистики', 'PRO значка в профила'],
+    },
+    {
+        id: 'ULTRA',
+        name: 'ULTRA',
+        price: '14.99 лв',
+        accent: 'ultra',
+        copy: 'За хората, които натискат системата всеки ден.',
+        features: ['Ранен достъп до нови модули', 'Разширени heatmaps', 'ULTRA значка'],
+    },
+];
+
+const SPEED_CAMERAS = [
+    { id: 'orlov', loc: 'Цариградско шосе (Орлов мост)', limit: 50, lat: 42.6926, lng: 23.3349, zone: 'Център' },
+    { id: 'ndk', loc: 'Бул. България (НДК)', limit: 50, lat: 42.6853, lng: 23.3187, zone: 'НДК' },
+    { id: 'boyana', loc: 'Околовръстен път (Бояна)', limit: 80, lat: 42.6407, lng: 23.2679, zone: 'Южен ринг' },
+    { id: 'trakia', loc: 'АМ Тракия (Изход София)', limit: 140, lat: 42.6716, lng: 23.4704, zone: 'Изход София' },
+];
+
+const SURVEY_PREVIEWS = [
+    { title: 'Къде паркирането е най-проблемно?', detail: 'Център, училища и големи булеварди', status: 'Очаквайте скоро' },
+    { title: 'Има ли смисъл от гражданските сигнали?', detail: 'Ще събираме публични отговори и тенденции', status: 'Подготовка' },
+    { title: 'Кои функции искате следващи?', detail: 'Анкети за карта, коментари и локални инициативи', status: 'Алфа модул' },
+];
+
+const PARTNER_PREVIEWS = [
+    { title: 'Национална петиция за по-строг контрол', detail: 'Ще събираме подкрепа и партньорски организации в един общ модул.' },
+    { title: 'Граждански организации', detail: 'Местни общности, квартални инициативи и доброволци.' },
+    { title: 'Медийни и институционални партньори', detail: 'Канал за видимост, натиск и реални резултати.' },
+];
+
+const PARKING_SCENARIOS = [
+    {
+        title: 'Сутрешен блок',
+        prompt: 'Къде паркираш, без да пречиш на всички?',
+        options: [
+            { label: 'Върху тротоара', correct: false, feedback: 'Тротоарът е за пешеходци, не за бърз тарикатлък.' },
+            { label: 'В очертана зона', correct: true, feedback: 'Точно така. Ползваш маркираното място и никого не блокираш.' },
+            { label: 'Пред гаража', correct: false, feedback: 'Пред гараж е сигурен начин да влезеш в чуждия black list.' },
+        ],
+    },
+    {
+        title: 'Пред училище',
+        prompt: 'Имаш 20 секунди. Кой е правилният ход?',
+        options: [
+            { label: 'На пешеходната пътека', correct: false, feedback: 'Не. Това е класически кандидат за ПЕДАЛ на деня.' },
+            { label: 'Встрани от входа, в разрешено място', correct: true, feedback: 'Да. Оставяш видимост и свободен достъп.' },
+            { label: 'В аварийната лента', correct: false, feedback: 'Не. Аварийната лента не е VIP drop-off.' },
+        ],
+    },
+    {
+        title: 'Синя зона',
+        prompt: 'Избираш място в центъра. Кое е правилното?',
+        options: [
+            { label: 'В зоната, без да пресичаш маркировките', correct: true, feedback: 'Перфектно. Влизаш чисто и оставяш място за другите.' },
+            { label: 'На ъгъла, колкото да е близо', correct: false, feedback: 'Ъгълът не е бонус паркомясто.' },
+            { label: 'Върху бус лентата', correct: false, feedback: 'Не. Това е директна покана за гняв и глоба.' },
+        ],
+    },
+    {
+        title: 'Квартален магазин',
+        prompt: 'Няма много места. Какво правиш?',
+        options: [
+            { label: 'Спираш втори ред за минутка', correct: false, feedback: 'Тази минутка блокира цяла улица.' },
+            { label: 'Обикаляш още 100 метра до свободно място', correct: true, feedback: 'Да. Малко ходене е по-добро от голяма наглост.' },
+            { label: 'Качваш се в тревната площ', correct: false, feedback: 'Тревата не е паркинг режим.' },
+        ],
+    },
+    {
+        title: 'Вечерен център',
+        prompt: 'Кое решение пази и трафика, и пешеходците?',
+        options: [
+            { label: 'Място с ясна маркировка и добра видимост', correct: true, feedback: 'Да. Това е зрелият избор.' },
+            { label: 'Половината кола в кръстовището', correct: false, feedback: 'Не. Кръстовището не е half-and-half зона.' },
+            { label: 'Върху велоалеята', correct: false, feedback: 'Не. Велосипедистите не са DLC съдържание.' },
+        ],
+    },
+];
 
 function setView(viewId) {
+    if (viewId !== 'games') {
+        stopRadarGame();
+    }
+
     document.querySelectorAll('.app-view').forEach(el => {
         el.classList.remove('active');
     });
@@ -33,7 +159,10 @@ function setView(viewId) {
 }
 
 function goBack(targetView) {
-    setView(targetView);
+    const resolvedView = targetView === 'dashboard' && !demoState.isLoggedIn
+        ? 'login'
+        : targetView;
+    setView(resolvedView);
     if (targetView === 'dashboard') {
         secretPin = "";
         updatePinDots();
@@ -61,7 +190,47 @@ function triggerFlash() {
 }
 
 function mockAction(name) {
+    if (name === 'Theme') {
+        const phone = document.querySelector('.phone-screen');
+        phone?.classList.toggle('theme-alt');
+        return;
+    }
+
     alert(`[Демо] Функция "${name}" ще бъде налична в пълната версия.`);
+}
+
+function ensureDemoSession() {
+    if (demoState.isLoggedIn) {
+        return true;
+    }
+
+    setView('login');
+    return false;
+}
+
+function updateDemoHeader() {
+    const planPill = document.getElementById('demo-plan-pill');
+    const userPill = document.getElementById('demo-user-pill');
+
+    if (planPill) {
+        planPill.textContent = demoState.plan;
+        planPill.dataset.plan = demoState.plan.toLowerCase();
+    }
+
+    if (userPill) {
+        userPill.textContent = demoState.isLoggedIn ? demoState.username : 'гост';
+    }
+}
+
+function setLoginStatus(message = '', isError = false) {
+    const statusEl = document.getElementById('demo-login-status');
+    if (!statusEl) {
+        return;
+    }
+
+    statusEl.hidden = !message;
+    statusEl.textContent = message;
+    statusEl.classList.toggle('is-error', Boolean(isError));
 }
 
 function getRandomEntry() {
@@ -184,8 +353,251 @@ async function loadDemoEntries() {
     return demoState.loadPromise;
 }
 
+function handleLogout() {
+    demoState.isLoggedIn = false;
+    updateDemoHeader();
+    secretPin = '';
+    updatePinDots();
+    stopRadarGame();
+    setLoginStatus('');
+    setView('login');
+}
+
+function submitDemoLogin(event) {
+    event.preventDefault();
+
+    const usernameEl = document.getElementById('demo-login-username');
+    const passwordEl = document.getElementById('demo-login-password');
+    const username = usernameEl?.value.trim() || '';
+    const password = passwordEl?.value.trim() || '';
+
+    if (!username || !password) {
+        setLoginStatus('Попълнете потребител и парола за демото.', true);
+        return;
+    }
+
+    setLoginStatus('Влизаме...');
+
+    showLoader(async () => {
+        demoState.isLoggedIn = true;
+        demoState.username = username;
+        updateDemoHeader();
+        setLoginStatus('');
+        setView('dashboard');
+    });
+}
+
+function openUpgrade() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
+    renderUpgradeView();
+    setView('upgrade');
+}
+
+function renderUpgradeView() {
+    const container = document.getElementById('upgrade-content');
+    if (!container) {
+        return;
+    }
+
+    const planCards = DEMO_PLANS.map(plan => {
+        const active = plan.id === demoState.plan;
+        const features = plan.features.map(feature => `<li>${feature}</li>`).join('');
+        return `
+            <article class="upgrade-plan-card ${plan.accent} ${active ? 'active' : ''}">
+                <div class="upgrade-plan-top">
+                    <div>
+                        <div class="upgrade-plan-name">${plan.name}</div>
+                        <div class="upgrade-plan-price">${plan.price}</div>
+                    </div>
+                    <span class="upgrade-plan-badge">${active ? 'Активен' : 'План'}</span>
+                </div>
+                <p class="upgrade-plan-copy">${plan.copy}</p>
+                <ul class="upgrade-plan-features">${features}</ul>
+                <button class="upgrade-plan-btn" type="button" onclick="activateDemoPlan('${plan.id}')">
+                    ${active ? 'Активен план' : `Вземи ${plan.name}`}
+                </button>
+            </article>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        <section class="upgrade-hero">
+            <div class="upgrade-eyebrow">PEDAL Membership</div>
+            <h3>Демо upgrade flow, който вече работи</h3>
+            <p>Смяната на плана е симулация, но state-ът се пази и се вижда веднага в header-а.</p>
+            <div class="upgrade-current">Текущ план: <strong>${demoState.plan}</strong></div>
+        </section>
+        <div class="upgrade-plan-grid">${planCards}</div>
+    `;
+}
+
+function activateDemoPlan(planId) {
+    demoState.plan = planId;
+    updateDemoHeader();
+    renderUpgradeView();
+}
+
+function openChat() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
+    renderChatView();
+    setView('chat');
+    setTimeout(() => {
+        document.getElementById('chat-input')?.focus();
+    }, 100);
+}
+
+function renderChatView() {
+    const container = document.getElementById('chat-messages');
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = demoState.chatMessages.map(message => `
+        <div class="chat-bubble ${message.role}">
+            <div class="chat-author">${message.role === 'user' ? demoState.username : 'PEDAL Bot'}</div>
+            <div class="chat-text">${escapeHtml(message.text)}</div>
+        </div>
+    `).join('');
+
+    container.scrollTop = container.scrollHeight;
+}
+
+function getChatReply(text) {
+    const value = text.toLowerCase();
+
+    if (value.includes('upgrade') || value.includes('plan') || value.includes('pro')) {
+        return `В момента сте на ${demoState.plan}. От Upgrade можеш да превключиш между FREE, PRO и ULTRA.`;
+    }
+
+    if (value.includes('кам') || value.includes('camera') || value.includes('скорост')) {
+        return 'Отвори Камери и ще видиш едновременно списък и карта с demo speed camera точки.';
+    }
+
+    if (value.includes('игр') || value.includes('game')) {
+        return 'В Игри вече има две реални mini browser игри: Паркирай правилно и Радар tap.';
+    }
+
+    if (value.includes('сигнал') || value.includes('upload')) {
+        return 'Натисни Снимай и demo телефонът ще подготви нов сигнал с реална снимка от manifest-а.';
+    }
+
+    return 'Разбрано. Това е demo чат, но вече пази разговора и връща контекстни отговори според темата.';
+}
+
+function submitChatMessage(event) {
+    event.preventDefault();
+    if (!ensureDemoSession()) {
+        return;
+    }
+
+    const input = document.getElementById('chat-input');
+    const value = input?.value.trim() || '';
+    if (!value) {
+        return;
+    }
+
+    demoState.chatMessages.push({
+        role: 'user',
+        text: value,
+    });
+    input.value = '';
+    renderChatView();
+
+    if (chatReplyTimeout) {
+        clearTimeout(chatReplyTimeout);
+    }
+
+    chatReplyTimeout = setTimeout(() => {
+        demoState.chatMessages.push({
+            role: 'bot',
+            text: getChatReply(value),
+        });
+        renderChatView();
+    }, 650);
+}
+
+function openNinjaGallery() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
+    showLoader(async () => {
+        window.location.href = 'ninja.html';
+    });
+}
+
+function openSurveyCenter() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
+    const container = document.getElementById('surveys-content');
+    if (container) {
+        container.innerHTML = `
+            <section class="info-hero">
+                <div class="info-badge">Алфа модул</div>
+                <h3>Социологически проучвания</h3>
+                <p>Тук по-късно ще вържем backend анкети, квартални настроения и публични обобщения.</p>
+            </section>
+            <div class="info-stack">
+                ${SURVEY_PREVIEWS.map(item => `
+                    <article class="info-card">
+                        <div class="info-card-top">
+                            <h4>${item.title}</h4>
+                            <span class="info-chip">${item.status}</span>
+                        </div>
+                        <p>${item.detail}</p>
+                    </article>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    setView('surveys');
+}
+
+function openPartnersHub() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
+    const container = document.getElementById('partners-content');
+    if (container) {
+        container.innerHTML = `
+            <section class="info-hero petition">
+                <div class="info-badge">Общност</div>
+                <h3>Петиция и партньори</h3>
+                <p>Ще съберем петицията, партньорите и инициативите на едно място, за да има реален натиск.</p>
+            </section>
+            <div class="info-stack">
+                ${PARTNER_PREVIEWS.map(item => `
+                    <article class="info-card">
+                        <div class="info-card-top">
+                            <h4>${item.title}</h4>
+                            <span class="info-chip muted">Скоро</span>
+                        </div>
+                        <p>${item.detail}</p>
+                    </article>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    setView('partners');
+}
+
 
 function simulateUpload() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     triggerFlash();
     setTimeout(() => {
         showLoader(async () => {
@@ -199,6 +611,10 @@ function simulateUpload() {
 }
 
 function openMySignals() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     showLoader(async () => {
         await loadDemoEntries();
 
@@ -249,6 +665,10 @@ function openMySignals() {
 
 
 function openMap() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     showLoader(async () => {
         await loadDemoEntries();
         setView('map');
@@ -313,6 +733,10 @@ function openMap() {
 
 
 function openRandom() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     showLoader(async () => {
         await loadDemoEntries();
         const entry = getRandomEntry();
@@ -322,6 +746,10 @@ function openRandom() {
 }
 
 function openPodMonth() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     showLoader(async () => {
         await loadDemoEntries();
         const entry = demoState.featuredMonth || getRandomEntry();
@@ -344,6 +772,10 @@ function openPodMonth() {
 
 
 function openAchievements() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     const list = document.getElementById('ach-list');
     list.innerHTML = '';
     
@@ -385,6 +817,10 @@ function openAchievements() {
 
 
 function openLeaderboard() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     const list = document.getElementById('lb-list');
     list.innerHTML = '';
 
@@ -420,6 +856,10 @@ function openLeaderboard() {
 
 
 function openStats() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     const container = document.getElementById('stats-content');
     const weekly = 1240;
     const processed = 890;
@@ -452,6 +892,10 @@ function openStats() {
 
 
 function openSecret() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     secretPin = "";
     updatePinDots();
     setView('secret');
@@ -459,65 +903,317 @@ function openSecret() {
 
 
 function openSpeedCams() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     const container = document.getElementById('cams-content');
     container.innerHTML = '';
-    
-    const cams = [
-        { loc: 'Цариградско шосе (Орлов мост)', limit: 50 },
-        { loc: 'Бул. България (НДК)', limit: 50 },
-        { loc: 'Околовръстен път (Бояна)', limit: 80 },
-        { loc: 'АМ Тракия (Изход София)', limit: 140 }
-    ];
 
-    cams.forEach(cam => {
+    SPEED_CAMERAS.forEach(cam => {
         container.innerHTML += `
-            <div class="lb-card">
-                <div class="ach-icon-box" style="color:#5E5CE6; background:rgba(94, 92, 230, 0.1);">
+            <div class="lb-card speedcam-card" onclick="focusSpeedCam('${cam.id}')">
+                <div class="ach-icon-box" style="color:#5E5CE6; background:rgba(94, 92, 230, 0.12);">
                     <span class="material-icons-round">speed</span>
                 </div>
                 <div class="lb-info">
                     <div class="lb-name">${cam.loc}</div>
-                    <div class="lb-region">Камера за скорост</div>
+                    <div class="lb-region">${cam.zone}</div>
                 </div>
-                <div class="lb-score" style="color:white">${cam.limit}</div>
+                <div class="lb-score" style="color:white">${cam.limit}<span class="speedcam-unit">km/h</span></div>
             </div>
         `;
     });
-    
+
     setView('speedcams');
+
+    setTimeout(() => {
+        const mapEl = document.getElementById('cams-map-container');
+        if (!mapEl || typeof L === 'undefined') {
+            return;
+        }
+
+        if (!camsMap) {
+            camsMap = L.map(mapEl, { zoomControl: false }).setView([42.688, 23.334], 11);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+            }).addTo(camsMap);
+        }
+
+        camsMap.invalidateSize();
+
+        if (camsLayer) {
+            camsLayer.remove();
+        }
+
+        camsLayer = L.layerGroup(
+            SPEED_CAMERAS.map(cam => L.circleMarker([cam.lat, cam.lng], {
+                radius: 8,
+                color: '#fff',
+                weight: 2,
+                fillColor: '#5E5CE6',
+                fillOpacity: 0.88,
+            }).bindPopup(`<strong>${cam.loc}</strong><br>Ограничение: ${cam.limit} km/h`))
+        ).addTo(camsMap);
+
+        const bounds = L.latLngBounds(SPEED_CAMERAS.map(cam => [cam.lat, cam.lng]));
+        camsMap.fitBounds(bounds.pad(0.16));
+    }, 260);
+}
+
+function focusSpeedCam(id) {
+    if (!camsMap) {
+        return;
+    }
+
+    const selected = SPEED_CAMERAS.find(cam => cam.id === id);
+    if (!selected) {
+        return;
+    }
+
+    camsMap.flyTo([selected.lat, selected.lng], 14, { duration: 0.7 });
 }
 
 
 function openGames() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
+    renderGamesView();
+    setView('games');
+}
+
+function renderGamesView() {
     const container = document.getElementById('games-content');
+    if (!container) {
+        return;
+    }
+
     container.innerHTML = `
-        <div class="ach-card" style="margin-bottom:10px;">
-            <div class="ach-icon-box" style="color:#FF2D55; background:rgba(255, 45, 85, 0.1);">
-                <span class="material-icons-round">directions_car</span>
+        <div class="games-shell">
+            <section class="games-hero">
+                <div class="games-eyebrow">Playable demo</div>
+                <h3>Играй директно в браузъра</h3>
+                <p>Две малки игри, които вече са истински playable и не са само placeholder.</p>
+            </section>
+            <div class="game-switcher">
+                <button type="button" class="game-pill ${demoState.activeGame === 'parking' ? 'active' : ''}" onclick="selectDemoGame('parking')">Паркирай правилно</button>
+                <button type="button" class="game-pill ${demoState.activeGame === 'radar' ? 'active' : ''}" onclick="selectDemoGame('radar')">Радар tap</button>
             </div>
-            <div class="ach-text">
-                <h4>Паркирай Правилно</h4>
-                <p>Симулатор за паркиране. Научи се как се прави!</p>
-            </div>
-            <button class="btn-submit" style="width:auto; padding:5px 15px; font-size:0.8rem; margin:0;" onclick="alert('Стартиране на играта...')">ИГРАЙ</button>
-        </div>
-        
-        <div class="ach-card">
-            <div class="ach-icon-box" style="color:#FF2D55; background:rgba(255, 45, 85, 0.1);">
-                <span class="material-icons-round">quiz</span>
-            </div>
-            <div class="ach-text">
-                <h4>Листовки 2026</h4>
-                <p>Тест за познаване на ЗДвП. Провери знанията си.</p>
-            </div>
-            <button class="btn-submit" style="width:auto; padding:5px 15px; font-size:0.8rem; margin:0;" onclick="alert('Зареждане на въпроси...')">ИГРАЙ</button>
+            <div id="games-stage"></div>
         </div>
     `;
-    setView('games');
+
+    renderSelectedGame();
+}
+
+function selectDemoGame(gameId) {
+    demoState.activeGame = gameId;
+    if (gameId !== 'radar') {
+        stopRadarGame();
+    }
+    renderGamesView();
+}
+
+function resetParkingGame() {
+    demoState.parkingGame = {
+        order: shuffle(PARKING_SCENARIOS.map((_, index) => index)).slice(0, 5),
+        round: 0,
+        score: 0,
+        selectedOption: null,
+        complete: false,
+    };
+    renderSelectedGame();
+}
+
+function getCurrentParkingScenario() {
+    const state = demoState.parkingGame;
+    const scenarioIndex = state.order[state.round] ?? 0;
+    return PARKING_SCENARIOS[scenarioIndex];
+}
+
+function chooseParkingOption(index) {
+    const state = demoState.parkingGame;
+    if (state.complete || state.selectedOption !== null) {
+        return;
+    }
+
+    state.selectedOption = index;
+    if (getCurrentParkingScenario().options[index]?.correct) {
+        state.score += 1;
+    }
+    renderSelectedGame();
+}
+
+function nextParkingScenario() {
+    const state = demoState.parkingGame;
+    if (state.round >= state.order.length - 1) {
+        state.complete = true;
+    } else {
+        state.round += 1;
+        state.selectedOption = null;
+    }
+    renderSelectedGame();
+}
+
+function startRadarGame() {
+    stopRadarGame();
+
+    demoState.radarGame.active = true;
+    demoState.radarGame.score = 0;
+    demoState.radarGame.timeLeft = 20;
+    demoState.radarGame.targetIndex = Math.floor(Math.random() * 9);
+
+    demoState.radarGame.timerId = setInterval(() => {
+        demoState.radarGame.timeLeft -= 1;
+        if (demoState.radarGame.timeLeft <= 0) {
+            stopRadarGame();
+            renderSelectedGame();
+            return;
+        }
+        renderSelectedGame();
+    }, 1000);
+
+    demoState.radarGame.spawnId = setInterval(() => {
+        demoState.radarGame.targetIndex = Math.floor(Math.random() * 9);
+        renderSelectedGame();
+    }, 850);
+
+    renderSelectedGame();
+}
+
+function stopRadarGame() {
+    if (demoState.radarGame.timerId) {
+        clearInterval(demoState.radarGame.timerId);
+        demoState.radarGame.timerId = null;
+    }
+
+    if (demoState.radarGame.spawnId) {
+        clearInterval(demoState.radarGame.spawnId);
+        demoState.radarGame.spawnId = null;
+    }
+
+    demoState.radarGame.active = false;
+}
+
+function tapRadarCell(index) {
+    if (!demoState.radarGame.active) {
+        return;
+    }
+
+    if (index === demoState.radarGame.targetIndex) {
+        demoState.radarGame.score += 1;
+    } else {
+        demoState.radarGame.score = Math.max(0, demoState.radarGame.score - 1);
+    }
+
+    demoState.radarGame.targetIndex = Math.floor(Math.random() * 9);
+    renderSelectedGame();
+}
+
+function renderSelectedGame() {
+    const stage = document.getElementById('games-stage');
+    if (!stage) {
+        return;
+    }
+
+    if (!demoState.parkingGame.order.length) {
+        resetParkingGame();
+        return;
+    }
+
+    if (demoState.activeGame === 'parking') {
+        const state = demoState.parkingGame;
+
+        if (state.complete) {
+            stage.innerHTML = `
+                <div class="game-panel parking-finish">
+                    <div class="game-score-banner">Резултат: ${state.score} / ${state.order.length}</div>
+                    <h4>Паркинг рундът приключи</h4>
+                    <p>Колкото по-малко тарикатстваш, толкова по-добре изглежда градът.</p>
+                    <button type="button" class="game-action-btn" onclick="resetParkingGame()">Играй пак</button>
+                </div>
+            `;
+            return;
+        }
+
+        const scenario = getCurrentParkingScenario();
+        const selectedOption = state.selectedOption;
+        const selectedFeedback = selectedOption !== null
+            ? scenario.options[selectedOption].feedback
+            : 'Избери едно място и виж дали ще вземеш точка.';
+        const footerButton = selectedOption !== null
+            ? `<button type="button" class="game-action-btn" onclick="nextParkingScenario()">${state.round + 1 === state.order.length ? 'Финал' : 'Следващ рунд'}</button>`
+            : `<button type="button" class="game-action-btn secondary" onclick="resetParkingGame()">Ново начало</button>`;
+
+        stage.innerHTML = `
+            <div class="game-panel">
+                <div class="game-score-row">
+                    <span>Рунд ${state.round + 1} / ${state.order.length}</span>
+                    <strong>${state.score} точки</strong>
+                </div>
+                <div class="game-scene-tag">${scenario.title}</div>
+                <h4>${scenario.prompt}</h4>
+                <div class="parking-options">
+                    ${scenario.options.map((option, index) => {
+                        let className = 'parking-option';
+                        if (selectedOption !== null) {
+                            if (option.correct) {
+                                className += ' correct';
+                            }
+                            if (selectedOption === index && !option.correct) {
+                                className += ' wrong';
+                            }
+                        }
+                        return `
+                            <button type="button" class="${className}" onclick="chooseParkingOption(${index})" ${selectedOption !== null ? 'disabled' : ''}>
+                                <span class="material-icons-round">${option.correct ? 'task_alt' : 'do_not_disturb_on'}</span>
+                                <span>${option.label}</span>
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+                <div class="game-feedback ${selectedOption !== null && scenario.options[selectedOption].correct ? 'ok' : ''}">${selectedFeedback}</div>
+                ${footerButton}
+            </div>
+        `;
+        return;
+    }
+
+    const radar = demoState.radarGame;
+    stage.innerHTML = `
+        <div class="game-panel">
+            <div class="game-score-row">
+                <span>Време: ${radar.timeLeft}s</span>
+                <strong>${radar.score} точки</strong>
+            </div>
+            <h4>Радар tap</h4>
+            <p class="game-copy">Натисни само нарушителя, преди да смени позицията си.</p>
+            <div class="radar-grid ${radar.active ? 'active' : ''}">
+                ${Array.from({ length: 9 }, (_, index) => `
+                    <button type="button" class="radar-cell ${radar.targetIndex === index && radar.active ? 'target' : ''}" onclick="tapRadarCell(${index})">
+                        <span class="material-icons-round">${radar.targetIndex === index && radar.active ? 'local_police' : 'directions_car'}</span>
+                    </button>
+                `).join('')}
+            </div>
+            <div class="game-feedback ${radar.active ? 'ok' : ''}">
+                ${radar.active
+                    ? 'Тапни мигащата клетка и не губи време.'
+                    : `Финален резултат: ${radar.score}. Натисни старт за нов рунд.`}
+            </div>
+            <button type="button" class="game-action-btn" onclick="startRadarGame()">
+                ${radar.active ? 'Рестарт' : 'Старт'}
+            </button>
+        </div>
+    `;
 }
 
 
 function openAir() {
+    if (!ensureDemoSession()) {
+        return;
+    }
 
     const aqi = Math.floor(Math.random() * (120 - 30) + 30);
     let status = "Добър";
@@ -543,6 +1239,10 @@ function openAir() {
 
 
 function openSettings() {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     const container = document.getElementById('settings-content');
     
 
@@ -576,6 +1276,13 @@ function pressKey(num) {
         if (secretPin.length === 4) {
             setTimeout(() => {
                 const wrapper = document.querySelector('.secret-wrapper');
+                if (secretPin === '4242') {
+                    alert('Добре дошли в най-фалшивия админ панел. Всичко е само за майтап.');
+                    secretPin = "";
+                    updatePinDots();
+                    return;
+                }
+
                 wrapper.classList.add('shake');
                 if(navigator.vibrate) navigator.vibrate(200);
                 
@@ -607,6 +1314,10 @@ function updatePinDots() {
 }
 
 function openViewer(id) {
+    if (!ensureDemoSession()) {
+        return;
+    }
+
     if (!DB.length) {
         return;
     }
@@ -628,7 +1339,11 @@ function renderViewer(entry) {
 }
 
 function submitReport() {
-    const btn = document.querySelector('.btn-submit');
+    if (!ensureDemoSession()) {
+        return;
+    }
+
+    const btn = document.getElementById('report-submit-btn');
     const originalText = btn.innerText;
     
     btn.innerText = "ИЗПРАЩАНЕ...";
@@ -651,6 +1366,10 @@ function submitReport() {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadDemoEntries();
+    updateDemoHeader();
+    renderChatView();
+    renderUpgradeView();
+    resetParkingGame();
 
     setInterval(() => {
         const now = new Date();
