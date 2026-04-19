@@ -1,8 +1,10 @@
 (function initPedalReactions(global) {
     const CONFIG = Object.freeze({
         graphqlEndpoint: 'https://5otrnlraozcdni6ekx27cy5exe.appsync-api.eu-central-1.amazonaws.com/graphql',
-        apiKey: 'da2-6lagph7zcvfuzicgqenbfvyyqi',
+        snapshotUrl: 'data/media-reaction-summaries.json',
         cacheTtlMs: 2 * 60 * 1000,
+        snapshotStorageKey: 'pedal_reaction_snapshot_v1',
+        snapshotStorageTtlMs: 26 * 60 * 60 * 1000,
     });
     const DEBUG_PREFIX = '[PEDAL reactions]';
 
@@ -43,6 +45,12 @@
     `;
 
     const reactionSummaryCache = new Map();
+    const snapshotState = {
+        map: new Map(),
+        generatedAt: '',
+        loadedAt: 0,
+        promise: null,
+    };
 
     function logDebug(message, details = {}) {
         console.info(`${DEBUG_PREFIX} ${message}`, details);
@@ -116,6 +124,112 @@
         return global.PedalAuth?.getAuthorizationToken?.() || '';
     }
 
+    function readSnapshotCache() {
+        try {
+            const raw = global.localStorage?.getItem(CONFIG.snapshotStorageKey);
+            if (!raw) {
+                return null;
+            }
+
+            const parsed = JSON.parse(raw);
+            const ageMs = Date.now() - Number(parsed.cachedAt || 0);
+            if (!parsed || typeof parsed !== 'object' || ageMs >= CONFIG.snapshotStorageTtlMs) {
+                return null;
+            }
+
+            return parsed;
+        } catch (_) {
+            return null;
+        }
+    }
+
+    function writeSnapshotCache(payload) {
+        try {
+            global.localStorage?.setItem(
+                CONFIG.snapshotStorageKey,
+                JSON.stringify({
+                    generatedAt: payload.generatedAt || '',
+                    items: Array.isArray(payload.items) ? payload.items : [],
+                    cachedAt: Date.now(),
+                })
+            );
+        } catch (_) {
+            // Ignore cache write failures.
+        }
+    }
+
+    function applySnapshotPayload(payload) {
+        const items = Array.isArray(payload?.items) ? payload.items : [];
+        const map = new Map();
+
+        items.forEach(item => {
+            const summary = normalizeSummary(item, item?.mediaKey || '');
+            if (!summary.mediaKey) {
+                return;
+            }
+
+            map.set(summary.mediaKey, {
+                ...summary,
+                viewerReaction: null,
+            });
+        });
+
+        snapshotState.map = map;
+        snapshotState.generatedAt = String(payload?.generatedAt || '');
+        snapshotState.loadedAt = Date.now();
+    }
+
+    async function loadReactionSnapshot(options = {}) {
+        const forceRefresh = Boolean(options.forceRefresh);
+        const hasFreshInMemorySnapshot =
+            !forceRefresh
+            && snapshotState.map.size
+            && (Date.now() - snapshotState.loadedAt) < CONFIG.snapshotStorageTtlMs;
+
+        if (hasFreshInMemorySnapshot) {
+            return snapshotState.map;
+        }
+
+        if (!forceRefresh) {
+            const cached = readSnapshotCache();
+            if (cached) {
+                applySnapshotPayload(cached);
+                return snapshotState.map;
+            }
+        }
+
+        if (!forceRefresh && snapshotState.promise) {
+            await snapshotState.promise;
+            return snapshotState.map;
+        }
+
+        snapshotState.promise = (async () => {
+            logDebug('Loading public reaction snapshot.', {
+                snapshotUrl: CONFIG.snapshotUrl,
+            });
+
+            const response = await fetch(CONFIG.snapshotUrl, {
+                cache: 'no-store',
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const payload = await response.json();
+            applySnapshotPayload(payload);
+            writeSnapshotCache(payload);
+        })();
+
+        try {
+            await snapshotState.promise;
+        } finally {
+            snapshotState.promise = null;
+        }
+
+        return snapshotState.map;
+    }
+
     async function graphQlRequest(document, variables, context = {}) {
         const headers = {
             'content-type': 'application/json',
@@ -126,14 +240,13 @@
                 throw new Error('Липсва активна потребителска сесия.');
             }
             headers.Authorization = context.authorizationToken;
-        } else if (CONFIG.apiKey) {
-            headers['x-api-key'] = CONFIG.apiKey;
+        } else {
+            throw new Error('Public reaction GraphQL reads are disabled in the browser.');
         }
 
         const requestDetails = {
             endpoint: CONFIG.graphqlEndpoint,
-            authMode: context.authMode || 'apiKey',
-            hasApiKeyHeader: Boolean(headers['x-api-key']),
+            authMode: context.authMode || 'userPool',
             hasAuthorizationHeader: Boolean(headers.Authorization),
             mediaKey: context.mediaKey || null,
         };
@@ -229,6 +342,30 @@
         reactionSummaryCache.delete(normalizeMediaKey(mediaKey));
     }
 
+    async function getSnapshotSummary(mediaKey, options = {}) {
+        const normalizedMediaKey = normalizeMediaKey(mediaKey);
+        if (!normalizedMediaKey) {
+            return createEmptySummary('');
+        }
+
+        try {
+            const snapshotMap = await loadReactionSnapshot({
+                forceRefresh: Boolean(options.forceRefresh),
+            });
+
+            return normalizeSummary(
+                snapshotMap.get(normalizedMediaKey) || createEmptySummary(normalizedMediaKey),
+                normalizedMediaKey
+            );
+        } catch (error) {
+            logError('Failed to load reaction snapshot.', {
+                mediaKey: normalizedMediaKey,
+                error,
+            });
+            return createEmptySummary(normalizedMediaKey);
+        }
+    }
+
     async function getReactionSummary(mediaKey, options = {}) {
         const normalizedMediaKey = normalizeMediaKey(mediaKey);
         if (!normalizedMediaKey) {
@@ -243,13 +380,20 @@
 
         const authState = getAuthState();
         const authorizationToken = getAuthorizationToken();
-        const prefersUserPool = Boolean(authState?.isLoggedIn && authorizationToken);
+        const canUseLiveUserPool = Boolean(authState?.isLoggedIn && authorizationToken);
+
+        if (!canUseLiveUserPool) {
+            const snapshotSummary = await getSnapshotSummary(normalizedMediaKey, {
+                forceRefresh,
+            });
+            return storeReactionSummary(snapshotSummary);
+        }
 
         try {
             const data = await graphQlRequest(GET_MEDIA_REACTION_SUMMARY_QUERY, {
                 mediaKey: normalizedMediaKey,
             }, {
-                authMode: prefersUserPool ? 'userPool' : 'apiKey',
+                authMode: 'userPool',
                 authorizationToken,
                 mediaKey: normalizedMediaKey,
             });
@@ -258,25 +402,19 @@
                 normalizeSummary(data.getMediaReactionSummary, normalizedMediaKey)
             );
         } catch (error) {
-            if (!prefersUserPool) {
-                throw error;
-            }
-
-            logDebug('UserPool read failed; retrying reaction summary with apiKey.', {
+            logDebug('Live user reaction read failed; falling back to static snapshot counts.', {
                 mediaKey: normalizedMediaKey,
                 error: error?.message || String(error),
             });
 
-            const fallbackData = await graphQlRequest(GET_MEDIA_REACTION_SUMMARY_QUERY, {
-                mediaKey: normalizedMediaKey,
-            }, {
-                authMode: 'apiKey',
-                mediaKey: normalizedMediaKey,
+            const snapshotSummary = await getSnapshotSummary(normalizedMediaKey, {
+                forceRefresh,
             });
 
-            return storeReactionSummary(
-                normalizeSummary(fallbackData.getMediaReactionSummary, normalizedMediaKey)
-            );
+            return storeReactionSummary({
+                ...snapshotSummary,
+                viewerReaction: null,
+            });
         }
     }
 
@@ -338,5 +476,6 @@
         clearReaction,
         clearReactionCache,
         getCachedReactionSummary,
+        loadReactionSnapshot,
     };
 })(window);

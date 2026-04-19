@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-04-16T20:28:28.086Z",
-  "itemCount": 498,
+  "generatedAt": "2026-04-19T23:31:47.145Z",
+  "itemCount": 499,
   "featured": {
     "week": {
       "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1775381185024.jpg",
@@ -17,6 +17,16 @@
     }
   },
   "items": [
+    {
+      "key": "approved/CB/3097HO/20260418_23234_9fb46d.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3097HO/20260418_23234_9fb46d.jpg",
+      "timestamp": "2026-04-16T07:38:37.246428000Z",
+      "location": "42.66581, 23.29111",
+      "locationLabel": "Ген. Кирил Ботев 5, ж.к. Гоце Делчев, София",
+      "latitude": 42.665814279336416,
+      "longitude": 23.29111326739893,
+      "isVideo": false
+    },
     {
       "key": "approved/CO/5647BP/20260415_145631_145bdc.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CO/5647BP/20260415_145631_145bdc.jpg",

@@ -10,6 +10,7 @@ const siteRoot = path.resolve(__dirname, '..');
 const dataDir = path.resolve(siteRoot, 'data');
 const galleryManifestPath = path.resolve(dataDir, 'gallery-manifest.json');
 const ninjaManifestPath = path.resolve(dataDir, 'ninja-manifest.json');
+const reactionSummariesPath = path.resolve(dataDir, 'media-reaction-summaries.json');
 const geocodeCachePath = path.resolve(__dirname, 'location-cache.json');
 const localAppConfigPath = path.resolve(siteRoot, '../pedal/lib/amplifyconfiguration.dart');
 
@@ -21,6 +22,7 @@ const FEATURED_MONTH_PREFIX = 'pedal_of_the_month/';
 const FEATURED_WEEK_PREFIX = 'pedal_of_the_month/pedal_of_the_day/';
 const GEOCODE_DELAY_MS = 1100;
 const MANIFEST_VERSION = 1;
+const REACTION_FETCH_CONCURRENCY = 12;
 const APP_USER_AGENT =
     process.env.PEDAL_MANIFEST_USER_AGENT ||
     'dalisipedal-manifest-generator/1.0 (+https://www.dalisipedal.com)';
@@ -250,6 +252,64 @@ async function fetchGraphQlPage({ endpoint, apiKey, nextToken }) {
     }
 
     return payload.data.listPhotoMetadata;
+}
+
+async function fetchReactionSummary({ endpoint, apiKey, mediaKey }) {
+    const query = `
+        query GetMediaReactionSummary($mediaKey: String!) {
+            getMediaReactionSummary(mediaKey: $mediaKey) {
+                mediaKey
+                likes
+                dislikes
+                viewerReaction
+                updatedAt
+            }
+        }
+    `;
+
+    const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+            'x-api-key': apiKey,
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                mediaKey,
+            },
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Reaction summary AppSync error: HTTP ${response.status}`);
+    }
+
+    const payload = await response.json();
+    if (payload.errors?.length) {
+        throw new Error(payload.errors[0].message || 'Reaction GraphQL error');
+    }
+
+    return payload.data.getMediaReactionSummary || null;
+}
+
+async function mapWithConcurrency(items, concurrency, mapper) {
+    const results = new Array(items.length);
+    let nextIndex = 0;
+
+    const workers = Array.from(
+        { length: Math.max(1, Math.min(concurrency, items.length || 1)) },
+        async () => {
+            while (nextIndex < items.length) {
+                const currentIndex = nextIndex;
+                nextIndex += 1;
+                results[currentIndex] = await mapper(items[currentIndex], currentIndex);
+            }
+        }
+    );
+
+    await Promise.all(workers);
+    return results;
 }
 
 async function fetchAllPhotoMetadata(config) {
@@ -622,6 +682,66 @@ async function buildNinjaManifest(config, credentials) {
     };
 }
 
+function collectReactionSnapshotKeys(galleryManifest, ninjaManifest) {
+    const keys = new Set();
+
+    galleryManifest.items.forEach(item => {
+        if (item?.key) {
+            keys.add(item.key);
+        }
+    });
+
+    if (galleryManifest.featured?.week?.key) {
+        keys.add(galleryManifest.featured.week.key);
+    }
+
+    if (galleryManifest.featured?.month?.key) {
+        keys.add(galleryManifest.featured.month.key);
+    }
+
+    ninjaManifest.items.forEach(item => {
+        if (item?.key) {
+            keys.add(item.key);
+        }
+    });
+
+    return [...keys];
+}
+
+async function buildReactionSummariesSnapshot(config, galleryManifest, ninjaManifest) {
+    const keys = collectReactionSnapshotKeys(galleryManifest, ninjaManifest);
+
+    const items = await mapWithConcurrency(
+        keys,
+        REACTION_FETCH_CONCURRENCY,
+        async (mediaKey, index) => {
+            if (index > 0 && index % 100 === 0) {
+                console.log(`Fetched ${index} reaction summaries...`);
+            }
+
+            const payload = await fetchReactionSummary({
+                endpoint: config.appsyncEndpoint,
+                apiKey: config.appsyncApiKey,
+                mediaKey,
+            });
+
+            return {
+                mediaKey,
+                likes: Number(payload?.likes || 0),
+                dislikes: Number(payload?.dislikes || 0),
+                updatedAt: payload?.updatedAt || null,
+            };
+        }
+    );
+
+    return {
+        version: MANIFEST_VERSION,
+        generatedAt: new Date().toISOString(),
+        itemCount: items.length,
+        items,
+    };
+}
+
 async function main() {
     const config = await loadConfig();
     const geocodeCache = await loadJsonFile(geocodeCachePath, {});
@@ -644,11 +764,20 @@ async function main() {
     await saveJsonFile(ninjaManifestPath, ninjaManifest);
     await saveJsonFile(geocodeCachePath, geocodeCache);
 
+    console.log('Building reaction summaries snapshot...');
+    const reactionSummaries = await buildReactionSummariesSnapshot(
+        config,
+        galleryManifest,
+        ninjaManifest
+    );
+    await saveJsonFile(reactionSummariesPath, reactionSummaries);
+
     console.log(
         JSON.stringify(
             {
                 galleryItems: galleryManifest.itemCount,
                 ninjaItems: ninjaManifest.itemCount,
+                reactionSummaries: reactionSummaries.itemCount,
                 featuredWeek: galleryManifest.featured?.week?.key ?? null,
                 featuredMonth: galleryManifest.featured?.month?.key ?? null,
                 generatedAt: galleryManifest.generatedAt,

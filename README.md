@@ -13,3 +13,11 @@ Required repository secrets:
 - `PEDAL_S3_BUCKET`
 
 The scheduled workflow lives at `.github/workflows/refresh-public-manifests.yml` and currently runs once per day. You can also trigger it manually from the GitHub Actions tab.
+
+Generated public data now includes:
+
+- `data/gallery-manifest.json`
+- `data/ninja-manifest.json`
+- `data/media-reaction-summaries.json`
+
+`media-reaction-summaries.json` is used by the website for public like/dislike counts, so anonymous visitors do not need live AppSync reads for reactions.
