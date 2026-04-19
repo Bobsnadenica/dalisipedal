@@ -964,6 +964,13 @@
             flex-wrap: wrap;
         }
 
+        .gallery-viewer-meta-main {
+            display: grid;
+            gap: 6px;
+            min-width: 0;
+            flex: 1 1 260px;
+        }
+
         .gallery-viewer-date {
             font-family: var(--font-mono);
             color: #d8d8d8;
@@ -979,6 +986,82 @@
 
         .gallery-viewer-location:hover {
             text-decoration: underline;
+        }
+
+        .pedal-reactions-bar {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            flex: 0 1 auto;
+        }
+
+        .pedal-reaction-button {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
+            color: #f2eee5;
+            border-radius: 999px;
+            padding: 10px 14px;
+            font: inherit;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            cursor: pointer;
+            transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+        }
+
+        .pedal-reaction-button:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.09);
+        }
+
+        .pedal-reaction-button .material-icons-round {
+            font-size: 1rem;
+        }
+
+        .pedal-reaction-button.like.is-active {
+            background: rgba(63, 187, 105, 0.18);
+            border-color: rgba(63, 187, 105, 0.36);
+            color: #dfffe7;
+        }
+
+        .pedal-reaction-button.dislike.is-active {
+            background: rgba(255, 104, 104, 0.18);
+            border-color: rgba(255, 104, 104, 0.34);
+            color: #ffe1e1;
+        }
+
+        .pedal-reaction-button.is-busy {
+            cursor: wait;
+            opacity: 0.78;
+        }
+
+        .pedal-reaction-label {
+            line-height: 1;
+        }
+
+        .pedal-reaction-count {
+            min-width: 1.35rem;
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 0.79rem;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .pedal-reaction-status {
+            flex-basis: 100%;
+            min-height: 1.1em;
+            color: rgba(255, 243, 207, 0.86);
+            font-size: 0.77rem;
+            line-height: 1.4;
+        }
+
+        .pedal-reaction-status.is-error {
+            color: #ffb8b8;
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -1119,6 +1202,20 @@
                 bottom: 12px;
                 justify-content: space-between;
             }
+
+            .gallery-viewer-meta {
+                align-items: flex-start;
+            }
+
+            .pedal-reactions-bar {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .pedal-reaction-button {
+                flex: 1 1 0;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -1250,8 +1347,23 @@
                 </button>
             </div>
             <div class="gallery-viewer-meta">
-                <div id="gallery-viewer-date" class="gallery-viewer-date"></div>
-                <a id="gallery-viewer-location" class="gallery-viewer-location" href="#" target="_blank" rel="noopener noreferrer"></a>
+                <div class="gallery-viewer-meta-main">
+                    <div id="gallery-viewer-date" class="gallery-viewer-date"></div>
+                    <a id="gallery-viewer-location" class="gallery-viewer-location" href="#" target="_blank" rel="noopener noreferrer"></a>
+                </div>
+                <div class="pedal-reactions-bar">
+                    <button id="gallery-reaction-like" class="pedal-reaction-button like" type="button" aria-pressed="false">
+                        <span id="gallery-reaction-like-icon" class="material-icons-round">thumb_up_off_alt</span>
+                        <span class="pedal-reaction-label">Харесвам</span>
+                        <span id="gallery-reaction-like-count" class="pedal-reaction-count">0</span>
+                    </button>
+                    <button id="gallery-reaction-dislike" class="pedal-reaction-button dislike" type="button" aria-pressed="false">
+                        <span id="gallery-reaction-dislike-icon" class="material-icons-round">thumb_down_off_alt</span>
+                        <span class="pedal-reaction-label">Не</span>
+                        <span id="gallery-reaction-dislike-count" class="pedal-reaction-count">0</span>
+                    </button>
+                </div>
+                <div id="gallery-viewer-reaction-status" class="pedal-reaction-status" hidden></div>
             </div>
         </div>
     </div>
@@ -1288,6 +1400,7 @@
     <script src="vendor/amazon-cognito-identity.min.js"></script>
     <script src="pedal-auth.js?v=1"></script>
     <script src="pedal-comments.js?v=3"></script>
-    <script src="gallery.js?v=1"></script>
+    <script src="pedal-reactions.js?v=1"></script>
+    <script src="gallery.js?v=2"></script>
 </body>
 </html>

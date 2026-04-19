@@ -16,6 +16,9 @@ const ninjaState = {
     commentsRequestId: 0,
     commentsCountRequestId: 0,
     composerBusy: false,
+    reactionRequestId: 0,
+    reactionBusy: false,
+    reactionSummary: null,
 };
 
 function formatDate(timestamp) {
@@ -247,9 +250,13 @@ function closeViewer() {
 
     closeLoginModal();
     ninjaState.commentsRequestId += 1;
+    ninjaState.reactionRequestId += 1;
     ninjaState.commentsPanelOpen = false;
+    ninjaState.reactionBusy = false;
+    ninjaState.reactionSummary = null;
     setCommentsOverlayOpen(false);
     resetCommentsPanel();
+    resetReactionSummary();
 }
 
 function getAuthState() {
@@ -552,13 +559,223 @@ function buildCommentItem(comment) {
     return itemEl;
 }
 
+function getEmptyReactionSummary(mediaKey = '') {
+    return window.PedalReactions?.createEmptySummary?.(mediaKey) || {
+        mediaKey,
+        likes: 0,
+        dislikes: 0,
+        viewerReaction: null,
+        updatedAt: '',
+    };
+}
+
 function getCurrentViewerItem() {
     return ninjaState.items[ninjaState.currentIndex] || null;
 }
 
 function getCurrentViewerMediaKey() {
     const item = getCurrentViewerItem();
-    return window.PedalComments?.normalizeMediaKey?.(item?.key || item?.url || '') || '';
+    return window.PedalReactions?.normalizeMediaKey?.(item?.key || item?.url || '')
+        || window.PedalComments?.normalizeMediaKey?.(item?.key || item?.url || '')
+        || '';
+}
+
+function setReactionStatus(message, options = {}) {
+    const statusEl = document.getElementById('ninja-viewer-reaction-status');
+    if (!statusEl) {
+        return;
+    }
+
+    statusEl.className = 'pedal-reaction-status';
+    if (options.isError) {
+        statusEl.classList.add('is-error');
+    }
+
+    statusEl.textContent = message || '';
+    statusEl.hidden = !message;
+}
+
+function syncReactionAuthUi(authState = getAuthState()) {
+    const likeBtn = document.getElementById('ninja-reaction-like');
+    const dislikeBtn = document.getElementById('ninja-reaction-dislike');
+    const isLoggedIn = Boolean(authState.isLoggedIn);
+
+    [likeBtn, dislikeBtn].forEach(button => {
+        if (!button) {
+            return;
+        }
+
+        button.dataset.authState = isLoggedIn ? 'logged-in' : 'guest';
+    });
+
+    if (likeBtn) {
+        likeBtn.title = isLoggedIn ? 'Харесвам' : 'Влезте, за да харесвате';
+    }
+
+    if (dislikeBtn) {
+        dislikeBtn.title = isLoggedIn ? 'Не харесвам' : 'Влезте, за да реагирате';
+    }
+}
+
+function applyReactionSummary(summary = getEmptyReactionSummary()) {
+    const normalizedSummary = getEmptyReactionSummary(summary.mediaKey);
+    normalizedSummary.likes = Number.isFinite(Number(summary.likes))
+        ? Math.max(0, Number(summary.likes))
+        : 0;
+    normalizedSummary.dislikes = Number.isFinite(Number(summary.dislikes))
+        ? Math.max(0, Number(summary.dislikes))
+        : 0;
+    normalizedSummary.viewerReaction =
+        summary.viewerReaction === 'LIKE' || summary.viewerReaction === 'DISLIKE'
+            ? summary.viewerReaction
+            : null;
+    normalizedSummary.updatedAt = summary.updatedAt || '';
+
+    ninjaState.reactionSummary = normalizedSummary;
+
+    const likeBtn = document.getElementById('ninja-reaction-like');
+    const dislikeBtn = document.getElementById('ninja-reaction-dislike');
+    const likeCountEl = document.getElementById('ninja-reaction-like-count');
+    const dislikeCountEl = document.getElementById('ninja-reaction-dislike-count');
+    const likeIconEl = document.getElementById('ninja-reaction-like-icon');
+    const dislikeIconEl = document.getElementById('ninja-reaction-dislike-icon');
+
+    if (likeCountEl) {
+        likeCountEl.textContent = String(normalizedSummary.likes);
+    }
+
+    if (dislikeCountEl) {
+        dislikeCountEl.textContent = String(normalizedSummary.dislikes);
+    }
+
+    const isLike = normalizedSummary.viewerReaction === 'LIKE';
+    const isDislike = normalizedSummary.viewerReaction === 'DISLIKE';
+
+    if (likeBtn) {
+        likeBtn.classList.toggle('is-active', isLike);
+        likeBtn.classList.toggle('is-busy', ninjaState.reactionBusy);
+        likeBtn.setAttribute('aria-pressed', isLike ? 'true' : 'false');
+        likeBtn.disabled = ninjaState.reactionBusy;
+    }
+
+    if (dislikeBtn) {
+        dislikeBtn.classList.toggle('is-active', isDislike);
+        dislikeBtn.classList.toggle('is-busy', ninjaState.reactionBusy);
+        dislikeBtn.setAttribute('aria-pressed', isDislike ? 'true' : 'false');
+        dislikeBtn.disabled = ninjaState.reactionBusy;
+    }
+
+    if (likeIconEl) {
+        likeIconEl.textContent = isLike ? 'thumb_up' : 'thumb_up_off_alt';
+    }
+
+    if (dislikeIconEl) {
+        dislikeIconEl.textContent = isDislike ? 'thumb_down' : 'thumb_down_off_alt';
+    }
+}
+
+function resetReactionSummary() {
+    ninjaState.reactionSummary = getEmptyReactionSummary(getCurrentViewerMediaKey());
+    applyReactionSummary(ninjaState.reactionSummary);
+    setReactionStatus('');
+    syncReactionAuthUi();
+}
+
+function setReactionBusy(isBusy) {
+    ninjaState.reactionBusy = Boolean(isBusy);
+    applyReactionSummary(ninjaState.reactionSummary || getEmptyReactionSummary(getCurrentViewerMediaKey()));
+}
+
+async function loadReactionSummaryForCurrentItem(options = {}) {
+    const mediaKey = getCurrentViewerMediaKey();
+    if (!mediaKey || !window.PedalReactions?.getReactionSummary) {
+        resetReactionSummary();
+        return;
+    }
+
+    const requestId = ninjaState.reactionRequestId + 1;
+    ninjaState.reactionRequestId = requestId;
+
+    const cachedSummary = window.PedalReactions.getCachedReactionSummary?.(mediaKey);
+    if (cachedSummary && !options.forceRefresh) {
+        applyReactionSummary(cachedSummary);
+        setReactionStatus('');
+    } else {
+        applyReactionSummary(cachedSummary || getEmptyReactionSummary(mediaKey));
+    }
+
+    try {
+        const summary = await window.PedalReactions.getReactionSummary(mediaKey, {
+            forceRefresh: Boolean(options.forceRefresh),
+        });
+
+        if (requestId !== ninjaState.reactionRequestId) {
+            return;
+        }
+
+        if (mediaKey !== getCurrentViewerMediaKey()) {
+            return;
+        }
+
+        applyReactionSummary(summary);
+        setReactionStatus('');
+    } catch (error) {
+        if (requestId !== ninjaState.reactionRequestId) {
+            return;
+        }
+
+        console.warn('Ninja reactions failed to load:', error);
+        applyReactionSummary(cachedSummary || getEmptyReactionSummary(mediaKey));
+        setReactionStatus('Не успяхме да заредим реакциите.', { isError: true });
+    }
+}
+
+async function toggleReaction(value) {
+    const authState = getAuthState();
+    if (!authState.isLoggedIn) {
+        setReactionStatus('Влезте, за да реагирате.', {});
+        openLoginModal();
+        return;
+    }
+
+    if (ninjaState.reactionBusy) {
+        return;
+    }
+
+    const mediaKey = getCurrentViewerMediaKey();
+    if (!mediaKey) {
+        setReactionStatus('Липсва валидна снимка.', { isError: true });
+        return;
+    }
+
+    if (!window.PedalReactions) {
+        setReactionStatus('Реакциите временно не са налични.', { isError: true });
+        return;
+    }
+
+    setReactionBusy(true);
+    setReactionStatus('Запазваме реакцията...');
+
+    try {
+        const current = ninjaState.reactionSummary?.viewerReaction || null;
+        const summary = current === value
+            ? await window.PedalReactions.clearReaction(mediaKey)
+            : await window.PedalReactions.setReaction(mediaKey, value);
+
+        if (mediaKey !== getCurrentViewerMediaKey()) {
+            return;
+        }
+
+        applyReactionSummary(summary);
+        setReactionStatus('');
+    } catch (error) {
+        setReactionStatus(
+            error?.message || 'Не успяхме да запазим реакцията.',
+            { isError: true }
+        );
+    } finally {
+        setReactionBusy(false);
+    }
 }
 
 async function prefetchCommentsCountForCurrentItem(options = {}) {
@@ -768,12 +985,24 @@ async function logoutCurrentUser() {
 function handleAuthStateChange(authState = getAuthState()) {
     syncLoginModalUi(authState);
     updateCommentsAuthUi(authState);
+    syncReactionAuthUi(authState);
 
     if (authState.isLoggedIn) {
         const modalEl = document.getElementById('ninja-login-modal');
         if (modalEl?.classList.contains('is-open') && !authState.requiresNewPassword) {
             closeLoginModal();
         }
+    }
+
+    const viewerEl = document.getElementById('ninja-viewer');
+    if (viewerEl?.classList.contains('is-open')) {
+        if (!authState.isLoggedIn) {
+            applyReactionSummary({
+                ...(ninjaState.reactionSummary || getEmptyReactionSummary(getCurrentViewerMediaKey())),
+                viewerReaction: null,
+            });
+        }
+        loadReactionSummaryForCurrentItem({ forceRefresh: true });
     }
 }
 
@@ -807,6 +1036,11 @@ function renderViewerItem(options = {}) {
     if (nextBtn) {
         nextBtn.disabled = ninjaState.currentIndex >= ninjaState.items.length - 1;
     }
+
+    syncReactionAuthUi();
+    loadReactionSummaryForCurrentItem({
+        forceRefresh: Boolean(options.forceRefresh),
+    });
 
     if (ninjaState.commentsPanelOpen) {
         renderCommentsForCurrentItem({
@@ -860,6 +1094,8 @@ function bindViewerEvents() {
     const loginForm = document.querySelector('.ninja-login-form');
     const commentForm = document.getElementById('ninja-comments-form');
     const commentInput = document.getElementById('ninja-comment-input');
+    const likeBtn = document.getElementById('ninja-reaction-like');
+    const dislikeBtn = document.getElementById('ninja-reaction-dislike');
 
     if (!viewerEl) {
         return;
@@ -879,6 +1115,8 @@ function bindViewerEvents() {
     loginForm?.addEventListener('submit', submitLogin);
     commentForm?.addEventListener('submit', submitCurrentComment);
     commentInput?.addEventListener('input', updateComposerCounter);
+    likeBtn?.addEventListener('click', () => toggleReaction('LIKE'));
+    dislikeBtn?.addEventListener('click', () => toggleReaction('DISLIKE'));
 
     viewerEl.addEventListener('click', event => {
         if (event.target === viewerEl) {

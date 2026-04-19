@@ -19,6 +19,9 @@ const galleryState = {
     commentsRequestId: 0,
     commentsCountRequestId: 0,
     composerBusy: false,
+    reactionRequestId: 0,
+    reactionBusy: false,
+    reactionSummary: null,
 };
 
 const FEATURED_PEDAL_COPY = Object.freeze({
@@ -447,9 +450,13 @@ function closeViewer() {
 
     closeLoginModal();
     galleryState.commentsRequestId += 1;
+    galleryState.reactionRequestId += 1;
     galleryState.commentsPanelOpen = false;
+    galleryState.reactionBusy = false;
+    galleryState.reactionSummary = null;
     setCommentsOverlayOpen(false);
     resetCommentsPanel();
+    resetReactionSummary();
 }
 
 function getAuthState() {
@@ -752,13 +759,223 @@ function buildCommentItem(comment) {
     return itemEl;
 }
 
+function getEmptyReactionSummary(mediaKey = '') {
+    return window.PedalReactions?.createEmptySummary?.(mediaKey) || {
+        mediaKey,
+        likes: 0,
+        dislikes: 0,
+        viewerReaction: null,
+        updatedAt: '',
+    };
+}
+
 function getCurrentViewerItem() {
     return galleryState.viewerItems[galleryState.currentIndex] || null;
 }
 
 function getCurrentViewerMediaKey() {
     const item = getCurrentViewerItem();
-    return window.PedalComments?.normalizeMediaKey?.(item?.key || item?.url || '') || '';
+    return window.PedalReactions?.normalizeMediaKey?.(item?.key || item?.url || '')
+        || window.PedalComments?.normalizeMediaKey?.(item?.key || item?.url || '')
+        || '';
+}
+
+function setReactionStatus(message, options = {}) {
+    const statusEl = document.getElementById('gallery-viewer-reaction-status');
+    if (!statusEl) {
+        return;
+    }
+
+    statusEl.className = 'pedal-reaction-status';
+    if (options.isError) {
+        statusEl.classList.add('is-error');
+    }
+
+    statusEl.textContent = message || '';
+    statusEl.hidden = !message;
+}
+
+function syncReactionAuthUi(authState = getAuthState()) {
+    const likeBtn = document.getElementById('gallery-reaction-like');
+    const dislikeBtn = document.getElementById('gallery-reaction-dislike');
+    const isLoggedIn = Boolean(authState.isLoggedIn);
+
+    [likeBtn, dislikeBtn].forEach(button => {
+        if (!button) {
+            return;
+        }
+
+        button.dataset.authState = isLoggedIn ? 'logged-in' : 'guest';
+    });
+
+    if (likeBtn) {
+        likeBtn.title = isLoggedIn ? 'Харесвам' : 'Влезте, за да харесвате';
+    }
+
+    if (dislikeBtn) {
+        dislikeBtn.title = isLoggedIn ? 'Не харесвам' : 'Влезте, за да реагирате';
+    }
+}
+
+function applyReactionSummary(summary = getEmptyReactionSummary()) {
+    const normalizedSummary = getEmptyReactionSummary(summary.mediaKey);
+    normalizedSummary.likes = Number.isFinite(Number(summary.likes))
+        ? Math.max(0, Number(summary.likes))
+        : 0;
+    normalizedSummary.dislikes = Number.isFinite(Number(summary.dislikes))
+        ? Math.max(0, Number(summary.dislikes))
+        : 0;
+    normalizedSummary.viewerReaction =
+        summary.viewerReaction === 'LIKE' || summary.viewerReaction === 'DISLIKE'
+            ? summary.viewerReaction
+            : null;
+    normalizedSummary.updatedAt = summary.updatedAt || '';
+
+    galleryState.reactionSummary = normalizedSummary;
+
+    const likeBtn = document.getElementById('gallery-reaction-like');
+    const dislikeBtn = document.getElementById('gallery-reaction-dislike');
+    const likeCountEl = document.getElementById('gallery-reaction-like-count');
+    const dislikeCountEl = document.getElementById('gallery-reaction-dislike-count');
+    const likeIconEl = document.getElementById('gallery-reaction-like-icon');
+    const dislikeIconEl = document.getElementById('gallery-reaction-dislike-icon');
+
+    if (likeCountEl) {
+        likeCountEl.textContent = String(normalizedSummary.likes);
+    }
+
+    if (dislikeCountEl) {
+        dislikeCountEl.textContent = String(normalizedSummary.dislikes);
+    }
+
+    const isLike = normalizedSummary.viewerReaction === 'LIKE';
+    const isDislike = normalizedSummary.viewerReaction === 'DISLIKE';
+
+    if (likeBtn) {
+        likeBtn.classList.toggle('is-active', isLike);
+        likeBtn.classList.toggle('is-busy', galleryState.reactionBusy);
+        likeBtn.setAttribute('aria-pressed', isLike ? 'true' : 'false');
+        likeBtn.disabled = galleryState.reactionBusy;
+    }
+
+    if (dislikeBtn) {
+        dislikeBtn.classList.toggle('is-active', isDislike);
+        dislikeBtn.classList.toggle('is-busy', galleryState.reactionBusy);
+        dislikeBtn.setAttribute('aria-pressed', isDislike ? 'true' : 'false');
+        dislikeBtn.disabled = galleryState.reactionBusy;
+    }
+
+    if (likeIconEl) {
+        likeIconEl.textContent = isLike ? 'thumb_up' : 'thumb_up_off_alt';
+    }
+
+    if (dislikeIconEl) {
+        dislikeIconEl.textContent = isDislike ? 'thumb_down' : 'thumb_down_off_alt';
+    }
+}
+
+function resetReactionSummary() {
+    galleryState.reactionSummary = getEmptyReactionSummary(getCurrentViewerMediaKey());
+    applyReactionSummary(galleryState.reactionSummary);
+    setReactionStatus('');
+    syncReactionAuthUi();
+}
+
+function setReactionBusy(isBusy) {
+    galleryState.reactionBusy = Boolean(isBusy);
+    applyReactionSummary(galleryState.reactionSummary || getEmptyReactionSummary(getCurrentViewerMediaKey()));
+}
+
+async function loadReactionSummaryForCurrentItem(options = {}) {
+    const mediaKey = getCurrentViewerMediaKey();
+    if (!mediaKey || !window.PedalReactions?.getReactionSummary) {
+        resetReactionSummary();
+        return;
+    }
+
+    const requestId = galleryState.reactionRequestId + 1;
+    galleryState.reactionRequestId = requestId;
+
+    const cachedSummary = window.PedalReactions.getCachedReactionSummary?.(mediaKey);
+    if (cachedSummary && !options.forceRefresh) {
+        applyReactionSummary(cachedSummary);
+        setReactionStatus('');
+    } else {
+        applyReactionSummary(cachedSummary || getEmptyReactionSummary(mediaKey));
+    }
+
+    try {
+        const summary = await window.PedalReactions.getReactionSummary(mediaKey, {
+            forceRefresh: Boolean(options.forceRefresh),
+        });
+
+        if (requestId !== galleryState.reactionRequestId) {
+            return;
+        }
+
+        if (mediaKey !== getCurrentViewerMediaKey()) {
+            return;
+        }
+
+        applyReactionSummary(summary);
+        setReactionStatus('');
+    } catch (error) {
+        if (requestId !== galleryState.reactionRequestId) {
+            return;
+        }
+
+        console.warn('Gallery reactions failed to load:', error);
+        applyReactionSummary(cachedSummary || getEmptyReactionSummary(mediaKey));
+        setReactionStatus('Не успяхме да заредим реакциите.', { isError: true });
+    }
+}
+
+async function toggleReaction(value) {
+    const authState = getAuthState();
+    if (!authState.isLoggedIn) {
+        setReactionStatus('Влезте, за да реагирате.', {});
+        openLoginModal();
+        return;
+    }
+
+    if (galleryState.reactionBusy) {
+        return;
+    }
+
+    const mediaKey = getCurrentViewerMediaKey();
+    if (!mediaKey) {
+        setReactionStatus('Липсва валидна снимка или видео.', { isError: true });
+        return;
+    }
+
+    if (!window.PedalReactions) {
+        setReactionStatus('Реакциите временно не са налични.', { isError: true });
+        return;
+    }
+
+    setReactionBusy(true);
+    setReactionStatus('Запазваме реакцията...');
+
+    try {
+        const current = galleryState.reactionSummary?.viewerReaction || null;
+        const summary = current === value
+            ? await window.PedalReactions.clearReaction(mediaKey)
+            : await window.PedalReactions.setReaction(mediaKey, value);
+
+        if (mediaKey !== getCurrentViewerMediaKey()) {
+            return;
+        }
+
+        applyReactionSummary(summary);
+        setReactionStatus('');
+    } catch (error) {
+        setReactionStatus(
+            error?.message || 'Не успяхме да запазим реакцията.',
+            { isError: true }
+        );
+    } finally {
+        setReactionBusy(false);
+    }
 }
 
 async function prefetchCommentsCountForCurrentItem(options = {}) {
@@ -968,12 +1185,24 @@ async function logoutCurrentUser() {
 function handleAuthStateChange(authState = getAuthState()) {
     syncLoginModalUi(authState);
     updateCommentsAuthUi(authState);
+    syncReactionAuthUi(authState);
 
     if (authState.isLoggedIn) {
         const modalEl = document.getElementById('gallery-login-modal');
         if (modalEl?.classList.contains('is-open') && !authState.requiresNewPassword) {
             closeLoginModal();
         }
+    }
+
+    const viewerEl = document.getElementById('gallery-viewer');
+    if (viewerEl?.classList.contains('is-open')) {
+        if (!authState.isLoggedIn) {
+            applyReactionSummary({
+                ...(galleryState.reactionSummary || getEmptyReactionSummary(getCurrentViewerMediaKey())),
+                viewerReaction: null,
+            });
+        }
+        loadReactionSummaryForCurrentItem({ forceRefresh: true });
     }
 }
 
@@ -1029,6 +1258,11 @@ function renderViewerItem(options = {}) {
     if (nextBtn) {
         nextBtn.disabled = galleryState.currentIndex >= galleryState.viewerItems.length - 1;
     }
+
+    syncReactionAuthUi();
+    loadReactionSummaryForCurrentItem({
+        forceRefresh: Boolean(options.forceRefresh),
+    });
 
     if (galleryState.commentsPanelOpen) {
         renderCommentsForCurrentItem({
@@ -1136,6 +1370,8 @@ function bindViewerEvents() {
     const loginForm = document.querySelector('.gallery-login-form');
     const commentForm = document.getElementById('gallery-comments-form');
     const commentInput = document.getElementById('gallery-comment-input');
+    const likeBtn = document.getElementById('gallery-reaction-like');
+    const dislikeBtn = document.getElementById('gallery-reaction-dislike');
 
     if (!viewerEl) {
         return;
@@ -1155,6 +1391,8 @@ function bindViewerEvents() {
     loginForm?.addEventListener('submit', submitLogin);
     commentForm?.addEventListener('submit', submitCurrentComment);
     commentInput?.addEventListener('input', updateComposerCounter);
+    likeBtn?.addEventListener('click', () => toggleReaction('LIKE'));
+    dislikeBtn?.addEventListener('click', () => toggleReaction('DISLIKE'));
 
     viewerEl.addEventListener('click', event => {
         if (event.target === viewerEl) {
