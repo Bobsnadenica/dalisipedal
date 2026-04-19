@@ -4,9 +4,11 @@
         apiKey: 'da2-6lagph7zcvfuzicgqenbfvyyqi',
         cacheTtlMs: 2 * 60 * 1000,
         defaultLimit: 50,
+        commentCooldownMs: 30 * 1000,
         maxCommentLength: 500,
     });
     const DEBUG_PREFIX = '[PEDAL comments]';
+    const COMMENT_COOLDOWN_STORAGE_KEY = 'pedal_comment_last_post_at_v1';
 
     const COMMENTS_BY_MEDIA_KEY_QUERY = `
         query CommentsByMediaKey($mediaKey: String!, $limit: Int, $nextToken: String) {
@@ -140,6 +142,73 @@
 
     function getAuthorizationToken() {
         return global.PedalAuth?.getAuthorizationToken?.() || '';
+    }
+
+    function getCommentCooldownIdentity(authState = getAuthState()) {
+        if (!authState?.isLoggedIn) {
+            return '';
+        }
+
+        return [
+            authState.userId,
+            authState.sub,
+            authState.email,
+            authState.loginId,
+            authState.cognitoUsername,
+        ]
+            .map(value => String(value || '').trim())
+            .find(Boolean) || '';
+    }
+
+    function readCommentCooldownMap() {
+        try {
+            const raw = global.localStorage?.getItem(COMMENT_COOLDOWN_STORAGE_KEY);
+            if (!raw) {
+                return {};
+            }
+
+            const parsed = JSON.parse(raw);
+            return parsed && typeof parsed === 'object' ? parsed : {};
+        } catch (_) {
+            return {};
+        }
+    }
+
+    function writeCommentCooldownMap(entries) {
+        try {
+            global.localStorage?.setItem(
+                COMMENT_COOLDOWN_STORAGE_KEY,
+                JSON.stringify(entries)
+            );
+        } catch (_) {
+            // Ignore storage write failures.
+        }
+    }
+
+    function getRemainingPostCooldownMs(authState = getAuthState()) {
+        const identity = getCommentCooldownIdentity(authState);
+        if (!identity) {
+            return 0;
+        }
+
+        const cooldownMap = readCommentCooldownMap();
+        const lastPostAt = Number(cooldownMap[identity] || 0);
+        if (!Number.isFinite(lastPostAt) || lastPostAt <= 0) {
+            return 0;
+        }
+
+        return Math.max(0, (lastPostAt + CONFIG.commentCooldownMs) - Date.now());
+    }
+
+    function rememberSuccessfulPost(authState = getAuthState()) {
+        const identity = getCommentCooldownIdentity(authState);
+        if (!identity) {
+            return;
+        }
+
+        const cooldownMap = readCommentCooldownMap();
+        cooldownMap[identity] = Date.now();
+        writeCommentCooldownMap(cooldownMap);
     }
 
     function canDeleteComment(comment) {
@@ -329,6 +398,7 @@
     async function postComment(mediaKey, content) {
         const normalizedMediaKey = normalizeMediaKey(mediaKey);
         const trimmedContent = String(content || '').trim();
+        const authState = getAuthState();
 
         if (!normalizedMediaKey) {
             throw new Error('Липсва валиден media key за коментара.');
@@ -347,6 +417,12 @@
             throw new Error('Трябва да сте влезли в профила си.');
         }
 
+        const remainingCooldownMs = getRemainingPostCooldownMs(authState);
+        if (remainingCooldownMs > 0) {
+            const seconds = Math.ceil(remainingCooldownMs / 1000);
+            throw new Error(`Можете да публикувате по 1 коментар на ${Math.round(CONFIG.commentCooldownMs / 1000)} секунди. Изчакайте още ${seconds} сек.`);
+        }
+
         const data = await graphQlRequest(POST_MEDIA_COMMENT_MUTATION, {
             mediaKey: normalizedMediaKey,
             content: trimmedContent,
@@ -356,6 +432,7 @@
             mediaKey: normalizedMediaKey,
         });
 
+        rememberSuccessfulPost(authState);
         clearCommentsCache(normalizedMediaKey);
         return data.postMediaComment || null;
     }
@@ -428,6 +505,7 @@
         clearCommentsCache,
         getCachedComments,
         getCachedCommentCount,
+        getRemainingPostCooldownMs,
         normalizeMediaKey,
         formatCommentDate,
         canDeleteComment,

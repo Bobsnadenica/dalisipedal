@@ -18,6 +18,7 @@ const galleryState = {
     touchDeltaX: 0,
     commentsRequestId: 0,
     commentsCountRequestId: 0,
+    composerBusy: false,
 };
 
 const FEATURED_PEDAL_COPY = Object.freeze({
@@ -571,20 +572,34 @@ function updateComposerCounter() {
         return;
     }
 
-    metaEl.textContent = `${inputEl.value.trim().length} / 500`;
+    const cooldownMs = window.PedalComments?.getRemainingPostCooldownMs?.() || 0;
+    const cooldownText = cooldownMs > 0
+        ? ` • изчакай ${Math.ceil(cooldownMs / 1000)} сек.`
+        : '';
+
+    metaEl.textContent = `${inputEl.value.trim().length} / 500${cooldownText}`;
 }
 
-function setComposerBusy(isBusy) {
+function syncComposerAvailability() {
     const inputEl = document.getElementById('gallery-comment-input');
     const submitBtn = document.getElementById('gallery-comment-submit');
+    const cooldownMs = window.PedalComments?.getRemainingPostCooldownMs?.() || 0;
+
     if (inputEl) {
-        inputEl.disabled = isBusy;
+        inputEl.disabled = galleryState.composerBusy;
     }
 
     if (submitBtn) {
-        submitBtn.disabled = isBusy;
-        submitBtn.textContent = isBusy ? 'Публикуваме...' : 'Публикувай';
+        submitBtn.disabled = galleryState.composerBusy || cooldownMs > 0;
+        submitBtn.textContent = galleryState.composerBusy
+            ? 'Публикуваме...'
+            : (cooldownMs > 0 ? `Изчакай ${Math.ceil(cooldownMs / 1000)} сек.` : 'Публикувай');
     }
+}
+
+function setComposerBusy(isBusy) {
+    galleryState.composerBusy = Boolean(isBusy);
+    syncComposerAvailability();
 }
 
 function updateCommentsAuthUi(authState = getAuthState()) {
@@ -620,6 +635,7 @@ function updateCommentsAuthUi(authState = getAuthState()) {
     }
 
     updateComposerCounter();
+    syncComposerAvailability();
 }
 
 function setCommentsStatus(message, options = {}) {
@@ -873,6 +889,7 @@ async function submitCurrentComment(event) {
         await window.PedalComments.postComment(mediaKey, content);
         inputEl.value = '';
         updateComposerCounter();
+        syncComposerAvailability();
         await renderCommentsForCurrentItem({ forceRefresh: true });
         inputEl.focus();
     } catch (error) {
@@ -1212,6 +1229,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     restoreSeenUrls();
     bindViewerEvents();
     updateComposerCounter();
+    syncComposerAvailability();
 
     if (window.PedalAuth?.subscribe) {
         window.PedalAuth.subscribe(handleAuthStateChange);
@@ -1219,6 +1237,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
         handleAuthStateChange();
     }
+
+    window.setInterval(() => {
+        updateComposerCounter();
+        syncComposerAvailability();
+    }, 1000);
 
     const refreshBtn = document.getElementById('refresh-gallery-btn');
     refreshBtn?.addEventListener('click', () => {
