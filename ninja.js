@@ -14,6 +14,7 @@ const ninjaState = {
     touchStartX: 0,
     touchDeltaX: 0,
     commentsRequestId: 0,
+    commentsCountRequestId: 0,
 };
 
 function formatDate(timestamp) {
@@ -437,7 +438,9 @@ function setCommentsStatus(message, options = {}) {
 }
 
 function setCommentsCount(count) {
-    const value = String(Math.max(0, Number(count) || 0));
+    const value = typeof count === 'number'
+        ? String(Math.max(0, Number(count) || 0))
+        : String(count || '');
     const ids = ['ninja-comments-count', 'ninja-comments-toggle-count'];
     ids.forEach(id => {
         const element = document.getElementById(id);
@@ -542,6 +545,48 @@ function getCurrentViewerMediaKey() {
     return window.PedalComments?.normalizeMediaKey?.(item?.key || item?.url || '') || '';
 }
 
+async function prefetchCommentsCountForCurrentItem(options = {}) {
+    const mediaKey = getCurrentViewerMediaKey();
+    if (!mediaKey || !window.PedalComments?.listComments) {
+        setCommentsCount(0);
+        return;
+    }
+
+    const requestId = ninjaState.commentsCountRequestId + 1;
+    ninjaState.commentsCountRequestId = requestId;
+
+    const cachedCount = window.PedalComments.getCachedCommentCount?.(mediaKey);
+    if (Number.isFinite(cachedCount) && !options.forceRefresh) {
+        setCommentsCount(cachedCount);
+        return;
+    }
+
+    setCommentsCount(Number.isFinite(cachedCount) ? cachedCount : '...');
+
+    try {
+        const comments = await window.PedalComments.listComments(mediaKey, {
+            forceRefresh: Boolean(options.forceRefresh),
+        });
+
+        if (requestId !== ninjaState.commentsCountRequestId) {
+            return;
+        }
+
+        if (mediaKey !== getCurrentViewerMediaKey()) {
+            return;
+        }
+
+        setCommentsCount(comments.length);
+    } catch (error) {
+        if (requestId !== ninjaState.commentsCountRequestId) {
+            return;
+        }
+
+        console.warn('Ninja comments count failed to preload:', error);
+        setCommentsCount(0);
+    }
+}
+
 async function renderCommentsForCurrentItem(options = {}) {
     const item = getCurrentViewerItem();
     const listEl = document.getElementById('ninja-comments-list');
@@ -554,7 +599,6 @@ async function renderCommentsForCurrentItem(options = {}) {
     ninjaState.commentsRequestId = requestId;
 
     listEl.innerHTML = '';
-    setCommentsCount(0);
     setCommentsStatus('Зареждаме коментари...');
     updateCommentsAuthUi();
 
@@ -753,6 +797,9 @@ function renderViewerItem(options = {}) {
         });
     } else {
         resetCommentsPanel();
+        prefetchCommentsCountForCurrentItem({
+            forceRefresh: Boolean(options.forceRefresh),
+        });
     }
 }
 

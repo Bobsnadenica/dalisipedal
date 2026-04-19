@@ -397,11 +397,37 @@
         commentsCache.delete(normalizeMediaKey(mediaKey));
     }
 
+    function getCachedComments(mediaKey) {
+        const normalizedMediaKey = normalizeMediaKey(mediaKey);
+        if (!normalizedMediaKey) {
+            return null;
+        }
+
+        const cached = commentsCache.get(normalizedMediaKey);
+        if (!cached) {
+            return null;
+        }
+
+        if ((Date.now() - cached.cachedAt) >= CONFIG.cacheTtlMs) {
+            commentsCache.delete(normalizedMediaKey);
+            return null;
+        }
+
+        return cached.items;
+    }
+
+    function getCachedCommentCount(mediaKey) {
+        const cachedItems = getCachedComments(mediaKey);
+        return Array.isArray(cachedItems) ? cachedItems.length : null;
+    }
+
     global.PedalComments = {
         listComments,
         postComment,
         removeComment,
         clearCommentsCache,
+        getCachedComments,
+        getCachedCommentCount,
         normalizeMediaKey,
         formatCommentDate,
         canDeleteComment,
