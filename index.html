@@ -597,86 +597,63 @@
         document.addEventListener('DOMContentLoaded', () => {
             const term = document.getElementById('terminal-bg');
             const heatmapRoot = document.getElementById('signal-heatmap-bg');
-            const BG_OUTLINE_COORDS = Object.freeze([
-                [44.215, 22.675],
-                [44.170, 23.040],
-                [44.130, 23.420],
-                [44.105, 23.900],
-                [44.095, 24.370],
-                [44.070, 24.860],
-                [44.030, 25.330],
-                [43.985, 25.790],
-                [43.945, 26.260],
-                [43.905, 26.760],
-                [43.865, 27.220],
-                [43.835, 27.620],
-                [43.780, 27.955],
-                [43.640, 28.075],
-                [43.430, 28.110],
-                [43.240, 28.010],
-                [43.100, 27.980],
-                [42.910, 27.985],
-                [42.720, 27.995],
-                [42.540, 27.955],
-                [42.360, 27.885],
-                [42.220, 27.780],
-                [42.120, 27.630],
-                [42.055, 27.410],
-                [42.010, 27.100],
-                [41.970, 26.730],
-                [41.910, 26.400],
-                [41.815, 26.100],
-                [41.720, 25.840],
-                [41.635, 25.560],
-                [41.560, 25.260],
-                [41.490, 24.950],
-                [41.435, 24.630],
-                [41.395, 24.290],
-                [41.350, 23.940],
-                [41.335, 23.610],
-                [41.305, 23.300],
-                [41.360, 23.010],
-                [41.440, 22.780],
-                [41.540, 22.560],
-                [41.675, 22.405],
-                [41.875, 22.355],
-                [42.070, 22.420],
-                [42.250, 22.540],
-                [42.445, 22.430],
-                [42.675, 22.345],
-                [42.935, 22.345],
-                [43.205, 22.340],
-                [43.495, 22.390],
-                [43.760, 22.505],
-                [43.975, 22.590],
-            ]);
-            const MAP_BOUNDS = Object.freeze({
-                minLat: 41.23,
-                maxLat: 44.25,
-                minLng: 22.33,
-                maxLng: 28.12,
-                minX: 96,
-                maxX: 920,
-                minY: 134,
-                maxY: 486,
+            const BULGARIA_OUTLINE_URL = 'background/bulgaria-outline.json';
+            const HEATMAP_VIEWBOX = Object.freeze({
+                width: 1000,
+                height: 620,
+                paddingX: 92,
+                paddingY: 86,
             });
 
-            function projectPoint(lat, lng) {
-                const xRatio = (lng - MAP_BOUNDS.minLng) / (MAP_BOUNDS.maxLng - MAP_BOUNDS.minLng);
-                const yRatio = (MAP_BOUNDS.maxLat - lat) / (MAP_BOUNDS.maxLat - MAP_BOUNDS.minLat);
-                return {
-                    x: MAP_BOUNDS.minX + xRatio * (MAP_BOUNDS.maxX - MAP_BOUNDS.minX),
-                    y: MAP_BOUNDS.minY + yRatio * (MAP_BOUNDS.maxY - MAP_BOUNDS.minY),
+            function fetchJson(url) {
+                return fetch(url, { cache: 'no-store' }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return response.json();
+                });
+            }
+
+            function createProjection(points) {
+                const bounds = points.reduce((accumulator, [lat, lng]) => ({
+                    minLat: Math.min(accumulator.minLat, lat),
+                    maxLat: Math.max(accumulator.maxLat, lat),
+                    minLng: Math.min(accumulator.minLng, lng),
+                    maxLng: Math.max(accumulator.maxLng, lng),
+                }), {
+                    minLat: Number.POSITIVE_INFINITY,
+                    maxLat: Number.NEGATIVE_INFINITY,
+                    minLng: Number.POSITIVE_INFINITY,
+                    maxLng: Number.NEGATIVE_INFINITY,
+                });
+
+                const latRange = Math.max(bounds.maxLat - bounds.minLat, 0.000001);
+                const lngRange = Math.max(bounds.maxLng - bounds.minLng, 0.000001);
+                const usableWidth = HEATMAP_VIEWBOX.width - (HEATMAP_VIEWBOX.paddingX * 2);
+                const usableHeight = HEATMAP_VIEWBOX.height - (HEATMAP_VIEWBOX.paddingY * 2);
+                const scale = Math.min(usableWidth / lngRange, usableHeight / latRange);
+                const projectedWidth = lngRange * scale;
+                const projectedHeight = latRange * scale;
+                const offsetX = (HEATMAP_VIEWBOX.width - projectedWidth) / 2;
+                const offsetY = (HEATMAP_VIEWBOX.height - projectedHeight) / 2;
+
+                return function projectPoint(lat, lng) {
+                    return {
+                        x: offsetX + ((lng - bounds.minLng) * scale),
+                        y: offsetY + ((bounds.maxLat - lat) * scale),
+                    };
                 };
             }
 
-            function buildOutlinePath() {
-                const points = BG_OUTLINE_COORDS.map(([lat, lng]) => projectPoint(lat, lng));
+            function buildOutlinePath(points, projectPoint) {
                 if (!points.length) {
                     return '';
                 }
 
-                return `${points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`).join(' ')} Z`;
+                return `${points.map(([lat, lng], index) => {
+                    const point = projectPoint(lat, lng);
+                    return `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`;
+                }).join(' ')} Z`;
             }
 
             function renderStaticHeatmap() {
@@ -684,19 +661,21 @@
                     return;
                 }
 
-                fetch('heatmap.json', { cache: 'no-store' })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP ${response.status}`);
+                Promise.all([
+                    fetchJson(BULGARIA_OUTLINE_URL),
+                    fetchJson('heatmap.json'),
+                ])
+                    .then(([outlinePoints, points]) => {
+                        if (!Array.isArray(outlinePoints) || !outlinePoints.length) {
+                            throw new Error('Outline data is missing.');
                         }
-                        return response.json();
-                    })
-                    .then(points => {
+
                         if (!Array.isArray(points) || !points.length) {
                             return;
                         }
 
-                        const outlinePath = buildOutlinePath();
+                        const projectPoint = createProjection(outlinePoints);
+                        const outlinePath = buildOutlinePath(outlinePoints, projectPoint);
                         const buckets = new Map();
                         points.forEach(pair => {
                             const [lat, lng] = pair;
