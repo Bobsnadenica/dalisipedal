@@ -17,7 +17,7 @@ const demoState = {
     featuredDay: null,
     featuredMonth: null,
     loadPromise: null,
-    plan: 'FREE',
+    plan: 'watch',
     isLoggedIn: true,
     username: 'dalisi.demo',
     chatMessages: [
@@ -53,30 +53,42 @@ let camsMap = null;
 let camsLayer = null;
 let chatReplyTimeout = null;
 
+const DEMO_ACHIEVEMENTS = [
+    { icon: 'camera_alt', title: 'Фотограф', desc: 'Направи първата си снимка', progress: 100, unlocked: true },
+    { icon: 'verified_user', title: 'Граждански Дълг', desc: '1 потвърден сигнал от КАТ', progress: 100, unlocked: true },
+    { icon: 'group', title: 'Influencer', desc: 'Сподели в социалните мрежи', progress: 100, unlocked: true },
+    { icon: 'photo_library', title: 'Папараци', desc: 'Качи 5 нарушения (3/5)', progress: 60, unlocked: false },
+    { icon: 'security', title: 'Шериф', desc: '10 потвърдени сигнала (2/10)', progress: 20, unlocked: false },
+    { icon: 'military_tech', title: 'Генерал', desc: 'Топ 1 в класацията за месеца', progress: 0, unlocked: false },
+];
+
 const DEMO_PLANS = [
     {
-        id: 'FREE',
-        name: 'FREE',
-        price: '0 лв',
+        id: 'starter',
+        name: 'Старт',
         accent: 'default',
-        copy: 'Базовият достъп за ежедневни сигнали и разглеждане.',
-        features: ['Произволни сигнали', 'Карта и камери', 'Чат помощник'],
+        requiredAchievements: 0,
+        requirement: 'Отключено по подразбиране',
+        copy: 'Всичко започва безплатно. Базовият demo пакет ти дава достъп до основните модули.',
+        features: ['Произволни сигнали', 'Карта и камери', 'PEDAL чат помощник'],
     },
     {
-        id: 'PRO',
-        name: 'PRO',
-        price: '7.99 лв',
+        id: 'watch',
+        name: 'Квартален пазител',
         accent: 'pro',
-        copy: 'По-бърз workflow, приоритетен изглед и по-богат профил.',
-        features: ['Приоритетен upload flow', 'Повече статистики', 'PRO значка в профила'],
+        requiredAchievements: 3,
+        requirement: '3 постижения',
+        copy: 'Отключва се, когато покажеш постоянство. Няма плащане, само активност и резултати.',
+        features: ['Разширен dashboard flow', 'По-силен профилен статус', 'Повече civic credibility'],
     },
     {
-        id: 'ULTRA',
-        name: 'ULTRA',
-        price: '14.99 лв',
+        id: 'legend',
+        name: 'PEDAL легенда',
         accent: 'ultra',
-        copy: 'За хората, които натискат системата всеки ден.',
-        features: ['Ранен достъп до нови модули', 'Разширени heatmaps', 'ULTRA значка'],
+        requiredAchievements: 6,
+        requirement: '6 постижения',
+        copy: 'Финалното demo ниво. Показва, че си натиснал системата достатъчно дълго и смислено.',
+        features: ['Всички demo unlocks', 'Максимален статус в профила', 'Легендарна значка'],
     },
 ];
 
@@ -209,17 +221,7 @@ function ensureDemoSession() {
 }
 
 function updateDemoHeader() {
-    const planPill = document.getElementById('demo-plan-pill');
-    const userPill = document.getElementById('demo-user-pill');
-
-    if (planPill) {
-        planPill.textContent = demoState.plan;
-        planPill.dataset.plan = demoState.plan.toLowerCase();
-    }
-
-    if (userPill) {
-        userPill.textContent = demoState.isLoggedIn ? demoState.username : 'гост';
-    }
+    syncAchievementPlan();
 }
 
 function setLoginStatus(message = '', isError = false) {
@@ -231,6 +233,21 @@ function setLoginStatus(message = '', isError = false) {
     statusEl.hidden = !message;
     statusEl.textContent = message;
     statusEl.classList.toggle('is-error', Boolean(isError));
+}
+
+function getUnlockedAchievementsCount() {
+    return DEMO_ACHIEVEMENTS.filter(item => item.unlocked).length;
+}
+
+function syncAchievementPlan() {
+    const unlockedCount = getUnlockedAchievementsCount();
+    const highestUnlocked = DEMO_PLANS
+        .filter(plan => unlockedCount >= plan.requiredAchievements)
+        .sort((left, right) => right.requiredAchievements - left.requiredAchievements)[0];
+
+    if (highestUnlocked) {
+        demoState.plan = highestUnlocked.id;
+    }
 }
 
 function getRandomEntry() {
@@ -402,22 +419,32 @@ function renderUpgradeView() {
         return;
     }
 
+    syncAchievementPlan();
+    const unlockedCount = getUnlockedAchievementsCount();
+    const nextPlan = DEMO_PLANS.find(plan => unlockedCount < plan.requiredAchievements);
+
     const planCards = DEMO_PLANS.map(plan => {
         const active = plan.id === demoState.plan;
+        const unlocked = unlockedCount >= plan.requiredAchievements;
         const features = plan.features.map(feature => `<li>${feature}</li>`).join('');
+        const buttonLabel = active
+            ? 'Активно ниво'
+            : unlocked
+                ? 'Вече отключено'
+                : `Нужни ${plan.requiredAchievements} постижения`;
         return `
-            <article class="upgrade-plan-card ${plan.accent} ${active ? 'active' : ''}">
+            <article class="upgrade-plan-card ${plan.accent} ${active ? 'active' : ''} ${unlocked ? 'unlocked' : 'locked'}">
                 <div class="upgrade-plan-top">
                     <div>
                         <div class="upgrade-plan-name">${plan.name}</div>
-                        <div class="upgrade-plan-price">${plan.price}</div>
+                        <div class="upgrade-plan-price">${plan.requirement}</div>
                     </div>
-                    <span class="upgrade-plan-badge">${active ? 'Активен' : 'План'}</span>
+                    <span class="upgrade-plan-badge">${active ? 'Активен' : (unlocked ? 'Отключен' : 'Locked')}</span>
                 </div>
                 <p class="upgrade-plan-copy">${plan.copy}</p>
                 <ul class="upgrade-plan-features">${features}</ul>
-                <button class="upgrade-plan-btn" type="button" onclick="activateDemoPlan('${plan.id}')">
-                    ${active ? 'Активен план' : `Вземи ${plan.name}`}
+                <button class="upgrade-plan-btn" type="button" onclick="openAchievements()">
+                    ${buttonLabel}
                 </button>
             </article>
         `;
@@ -425,19 +452,15 @@ function renderUpgradeView() {
 
     container.innerHTML = `
         <section class="upgrade-hero">
-            <div class="upgrade-eyebrow">PEDAL Membership</div>
-            <h3>Демо upgrade flow, който вече работи</h3>
-            <p>Смяната на плана е симулация, но state-ът се пази и се вижда веднага в header-а.</p>
-            <div class="upgrade-current">Текущ план: <strong>${demoState.plan}</strong></div>
+            <div class="upgrade-eyebrow">PEDAL Unlocks</div>
+            <h3>Всичко е безплатно. Upgrade-ът идва с постижения.</h3>
+            <p>Няма платени планове. Колкото повече реални действия и постижения имаш, толкова по-високо ниво отключваш в демото.</p>
+            <div class="upgrade-current">Отключени постижения: <strong>${unlockedCount} / ${DEMO_ACHIEVEMENTS.length}</strong></div>
+            ${nextPlan ? `<div class="upgrade-next-hint">Следващ unlock: <strong>${nextPlan.name}</strong> при ${nextPlan.requiredAchievements} постижения.</div>` : '<div class="upgrade-next-hint">Всички demo нива са отключени.</div>'}
+            <button class="upgrade-plan-btn" type="button" onclick="openAchievements()">Виж постиженията</button>
         </section>
         <div class="upgrade-plan-grid">${planCards}</div>
     `;
-}
-
-function activateDemoPlan(planId) {
-    demoState.plan = planId;
-    updateDemoHeader();
-    renderUpgradeView();
 }
 
 function openChat() {
@@ -471,8 +494,10 @@ function renderChatView() {
 function getChatReply(text) {
     const value = text.toLowerCase();
 
-    if (value.includes('upgrade') || value.includes('plan') || value.includes('pro')) {
-        return `В момента сте на ${demoState.plan}. От Upgrade можеш да превключиш между FREE, PRO и ULTRA.`;
+    if (value.includes('upgrade') || value.includes('plan') || value.includes('постиж')) {
+        const unlockedCount = getUnlockedAchievementsCount();
+        const currentPlan = DEMO_PLANS.find(plan => plan.id === demoState.plan)?.name || 'Старт';
+        return `Тук няма платени планове. В момента сте на "${currentPlan}" и имате ${unlockedCount} отключени постижения.`;
     }
 
     if (value.includes('кам') || value.includes('camera') || value.includes('скорост')) {
@@ -778,17 +803,8 @@ function openAchievements() {
 
     const list = document.getElementById('ach-list');
     list.innerHTML = '';
-    
-    const achievements = [
-        { icon: 'camera_alt', title: 'Фотограф', desc: 'Направи първата си снимка', progress: 100, unlocked: true },
-        { icon: 'verified_user', title: 'Граждански Дълг', desc: '1 потвърден сигнал от КАТ', progress: 100, unlocked: true },
-        { icon: 'group', title: 'Influencer', desc: 'Сподели в социалните мрежи', progress: 100, unlocked: true },
-        { icon: 'photo_library', title: 'Папараци', desc: 'Качи 5 нарушения (3/5)', progress: 60, unlocked: false },
-        { icon: 'security', title: 'Шериф', desc: '10 потвърдени сигнала (2/10)', progress: 20, unlocked: false },
-        { icon: 'military_tech', title: 'Генерал', desc: 'Топ 1 в класацията за месеца', progress: 0, unlocked: false }
-    ];
 
-    achievements.forEach(ach => {
+    DEMO_ACHIEVEMENTS.forEach(ach => {
         const stateClass = ach.unlocked ? 'unlocked' : 'locked';
         const checkMark = ach.unlocked ? 'check_circle' : '';
         
