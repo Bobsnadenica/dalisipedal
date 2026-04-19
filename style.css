@@ -482,7 +482,7 @@ input { width: 100%; background: #1C1C1E; border: 1px solid #333; color: white; 
 .games-eyebrow { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #ff9ab7; margin-bottom: 8px; }
 .games-hero h3 { font-size: 1.05rem; margin-bottom: 6px; }
 .games-hero p { font-size: 0.78rem; color: #a6a6a6; line-height: 1.5; }
-.game-switcher { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.game-switcher { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .game-pill { border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: #d7d7d7; border-radius: 999px; padding: 10px 12px; font-size: 0.74rem; font-weight: 800; cursor: pointer; }
 .game-pill.active { background: rgba(255, 193, 7, 0.14); border-color: rgba(255, 193, 7, 0.24); color: #fff4cd; }
 .game-panel { background: #111214; border: 1px solid rgba(255,255,255,0.08); border-radius: 22px; padding: 16px; display: grid; gap: 12px; }
@@ -500,11 +500,23 @@ input { width: 100%; background: #1C1C1E; border: 1px solid #333; color: white; 
 .game-feedback.ok { background: rgba(52, 199, 89, 0.12); color: #d7ffdf; }
 .game-action-btn { width: 100%; border: 0; border-radius: 14px; padding: 12px; background: #fff; color: #070707; font-weight: 900; cursor: pointer; }
 .game-action-btn.secondary { background: rgba(255,255,255,0.08); color: #fff; }
+.game-action-btn:disabled { opacity: 0.46; cursor: not-allowed; }
 .radar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .radar-cell { aspect-ratio: 1; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: #6f7783; display: grid; place-items: center; cursor: pointer; transition: transform 0.12s ease, background 0.12s ease; }
 .radar-cell .material-icons-round { font-size: 28px; }
 .radar-cell.target { background: radial-gradient(circle, rgba(255, 59, 48, 0.26), rgba(255, 59, 48, 0.08)); color: #ffb0aa; box-shadow: 0 0 0 1px rgba(255, 59, 48, 0.22) inset; }
 .radar-grid.active .radar-cell:active { transform: scale(0.94); }
+.tow-tag { background: rgba(255, 159, 10, 0.14); color: #ffe2b3; }
+.escape-road { display: grid; gap: 8px; padding: 12px; border-radius: 20px; background: linear-gradient(180deg, rgba(16,16,18,0.96), rgba(28,28,32,0.96)); border: 1px solid rgba(255,255,255,0.06); position: relative; overflow: hidden; }
+.escape-road::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 31.6%, rgba(255,255,255,0.12) 31.6%, rgba(255,255,255,0.12) 34%, transparent 34%, transparent 65.6%, rgba(255,255,255,0.12) 65.6%, rgba(255,255,255,0.12) 68%, transparent 68%); opacity: 0.55; pointer-events: none; }
+.escape-road.crashed { box-shadow: 0 0 0 1px rgba(255, 59, 48, 0.22) inset, 0 0 30px rgba(255, 59, 48, 0.14); }
+.escape-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; position: relative; z-index: 1; }
+.escape-cell { min-height: 56px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); display: grid; place-items: center; color: rgba(255,255,255,0.14); }
+.escape-cell .material-icons-round { font-size: 28px; }
+.escape-cell.player { color: #fff2be; background: linear-gradient(180deg, rgba(255, 193, 7, 0.22), rgba(255, 193, 7, 0.08)); border-color: rgba(255, 193, 7, 0.28); }
+.escape-cell.obstacle { color: #cfe4ff; background: linear-gradient(180deg, rgba(90, 200, 250, 0.2), rgba(90, 200, 250, 0.06)); border-color: rgba(90, 200, 250, 0.2); }
+.escape-cell.player.obstacle { color: #ffd7d4; background: linear-gradient(180deg, rgba(255, 59, 48, 0.28), rgba(255, 59, 48, 0.1)); border-color: rgba(255, 59, 48, 0.34); }
+.escape-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 
 .chat-screen { padding-bottom: 84px; }
 .chat-messages { display: flex; flex-direction: column; gap: 10px; padding: 16px 0 24px; }
@@ -644,6 +656,11 @@ footer { padding: 40px 0 100px; border-top: 1px solid rgba(255,255,255,0.05); te
     }
 
     .nav-fb, .nav-support { margin: 0; }
+}
+
+@media (max-width: 420px) {
+    .game-switcher { grid-template-columns: 1fr; }
+    .escape-cell { min-height: 50px; }
 }
 
 @media (max-width: 400px) {

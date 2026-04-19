@@ -42,6 +42,15 @@ const demoState = {
         timerId: null,
         spawnId: null,
     },
+    escapeGame: {
+        active: false,
+        crashed: false,
+        score: 0,
+        timeLeft: 18,
+        playerLane: 1,
+        obstacles: [],
+        tickId: null,
+    },
 };
 
 
@@ -159,9 +168,19 @@ const PARKING_SCENARIOS = [
     },
 ];
 
+function shuffle(items) {
+    const copy = [...items];
+    for (let index = copy.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+    }
+    return copy;
+}
+
 function setView(viewId) {
     if (viewId !== 'games') {
         stopRadarGame();
+        stopEscapeGame();
     }
 
     document.querySelectorAll('.app-view').forEach(el => {
@@ -505,7 +524,7 @@ function getChatReply(text) {
     }
 
     if (value.includes('игр') || value.includes('game')) {
-        return 'В Игри вече има две реални mini browser игри: Паркирай правилно и Радар tap.';
+        return 'В Игри вече има три реални mini browser игри: Паркирай правилно, Радар tap и Бягство от паяка.';
     }
 
     if (value.includes('сигнал') || value.includes('upload')) {
@@ -996,8 +1015,8 @@ function openGames() {
         return;
     }
 
-    renderGamesView();
     setView('games');
+    renderGamesView();
 }
 
 function renderGamesView() {
@@ -1016,6 +1035,7 @@ function renderGamesView() {
             <div class="game-switcher">
                 <button type="button" class="game-pill ${demoState.activeGame === 'parking' ? 'active' : ''}" onclick="selectDemoGame('parking')">Паркирай правилно</button>
                 <button type="button" class="game-pill ${demoState.activeGame === 'radar' ? 'active' : ''}" onclick="selectDemoGame('radar')">Радар tap</button>
+                <button type="button" class="game-pill ${demoState.activeGame === 'escape' ? 'active' : ''}" onclick="selectDemoGame('escape')">Бягство от паяка</button>
             </div>
             <div id="games-stage"></div>
         </div>
@@ -1028,6 +1048,9 @@ function selectDemoGame(gameId) {
     demoState.activeGame = gameId;
     if (gameId !== 'radar') {
         stopRadarGame();
+    }
+    if (gameId !== 'escape') {
+        stopEscapeGame();
     }
     renderGamesView();
 }
@@ -1111,6 +1134,99 @@ function stopRadarGame() {
     }
 
     demoState.radarGame.active = false;
+}
+
+function resetEscapeGame() {
+    stopEscapeGame();
+
+    demoState.escapeGame = {
+        active: false,
+        crashed: false,
+        score: 0,
+        timeLeft: 18,
+        playerLane: 1,
+        obstacles: [],
+        tickId: null,
+    };
+}
+
+function startEscapeGame() {
+    resetEscapeGame();
+    demoState.escapeGame.active = true;
+    renderSelectedGame();
+
+    demoState.escapeGame.tickId = setInterval(() => {
+        tickEscapeGame();
+    }, 700);
+}
+
+function stopEscapeGame() {
+    if (demoState.escapeGame.tickId) {
+        clearInterval(demoState.escapeGame.tickId);
+        demoState.escapeGame.tickId = null;
+    }
+
+    demoState.escapeGame.active = false;
+}
+
+function moveEscapeCar(direction) {
+    const state = demoState.escapeGame;
+    if (!state.active) {
+        return;
+    }
+
+    state.playerLane = Math.max(0, Math.min(2, state.playerLane + direction));
+    renderSelectedGame();
+}
+
+function tickEscapeGame() {
+    const state = demoState.escapeGame;
+    if (!state.active) {
+        return;
+    }
+
+    state.timeLeft = Math.max(0, state.timeLeft - 1);
+
+    let passed = 0;
+    state.obstacles = state.obstacles
+        .map(car => ({ ...car, row: car.row + 1 }))
+        .filter(car => {
+            if (car.row > 4) {
+                passed += 1;
+                return false;
+            }
+            return true;
+        });
+
+    state.score += passed;
+
+    if (Math.random() > 0.28) {
+        const nextLane = Math.floor(Math.random() * 3);
+        const laneBlocked = state.obstacles.some(car => car.row === 0 && car.lane === nextLane);
+        if (!laneBlocked) {
+            state.obstacles.push({
+                id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+                lane: nextLane,
+                row: 0,
+            });
+        }
+    }
+
+    const hasCollision = state.obstacles.some(car => car.row === 4 && car.lane === state.playerLane);
+    if (hasCollision) {
+        state.crashed = true;
+        stopEscapeGame();
+        renderSelectedGame();
+        return;
+    }
+
+    if (state.timeLeft <= 0) {
+        stopEscapeGame();
+        renderSelectedGame();
+        return;
+    }
+
+    renderSelectedGame();
 }
 
 function tapRadarCell(index) {
@@ -1197,29 +1313,88 @@ function renderSelectedGame() {
         return;
     }
 
-    const radar = demoState.radarGame;
+    if (demoState.activeGame === 'radar') {
+        const radar = demoState.radarGame;
+        stage.innerHTML = `
+            <div class="game-panel">
+                <div class="game-score-row">
+                    <span>Време: ${radar.timeLeft}s</span>
+                    <strong>${radar.score} точки</strong>
+                </div>
+                <h4>Радар tap</h4>
+                <p class="game-copy">Натисни само нарушителя, преди да смени позицията си.</p>
+                <div class="radar-grid ${radar.active ? 'active' : ''}">
+                    ${Array.from({ length: 9 }, (_, index) => `
+                        <button type="button" class="radar-cell ${radar.targetIndex === index && radar.active ? 'target' : ''}" onclick="tapRadarCell(${index})">
+                            <span class="material-icons-round">${radar.targetIndex === index && radar.active ? 'local_police' : 'directions_car'}</span>
+                        </button>
+                    `).join('')}
+                </div>
+                <div class="game-feedback ${radar.active ? 'ok' : ''}">
+                    ${radar.active
+                        ? 'Тапни мигащата клетка и не губи време.'
+                        : `Финален резултат: ${radar.score}. Натисни старт за нов рунд.`}
+                </div>
+                <button type="button" class="game-action-btn" onclick="startRadarGame()">
+                    ${radar.active ? 'Рестарт' : 'Старт'}
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    const escape = demoState.escapeGame;
     stage.innerHTML = `
         <div class="game-panel">
             <div class="game-score-row">
-                <span>Време: ${radar.timeLeft}s</span>
-                <strong>${radar.score} точки</strong>
+                <span>${escape.active ? `Остават ${escape.timeLeft}s` : (escape.crashed ? 'Ударихте се' : 'Финал')}</span>
+                <strong>${escape.score} точки</strong>
             </div>
-            <h4>Радар tap</h4>
-            <p class="game-copy">Натисни само нарушителя, преди да смени позицията си.</p>
-            <div class="radar-grid ${radar.active ? 'active' : ''}">
-                ${Array.from({ length: 9 }, (_, index) => `
-                    <button type="button" class="radar-cell ${radar.targetIndex === index && radar.active ? 'target' : ''}" onclick="tapRadarCell(${index})">
-                        <span class="material-icons-round">${radar.targetIndex === index && radar.active ? 'local_police' : 'directions_car'}</span>
-                    </button>
+            <div class="game-scene-tag tow-tag">Градски улици</div>
+            <h4>Бягство от паяка</h4>
+            <p class="game-copy">Премествай колата между трите ленти и избегни наглите спирания по пътя.</p>
+            <div class="escape-road ${escape.crashed ? 'crashed' : ''}">
+                ${Array.from({ length: 5 }, (_, rowIndex) => `
+                    <div class="escape-row">
+                        ${Array.from({ length: 3 }, (_, laneIndex) => {
+                            const isPlayer = rowIndex === 4 && laneIndex === escape.playerLane;
+                            const obstacle = escape.obstacles.find(car => car.row === rowIndex && car.lane === laneIndex);
+                            const className = [
+                                'escape-cell',
+                                isPlayer ? 'player' : '',
+                                obstacle ? 'obstacle' : '',
+                            ].filter(Boolean).join(' ');
+                            let icon = 'road';
+                            if (obstacle) {
+                                icon = 'local_shipping';
+                            }
+                            if (isPlayer && obstacle) {
+                                icon = 'car_crash';
+                            } else if (isPlayer) {
+                                icon = 'directions_car';
+                            }
+                            return `
+                                <div class="${className}">
+                                    <span class="material-icons-round">${icon}</span>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
                 `).join('')}
             </div>
-            <div class="game-feedback ${radar.active ? 'ok' : ''}">
-                ${radar.active
-                    ? 'Тапни мигащата клетка и не губи време.'
-                    : `Финален резултат: ${radar.score}. Натисни старт за нов рунд.`}
+            <div class="escape-controls">
+                <button type="button" class="game-action-btn secondary" onclick="moveEscapeCar(-1)" ${escape.active ? '' : 'disabled'}>Наляво</button>
+                <button type="button" class="game-action-btn secondary" onclick="moveEscapeCar(1)" ${escape.active ? '' : 'disabled'}>Надясно</button>
             </div>
-            <button type="button" class="game-action-btn" onclick="startRadarGame()">
-                ${radar.active ? 'Рестарт' : 'Старт'}
+            <div class="game-feedback ${escape.active && !escape.crashed ? 'ok' : ''}">
+                ${escape.active
+                    ? 'Стой в движение. Всеки избегнат автомобил носи точка.'
+                    : (escape.crashed
+                        ? `Паякът те хвана. Събра ${escape.score} точки.`
+                        : `Рундът приключи. Избяга от ${escape.score} препятствия.`)}
+            </div>
+            <button type="button" class="game-action-btn" onclick="startEscapeGame()">
+                ${escape.active ? 'Рестарт' : 'Старт'}
             </button>
         </div>
     `;
@@ -1386,6 +1561,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderChatView();
     renderUpgradeView();
     resetParkingGame();
+    resetEscapeGame();
 
     setInterval(() => {
         const now = new Date();
