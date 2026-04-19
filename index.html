@@ -128,6 +128,17 @@
             fill: rgba(255, 255, 255, 0.02);
             stroke: rgba(255, 255, 255, 0.16);
             stroke-width: 2;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+        }
+
+        .heatmap-outline-glow {
+            fill: rgba(255, 255, 255, 0.015);
+            stroke: rgba(255, 193, 7, 0.22);
+            stroke-width: 5;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            filter: blur(8px);
         }
 
         .heatmap-city {
@@ -586,17 +597,87 @@
         document.addEventListener('DOMContentLoaded', () => {
             const term = document.getElementById('terminal-bg');
             const heatmapRoot = document.getElementById('signal-heatmap-bg');
-            const BG_SHAPE_PATH = 'M96 310 L138 252 L188 233 L252 220 L323 195 L397 186 L463 176 L546 181 L627 190 L698 205 L778 222 L846 246 L900 282 L920 314 L903 344 L860 364 L804 382 L738 397 L670 405 L612 420 L540 431 L470 428 L405 420 L339 429 L272 417 L214 397 L160 388 L114 360 L89 334 Z';
+            const BG_OUTLINE_COORDS = Object.freeze([
+                [44.215, 22.675],
+                [44.170, 23.040],
+                [44.130, 23.420],
+                [44.105, 23.900],
+                [44.095, 24.370],
+                [44.070, 24.860],
+                [44.030, 25.330],
+                [43.985, 25.790],
+                [43.945, 26.260],
+                [43.905, 26.760],
+                [43.865, 27.220],
+                [43.835, 27.620],
+                [43.780, 27.955],
+                [43.640, 28.075],
+                [43.430, 28.110],
+                [43.240, 28.010],
+                [43.100, 27.980],
+                [42.910, 27.985],
+                [42.720, 27.995],
+                [42.540, 27.955],
+                [42.360, 27.885],
+                [42.220, 27.780],
+                [42.120, 27.630],
+                [42.055, 27.410],
+                [42.010, 27.100],
+                [41.970, 26.730],
+                [41.910, 26.400],
+                [41.815, 26.100],
+                [41.720, 25.840],
+                [41.635, 25.560],
+                [41.560, 25.260],
+                [41.490, 24.950],
+                [41.435, 24.630],
+                [41.395, 24.290],
+                [41.350, 23.940],
+                [41.335, 23.610],
+                [41.305, 23.300],
+                [41.360, 23.010],
+                [41.440, 22.780],
+                [41.540, 22.560],
+                [41.675, 22.405],
+                [41.875, 22.355],
+                [42.070, 22.420],
+                [42.250, 22.540],
+                [42.445, 22.430],
+                [42.675, 22.345],
+                [42.935, 22.345],
+                [43.205, 22.340],
+                [43.495, 22.390],
+                [43.760, 22.505],
+                [43.975, 22.590],
+            ]);
             const MAP_BOUNDS = Object.freeze({
-                minLat: 41.52722,
-                maxLat: 44.0011,
-                minLng: 22.68953,
-                maxLng: 27.93484,
+                minLat: 41.23,
+                maxLat: 44.25,
+                minLng: 22.33,
+                maxLng: 28.12,
                 minX: 96,
                 maxX: 920,
-                minY: 176,
-                maxY: 431,
+                minY: 134,
+                maxY: 486,
             });
+
+            function projectPoint(lat, lng) {
+                const xRatio = (lng - MAP_BOUNDS.minLng) / (MAP_BOUNDS.maxLng - MAP_BOUNDS.minLng);
+                const yRatio = (MAP_BOUNDS.maxLat - lat) / (MAP_BOUNDS.maxLat - MAP_BOUNDS.minLat);
+                return {
+                    x: MAP_BOUNDS.minX + xRatio * (MAP_BOUNDS.maxX - MAP_BOUNDS.minX),
+                    y: MAP_BOUNDS.minY + yRatio * (MAP_BOUNDS.maxY - MAP_BOUNDS.minY),
+                };
+            }
+
+            function buildOutlinePath() {
+                const points = BG_OUTLINE_COORDS.map(([lat, lng]) => projectPoint(lat, lng));
+                if (!points.length) {
+                    return '';
+                }
+
+                return `${points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`).join(' ')} Z`;
+            }
 
             function renderStaticHeatmap() {
                 if (!heatmapRoot) {
@@ -615,6 +696,7 @@
                             return;
                         }
 
+                        const outlinePath = buildOutlinePath();
                         const buckets = new Map();
                         points.forEach(pair => {
                             const [lat, lng] = pair;
@@ -622,10 +704,9 @@
                                 return;
                             }
 
-                            const xRatio = (lng - MAP_BOUNDS.minLng) / (MAP_BOUNDS.maxLng - MAP_BOUNDS.minLng);
-                            const yRatio = (MAP_BOUNDS.maxLat - lat) / (MAP_BOUNDS.maxLat - MAP_BOUNDS.minLat);
-                            const x = MAP_BOUNDS.minX + xRatio * (MAP_BOUNDS.maxX - MAP_BOUNDS.minX);
-                            const y = MAP_BOUNDS.minY + yRatio * (MAP_BOUNDS.maxY - MAP_BOUNDS.minY);
+                            const projected = projectPoint(lat, lng);
+                            const x = projected.x;
+                            const y = projected.y;
                             const bucketKey = `${Math.round(x / 16)}:${Math.round(y / 16)}`;
                             const bucket = buckets.get(bucketKey) || { x: 0, y: 0, count: 0 };
                             bucket.x += x;
@@ -633,6 +714,17 @@
                             bucket.count += 1;
                             buckets.set(bucketKey, bucket);
                         });
+
+                        const cityLabels = [
+                            { name: 'София', lat: 42.6977, lng: 23.3219, dx: -16, dy: -10 },
+                            { name: 'Пловдив', lat: 42.1354, lng: 24.7453, dx: -18, dy: 20 },
+                            { name: 'Варна', lat: 43.2141, lng: 27.9147, dx: -8, dy: -14 },
+                            { name: 'Бургас', lat: 42.5048, lng: 27.4626, dx: -8, dy: 22 },
+                            { name: 'Русе', lat: 43.8356, lng: 25.9657, dx: -8, dy: -12 },
+                        ].map(city => {
+                            const projected = projectPoint(city.lat, city.lng);
+                            return `<text class="heatmap-city" x="${(projected.x + city.dx).toFixed(2)}" y="${(projected.y + city.dy).toFixed(2)}">${city.name}</text>`;
+                        }).join('');
 
                         const dots = [...buckets.values()]
                             .map(bucket => ({
@@ -652,7 +744,7 @@
                             }).join('');
 
                         heatmapRoot.innerHTML = `
-                            <svg viewBox="0 0 1000 560" role="presentation" aria-hidden="true">
+                            <svg viewBox="0 0 1000 620" role="presentation" aria-hidden="true">
                                 <defs>
                                     <filter id="heatBlur" x="-30%" y="-30%" width="160%" height="160%">
                                         <feGaussianBlur stdDeviation="18"></feGaussianBlur>
@@ -661,18 +753,16 @@
                                         <feGaussianBlur stdDeviation="8"></feGaussianBlur>
                                     </filter>
                                     <clipPath id="bulgariaClip">
-                                        <path d="${BG_SHAPE_PATH}"></path>
+                                        <path d="${outlinePath}"></path>
                                     </clipPath>
                                 </defs>
                                 <g clip-path="url(#bulgariaClip)">
                                     ${dots}
                                 </g>
-                                <path class="heatmap-outline" d="${BG_SHAPE_PATH}"></path>
-                                <text class="heatmap-label" x="112" y="148">BULGARIA SIGNAL HEATMAP</text>
-                                <text class="heatmap-city" x="226" y="255">София</text>
-                                <text class="heatmap-city" x="470" y="288">Пловдив</text>
-                                <text class="heatmap-city" x="772" y="250">Варна</text>
-                                <text class="heatmap-city" x="730" y="345">Бургас</text>
+                                <path class="heatmap-outline-glow" d="${outlinePath}"></path>
+                                <path class="heatmap-outline" d="${outlinePath}"></path>
+                                <text class="heatmap-label" x="108" y="104">BULGARIA SIGNAL HEATMAP</text>
+                                ${cityLabels}
                             </svg>
                         `;
                     })
