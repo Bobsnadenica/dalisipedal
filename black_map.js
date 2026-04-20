@@ -641,13 +641,30 @@ function selectRecord(record, { pan = false } = {}) {
 function getSelectionThresholdPx() {
   const zoom = getMapZoom();
   const coarsePointer = window.matchMedia?.('(pointer: coarse)').matches;
-  let threshold = coarsePointer ? 34 : 24;
+  let threshold = coarsePointer ? 42 : 30;
 
-  if (zoom < 8) threshold += 18;
-  else if (zoom < 10) threshold += 10;
-  else if (zoom < 12) threshold += 5;
+  if (zoom < 8) threshold += 28;
+  else if (zoom < 10) threshold += 16;
+  else if (zoom < 12) threshold += 8;
 
   return threshold;
+}
+
+function findNearestRecordInSet(records, clickPoint, map, thresholdPx) {
+  let nearest = null;
+  let bestDistance = Number.POSITIVE_INFINITY;
+
+  for (const record of records) {
+    const point = map.latLngToContainerPoint([record.lat, record.lng]);
+    const distance = point.distanceTo(clickPoint);
+    const weightedDistance = record.isMajor ? distance * 0.82 : distance;
+    if (distance <= thresholdPx && weightedDistance < bestDistance) {
+      bestDistance = weightedDistance;
+      nearest = record;
+    }
+  }
+
+  return nearest;
 }
 
 function findNearestRecordFromLatLng(latlng) {
@@ -656,6 +673,7 @@ function findNearestRecordFromLatLng(latlng) {
 
   const clickPoint = map.latLngToContainerPoint(latlng);
   const thresholdPx = getSelectionThresholdPx();
+  const looseThresholdPx = thresholdPx + 42;
   const searchSets = [
     state.map.renderedRecords,
     collectMapSourceRecords({ sample: false, useBounds: true }).records,
@@ -663,19 +681,14 @@ function findNearestRecordFromLatLng(latlng) {
   ];
 
   for (const records of searchSets) {
-    let nearest = null;
-    let bestDistance = Number.POSITIVE_INFINITY;
-
-    for (const record of records) {
-      const point = map.latLngToContainerPoint([record.lat, record.lng]);
-      const distance = point.distanceTo(clickPoint);
-      const weightedDistance = record.isMajor ? distance * 0.82 : distance;
-      if (distance <= thresholdPx && weightedDistance < bestDistance) {
-        bestDistance = weightedDistance;
-        nearest = record;
-      }
+    const nearest = findNearestRecordInSet(records, clickPoint, map, thresholdPx);
+    if (nearest) {
+      return nearest;
     }
+  }
 
+  for (const records of searchSets) {
+    const nearest = findNearestRecordInSet(records, clickPoint, map, looseThresholdPx);
     if (nearest) {
       return nearest;
     }
@@ -734,10 +747,12 @@ function renderLeafletMarkers() {
       weight: record.isMajor ? config.majorBorder : 0,
       fillColor: record.isMajor ? '#ff5252' : '#ffc107',
       fillOpacity: record.isMajor ? config.majorOpacity : config.minorOpacity,
+      interactive: true,
       bubblingMouseEvents: false,
     });
     marker.on('click', () => {
       selectRecord(record, { pan: true });
+      marker.openPopup();
     });
     marker.bindPopup(buildMarkerPopup(record), {
       closeButton: false,
