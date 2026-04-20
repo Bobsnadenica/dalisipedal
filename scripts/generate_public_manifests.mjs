@@ -22,7 +22,9 @@ const FEATURED_MONTH_PREFIX = 'pedal_of_the_month/';
 const FEATURED_WEEK_PREFIX = 'pedal_of_the_month/pedal_of_the_day/';
 const GEOCODE_DELAY_MS = 1100;
 const MANIFEST_VERSION = 1;
-const REACTION_FETCH_CONCURRENCY = 12;
+const REACTION_FETCH_CONCURRENCY = 4;
+const REACTION_FETCH_MAX_ATTEMPTS = 6;
+const REACTION_FETCH_BASE_DELAY_MS = 1400;
 const APP_USER_AGENT =
     process.env.PEDAL_MANIFEST_USER_AGENT ||
     'dalisipedal-manifest-generator/1.0 (+https://www.dalisipedal.com)';
@@ -291,6 +293,43 @@ async function fetchReactionSummary({ endpoint, apiKey, mediaKey }) {
     }
 
     return payload.data.getMediaReactionSummary || null;
+}
+
+function isRetryableReactionError(error) {
+    const message = String(error?.message || error || '');
+    return (
+        message.includes('HTTP 429')
+        || message.includes('TooManyRequestsException')
+        || message.includes('Rate Exceeded')
+    );
+}
+
+async function fetchReactionSummaryWithRetry(config) {
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= REACTION_FETCH_MAX_ATTEMPTS; attempt += 1) {
+        try {
+            return await fetchReactionSummary(config);
+        } catch (error) {
+            lastError = error;
+
+            if (!isRetryableReactionError(error) || attempt === REACTION_FETCH_MAX_ATTEMPTS) {
+                throw error;
+            }
+
+            const jitterMs = Math.floor(Math.random() * 500);
+            const delayMs =
+                REACTION_FETCH_BASE_DELAY_MS * (2 ** (attempt - 1))
+                + jitterMs;
+
+            console.warn(
+                `Reaction summary throttled for ${config.mediaKey}; retry ${attempt}/${REACTION_FETCH_MAX_ATTEMPTS} in ${delayMs}ms.`
+            );
+            await sleep(delayMs);
+        }
+    }
+
+    throw lastError;
 }
 
 async function mapWithConcurrency(items, concurrency, mapper) {
@@ -719,7 +758,7 @@ async function buildReactionSummariesSnapshot(config, galleryManifest, ninjaMani
                 console.log(`Fetched ${index} reaction summaries...`);
             }
 
-            const payload = await fetchReactionSummary({
+            const payload = await fetchReactionSummaryWithRetry({
                 endpoint: config.appsyncEndpoint,
                 apiKey: config.appsyncApiKey,
                 mediaKey,
