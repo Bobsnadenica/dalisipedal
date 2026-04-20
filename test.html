@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>API Data Test | П.Е.Д.А.Л.🤫</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        body {
+            overflow-y: auto;
+        }
+
+        .test-shell {
+            max-width: 1320px;
+            margin: 108px auto 84px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .test-hero,
+        .test-panel,
+        .dataset-card {
+            background: linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(9, 9, 9, 0.94));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(18px);
+        }
+
+        .test-hero {
+            border-radius: 30px;
+            padding: 30px;
+            margin-bottom: 26px;
+        }
+
+        .test-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(72, 196, 255, 0.12);
+            color: #9fe4ff;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .test-title {
+            font-size: 3rem;
+            line-height: 1.04;
+            letter-spacing: -0.04em;
+            margin-bottom: 14px;
+        }
+
+        .test-copy {
+            color: var(--text-muted);
+            max-width: 860px;
+            line-height: 1.75;
+            font-size: 1.02rem;
+        }
+
+        .test-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+            gap: 22px;
+            align-items: start;
+        }
+
+        .test-panel {
+            border-radius: 28px;
+            padding: 22px;
+        }
+
+        .test-panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .test-panel-title {
+            font-size: 1.24rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .test-panel-copy {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 0.94rem;
+        }
+
+        .test-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .test-stat {
+            border-radius: 22px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .test-stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+        }
+
+        .test-stat-value {
+            margin-top: 8px;
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .layer-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .layer-chip {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            padding: 10px 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .layer-chip.is-off {
+            opacity: 0.46;
+        }
+
+        .layer-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex: 0 0 auto;
+        }
+
+        .map-frame {
+            border-radius: 26px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background:
+                radial-gradient(circle at top, rgba(72, 196, 255, 0.12), transparent 44%),
+                linear-gradient(180deg, rgba(10, 18, 26, 0.98), rgba(4, 8, 12, 0.98));
+            position: relative;
+            min-height: 620px;
+        }
+
+        #data-map {
+            width: 100%;
+            height: 620px;
+            display: block;
+        }
+
+        .map-status {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .map-status-chip {
+            padding: 8px 10px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.42);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .dataset-stack {
+            display: grid;
+            gap: 16px;
+        }
+
+        .dataset-card {
+            border-radius: 24px;
+            padding: 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .dataset-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .dataset-title-wrap {
+            display: grid;
+            gap: 6px;
+        }
+
+        .dataset-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.06rem;
+            font-weight: 800;
+        }
+
+        .dataset-subtitle {
+            color: var(--text-muted);
+            line-height: 1.55;
+            font-size: 0.88rem;
+        }
+
+        .dataset-count {
+            border-radius: 999px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: #fff3cf;
+        }
+
+        .dataset-meta {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .dataset-meta-item {
+            border-radius: 18px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .dataset-meta-label {
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .dataset-meta-value {
+            line-height: 1.55;
+            word-break: break-word;
+        }
+
+        .field-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .field-pill {
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: #d9f4ff;
+        }
+
+        .sample-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+        }
+
+        .sample-table th,
+        .sample-table td {
+            text-align: left;
+            vertical-align: top;
+            padding: 9px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .sample-table th {
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+        }
+
+        .loading-panel,
+        .error-panel {
+            border-radius: 24px;
+            padding: 20px;
+            line-height: 1.7;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px dashed rgba(255, 255, 255, 0.14);
+            color: var(--text-muted);
+        }
+
+        .error-panel {
+            color: #ffd2d2;
+            border-color: rgba(255, 110, 110, 0.24);
+            background: rgba(255, 110, 110, 0.08);
+        }
+
+        @media (max-width: 1100px) {
+            .test-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .test-shell {
+                padding: 0 16px;
+            }
+
+            .test-hero,
+            .test-panel,
+            .dataset-card {
+                border-radius: 24px;
+                padding: 18px;
+            }
+
+            .test-title {
+                font-size: 2.15rem;
+            }
+
+            .test-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .dataset-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .map-frame,
+            #data-map {
+                min-height: 420px;
+                height: 420px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow-top"></div>
+    <div class="bg-glow-bottom"></div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="app_icon.png" alt="П.Е.Д.А.Л.🤫" class="logo-icon-img">
+                <span class="logo-text">П.Е.Д.А.Л.🤫</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Начало</a>
+                <a href="gallery.html" class="nav-pill nav-gallery">Галерия</a>
+                <a href="test.html" class="nav-pill nav-ninja" aria-current="page">API Data Test</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="test-shell">
+        <section class="test-hero">
+            <div class="test-kicker">
+                <span class="material-icons-round">data_object</span>
+                <span>Government Road Data</span>
+            </div>
+            <h1 class="test-title">Визуален преглед на данните в <code>api_data/</code></h1>
+            <p class="test-copy">
+                Тази страница зарежда shapefile слоевете директно от проекта, показва геометриите им върху една обща карта
+                и дава бърз преглед на полетата, броя записи и примерни редове за всеки dataset.
+            </p>
+        </section>
+
+        <section class="test-layout">
+            <div class="test-panel">
+                <div class="test-panel-head">
+                    <div>
+                        <h2 class="test-panel-title">Обща карта и слоеве</h2>
+                        <p class="test-panel-copy">Полилинии и точки се проектират в общи координати, за да се види реално какво покриват тези данни.</p>
+                    </div>
+                </div>
+
+                <div id="test-stats" class="test-stats">
+                    <div class="test-stat">
+                        <div class="test-stat-label">Datasets</div>
+                        <div id="stat-datasets" class="test-stat-value">0</div>
+                    </div>
+                    <div class="test-stat">
+                        <div class="test-stat-label">Общо записи</div>
+                        <div id="stat-records" class="test-stat-value">0</div>
+                    </div>
+                    <div class="test-stat">
+                        <div class="test-stat-label">Типове геометрия</div>
+                        <div id="stat-geometry" class="test-stat-value">0</div>
+                    </div>
+                </div>
+
+                <div id="layer-toolbar" class="layer-toolbar"></div>
+
+                <div class="map-frame">
+                    <canvas id="data-map" width="1200" height="620"></canvas>
+                    <div class="map-status">
+                        <div id="map-status" class="map-status-chip">Зареждаме shapefile данните...</div>
+                        <div id="map-bounds" class="map-status-chip">Bounding box: ...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-panel">
+                <div class="test-panel-head">
+                    <div>
+                        <h2 class="test-panel-title">Dataset преглед</h2>
+                        <p class="test-panel-copy">Полетата и sample rows идват от DBF частта на shapefile-ите.</p>
+                    </div>
+                </div>
+                <div id="dataset-stack" class="dataset-stack">
+                    <div class="loading-panel">Зареждаме слоевете от <code>api_data/</code>...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="test.js?v=1"></script>
+</body>
+</html>
