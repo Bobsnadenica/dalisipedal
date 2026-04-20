@@ -1,5 +1,7 @@
 
 const DEMO_MANIFEST_URL = 'data/gallery-manifest.json';
+const DEMO_MANIFEST_CACHE_KEY = 'pedal_demo_manifest_v1';
+const DEMO_MANIFEST_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const FALLBACK_ENTRY = Object.freeze({
     id: 1,
     img: 'app_icon.png',
@@ -61,6 +63,40 @@ let secretPin = "";
 let camsMap = null;
 let camsLayer = null;
 let chatReplyTimeout = null;
+
+function readDemoManifestCache() {
+    try {
+        const raw = localStorage.getItem(DEMO_MANIFEST_CACHE_KEY);
+        if (!raw) {
+            return null;
+        }
+
+        const payload = JSON.parse(raw);
+        if (!payload || !Array.isArray(payload.items)) {
+            return null;
+        }
+
+        const cachedAt = Number(payload.cachedAt || 0);
+        if (!Number.isFinite(cachedAt) || (Date.now() - cachedAt) >= DEMO_MANIFEST_CACHE_TTL_MS) {
+            return null;
+        }
+
+        return payload;
+    } catch (_) {
+        return null;
+    }
+}
+
+function writeDemoManifestCache(items) {
+    try {
+        localStorage.setItem(DEMO_MANIFEST_CACHE_KEY, JSON.stringify({
+            items,
+            cachedAt: Date.now(),
+        }));
+    } catch (_) {
+        // Ignore localStorage failures.
+    }
+}
 
 const DEMO_ACHIEVEMENTS = [
     { icon: 'camera_alt', title: 'Фотограф', desc: 'Направи първата си снимка', progress: 100, unlocked: true },
@@ -349,8 +385,24 @@ async function loadDemoEntries() {
     }
 
     demoState.loadPromise = (async () => {
+        const cached = readDemoManifestCache();
+        if (cached?.items?.length) {
+            DB = cached.items;
+            demoState.entries = cached.items;
+            demoState.featuredDay = getRandomEntry();
+            demoState.featuredMonth =
+                cached.items[Math.min(14, cached.items.length - 1)] || demoState.featuredDay;
+
+            if (demoState.featuredMonth.id === demoState.featuredDay.id && cached.items.length > 1) {
+                demoState.featuredMonth = cached.items[1];
+            }
+
+            hydrateDashboardWidgets();
+            return DB;
+        }
+
         try {
-            const response = await fetch(DEMO_MANIFEST_URL, { cache: 'no-store' });
+            const response = await fetch(DEMO_MANIFEST_URL, { cache: 'default' });
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
@@ -366,6 +418,7 @@ async function loadDemoEntries() {
             }
 
             DB = entries;
+            writeDemoManifestCache(entries);
             demoState.entries = entries;
             demoState.featuredDay = getRandomEntry();
             demoState.featuredMonth =

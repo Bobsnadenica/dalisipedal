@@ -63,7 +63,7 @@ function saveManifestToCache(payload) {
 }
 
 async function fetchManifest() {
-    const response = await fetch(NINJA_CONFIG.manifestUrl, { cache: 'no-store' });
+    const response = await fetch(NINJA_CONFIG.manifestUrl, { cache: 'default' });
     if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
     }
@@ -203,6 +203,20 @@ function renderNextBatch() {
 }
 
 async function loadManifest() {
+    const cached = getCachedManifest();
+    const cacheIsFresh =
+        cached &&
+        Array.isArray(cached.items) &&
+        (Date.now() - Number(cached.cachedAt || 0)) < NINJA_CONFIG.cacheDurationMs;
+
+    if (cacheIsFresh) {
+        ninjaState.manifestItems = cached.items;
+        ninjaState.nextBatchStart = 0;
+        renderNextBatch();
+        updateSummary(cached, 'cache');
+        return true;
+    }
+
     try {
         const payload = await fetchManifest();
         ninjaState.manifestItems = payload.items;
@@ -215,12 +229,6 @@ async function loadManifest() {
         });
         return true;
     } catch (error) {
-        const cached = getCachedManifest();
-        const cacheIsFresh =
-            cached &&
-            Array.isArray(cached.items) &&
-            (Date.now() - (cached.cachedAt || 0)) < NINJA_CONFIG.cacheDurationMs;
-
         if (cacheIsFresh) {
             ninjaState.manifestItems = cached.items;
             ninjaState.nextBatchStart = 0;

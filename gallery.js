@@ -246,7 +246,7 @@ function persistSeenUrls() {
 }
 
 async function fetchManifest() {
-    const response = await fetch(GALLERY_CONFIG.manifestUrl, { cache: 'no-store' });
+    const response = await fetch(GALLERY_CONFIG.manifestUrl, { cache: 'default' });
     if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
     }
@@ -542,7 +542,7 @@ function normalizeRankingPayload(payload) {
 
 async function fetchRankingPayload(type) {
     const response = await fetch(GALLERY_CONFIG.rankingUrls[type], {
-        cache: 'no-store',
+        cache: 'default',
     });
 
     if (!response.ok) {
@@ -554,6 +554,14 @@ async function fetchRankingPayload(type) {
 
 async function loadRankingPayload(type) {
     const cached = getRankingCache(type);
+    const cacheIsFresh =
+        cached &&
+        Array.isArray(cached.items) &&
+        (Date.now() - Number(cached.cachedAt || 0)) < GALLERY_CONFIG.rankingCacheDurationMs;
+
+    if (cacheIsFresh) {
+        return normalizeRankingPayload(cached);
+    }
 
     try {
         const payload = await fetchRankingPayload(type);
@@ -1637,6 +1645,19 @@ function moveViewer(step) {
 }
 
 async function loadManifest() {
+    const cached = getCachedManifest();
+    const cacheIsFresh =
+        cached &&
+        Array.isArray(cached.items) &&
+        (Date.now() - Number(cached.cachedAt || 0)) < GALLERY_CONFIG.cacheDurationMs;
+
+    if (cacheIsFresh) {
+        galleryState.manifestItems = cached.items;
+        renderFeaturedSection(cached.featured);
+        updateSummary(cached, 'cache');
+        return true;
+    }
+
     try {
         const payload = await fetchManifest();
         galleryState.manifestItems = payload.items;
@@ -1648,12 +1669,6 @@ async function loadManifest() {
         });
         return true;
     } catch (error) {
-        const cached = getCachedManifest();
-        const cacheIsFresh =
-            cached &&
-            Array.isArray(cached.items) &&
-            (Date.now() - (cached.cachedAt || 0)) < GALLERY_CONFIG.cacheDurationMs;
-
         if (cacheIsFresh) {
             galleryState.manifestItems = cached.items;
             renderFeaturedSection(cached.featured);

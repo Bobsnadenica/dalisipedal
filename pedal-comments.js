@@ -3,6 +3,8 @@
         graphqlEndpoint: 'https://5otrnlraozcdni6ekx27cy5exe.appsync-api.eu-central-1.amazonaws.com/graphql',
         apiKey: 'da2-6lagph7zcvfuzicgqenbfvyyqi',
         cacheTtlMs: 2 * 60 * 1000,
+        persistentCacheTtlMs: 10 * 60 * 1000,
+        persistentCachePrefix: 'pedal_comment_thread_v2:',
         defaultLimit: 50,
         commentCooldownMs: 30 * 1000,
         maxCommentLength: 500,
@@ -315,6 +317,59 @@
         return payload.data || {};
     }
 
+    function getPersistentCacheKey(mediaKey) {
+        const normalizedMediaKey = normalizeMediaKey(mediaKey);
+        return normalizedMediaKey
+            ? `${CONFIG.persistentCachePrefix}${normalizedMediaKey}`
+            : '';
+    }
+
+    function readPersistentComments(mediaKey) {
+        const storageKey = getPersistentCacheKey(mediaKey);
+        if (!storageKey) {
+            return null;
+        }
+
+        try {
+            const raw = global.localStorage?.getItem(storageKey);
+            if (!raw) {
+                return null;
+            }
+
+            const payload = JSON.parse(raw);
+            const items = Array.isArray(payload?.items) ? payload.items.filter(Boolean) : null;
+            const cachedAt = Number(payload?.cachedAt || 0);
+            if (!items || !Number.isFinite(cachedAt)) {
+                return null;
+            }
+
+            if ((Date.now() - cachedAt) >= CONFIG.persistentCacheTtlMs) {
+                global.localStorage?.removeItem(storageKey);
+                return null;
+            }
+
+            return sortCommentsAscending(items);
+        } catch (_) {
+            return null;
+        }
+    }
+
+    function writePersistentComments(mediaKey, items) {
+        const storageKey = getPersistentCacheKey(mediaKey);
+        if (!storageKey) {
+            return;
+        }
+
+        try {
+            global.localStorage?.setItem(storageKey, JSON.stringify({
+                items: Array.isArray(items) ? items : [],
+                cachedAt: Date.now(),
+            }));
+        } catch (_) {
+            // Ignore storage write failures.
+        }
+    }
+
     async function listComments(mediaKey, options = {}) {
         const normalizedMediaKey = normalizeMediaKey(mediaKey);
         if (!normalizedMediaKey) {
@@ -334,6 +389,17 @@
             (Date.now() - cached.cachedAt) < CONFIG.cacheTtlMs
         ) {
             return cached.items;
+        }
+
+        if (!forceRefresh) {
+            const persistentCachedItems = readPersistentComments(normalizedMediaKey);
+            if (persistentCachedItems) {
+                commentsCache.set(normalizedMediaKey, {
+                    items: persistentCachedItems,
+                    cachedAt: Date.now(),
+                });
+                return persistentCachedItems;
+            }
         }
 
         logDebug('Loading comments thread.', {
@@ -391,6 +457,7 @@
             items,
             cachedAt: Date.now(),
         });
+        writePersistentComments(normalizedMediaKey, items);
 
         return items;
     }
@@ -468,10 +535,32 @@
     function clearCommentsCache(mediaKey) {
         if (!mediaKey) {
             commentsCache.clear();
+            try {
+                const keysToDelete = [];
+                for (let index = 0; index < (global.localStorage?.length || 0); index += 1) {
+                    const key = global.localStorage.key(index);
+                    if (key && key.startsWith(CONFIG.persistentCachePrefix)) {
+                        keysToDelete.push(key);
+                    }
+                }
+                keysToDelete.forEach(key => global.localStorage?.removeItem(key));
+            } catch (_) {
+                // Ignore storage cleanup failures.
+            }
             return;
         }
 
-        commentsCache.delete(normalizeMediaKey(mediaKey));
+        const normalizedMediaKey = normalizeMediaKey(mediaKey);
+        commentsCache.delete(normalizedMediaKey);
+
+        const storageKey = getPersistentCacheKey(normalizedMediaKey);
+        if (storageKey) {
+            try {
+                global.localStorage?.removeItem(storageKey);
+            } catch (_) {
+                // Ignore storage cleanup failures.
+            }
+        }
     }
 
     function getCachedComments(mediaKey) {

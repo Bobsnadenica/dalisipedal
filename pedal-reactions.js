@@ -209,7 +209,7 @@
             });
 
             const response = await fetch(CONFIG.snapshotUrl, {
-                cache: 'no-store',
+                cache: 'default',
             });
 
             if (!response.ok) {
