@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Черна Карта | П.Е.Д.А.Л.🤫</title>
+    <meta name="description" content="Черна Карта с публична визуализация на пътни инциденти в България по официални отворени данни, обновявана веднъж месечно.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.dalisipedal.com/black_map.html">
+    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        body {
+            overflow-y: auto;
+        }
+
+        .black-shell {
+            max-width: 1320px;
+            margin: 108px auto 88px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .black-hero,
+        .black-panel,
+        .black-stat-card,
+        .hotspot-card {
+            background: linear-gradient(180deg, rgba(16, 16, 16, 0.98), rgba(7, 7, 7, 0.96));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(18px);
+        }
+
+        .black-hero {
+            border-radius: 32px;
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+
+        .black-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 87, 34, 0.12);
+            color: #ffb088;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .black-title {
+            font-size: clamp(2.6rem, 5vw, 4.4rem);
+            line-height: 0.98;
+            letter-spacing: -0.05em;
+            margin-bottom: 14px;
+        }
+
+        .black-copy {
+            color: var(--text-muted);
+            max-width: 900px;
+            line-height: 1.8;
+            font-size: 1.02rem;
+        }
+
+        .black-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .black-updated {
+            color: rgba(255, 255, 255, 0.64);
+            font-size: 0.9rem;
+        }
+
+        .year-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .year-pill {
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: #f4f4f4;
+            border-radius: 999px;
+            padding: 10px 14px;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .year-pill:hover,
+        .year-pill.active {
+            transform: translateY(-1px);
+            border-color: rgba(255, 167, 38, 0.4);
+            background: rgba(255, 167, 38, 0.12);
+        }
+
+        .black-main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.7fr);
+            gap: 22px;
+            align-items: start;
+        }
+
+        .black-panel {
+            border-radius: 30px;
+            padding: 22px;
+        }
+
+        .black-panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .black-panel-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .black-panel-copy {
+            color: var(--text-muted);
+            line-height: 1.65;
+            font-size: 0.94rem;
+        }
+
+        .black-map-stage {
+            min-height: 520px;
+            border-radius: 24px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 30% 18%, rgba(255, 193, 7, 0.06), transparent 35%),
+                radial-gradient(circle at 70% 60%, rgba(255, 59, 48, 0.09), transparent 36%),
+                linear-gradient(180deg, rgba(12, 16, 22, 0.98), rgba(4, 4, 4, 0.98));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .black-map-stage svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .black-map-outline {
+            fill: rgba(255, 255, 255, 0.03);
+            stroke: rgba(255, 255, 255, 0.22);
+            stroke-width: 2;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+        }
+
+        .black-map-outline-glow {
+            fill: rgba(255, 255, 255, 0.02);
+            stroke: rgba(255, 130, 70, 0.22);
+            stroke-width: 8;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            filter: blur(8px);
+        }
+
+        .black-map-city {
+            fill: rgba(255, 255, 255, 0.66);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            letter-spacing: 0.04em;
+        }
+
+        .black-map-label {
+            fill: rgba(255, 193, 7, 0.92);
+            font-family: var(--font-mono);
+            font-size: 15px;
+            letter-spacing: 0.18em;
+        }
+
+        .black-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+            margin-top: 14px;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.9rem;
+        }
+
+        .legend-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+        }
+
+        .legend-dot.warm {
+            background: rgba(255, 87, 34, 0.88);
+            box-shadow: 0 0 18px rgba(255, 87, 34, 0.28);
+        }
+
+        .legend-dot.hot {
+            background: rgba(255, 193, 7, 0.96);
+            box-shadow: 0 0 18px rgba(255, 193, 7, 0.28);
+        }
+
+        .black-side {
+            display: grid;
+            gap: 18px;
+        }
+
+        .black-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .black-stat-card {
+            border-radius: 24px;
+            padding: 18px;
+        }
+
+        .black-stat-label {
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+        }
+
+        .black-stat-value {
+            margin-top: 8px;
+            font-size: clamp(1.7rem, 3vw, 2.5rem);
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .black-stat-copy {
+            margin-top: 10px;
+            color: var(--text-muted);
+            line-height: 1.55;
+            font-size: 0.86rem;
+        }
+
+        .black-stat-card.neutral .black-stat-value { color: #ffffff; }
+        .black-stat-card.danger .black-stat-value { color: #ff8a80; }
+        .black-stat-card.fatal .black-stat-value { color: #ffb74d; }
+        .black-stat-card.warn .black-stat-value { color: #ffe082; }
+
+        .black-summary-copy {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-top: 10px;
+            margin-bottom: 14px;
+        }
+
+        .hotspot-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .hotspot-card {
+            border-radius: 22px;
+            padding: 14px 16px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 14px;
+            align-items: start;
+        }
+
+        .hotspot-rank {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffe0b2;
+            font-weight: 800;
+        }
+
+        .hotspot-name {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .hotspot-meta,
+        .hotspot-coords {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+
+        .black-bottom-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+            margin-top: 22px;
+        }
+
+        .metric-bars {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 10px;
+            align-items: end;
+            min-height: 178px;
+        }
+
+        .metric-bars.hours {
+            grid-template-columns: repeat(24, minmax(0, 1fr));
+            gap: 6px;
+        }
+
+        .metric-bar-wrap {
+            display: grid;
+            gap: 8px;
+            align-content: end;
+            height: 100%;
+        }
+
+        .metric-bar-value {
+            color: rgba(255, 255, 255, 0.66);
+            font-size: 0.72rem;
+            text-align: center;
+        }
+
+        .metric-bar {
+            border-radius: 999px 999px 12px 12px;
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
+        }
+
+        .metric-bar-label {
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 0.72rem;
+            text-align: center;
+        }
+
+        .road-class-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .road-class-row {
+            display: grid;
+            gap: 8px;
+        }
+
+        .road-class-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: baseline;
+            color: #fff;
+            font-size: 0.92rem;
+        }
+
+        .road-class-head strong {
+            color: #ffe0b2;
+            font-size: 0.9rem;
+        }
+
+        .road-class-track {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+        }
+
+        .road-class-fill {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, rgba(255, 193, 7, 0.84), rgba(255, 87, 34, 0.9));
+        }
+
+        .method-list {
+            display: grid;
+            gap: 12px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .method-item {
+            padding: 16px 18px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .method-item strong {
+            color: #fff;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .empty-copy {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .error-box {
+            margin-top: 18px;
+            border-radius: 22px;
+            padding: 14px 16px;
+            background: rgba(255, 59, 48, 0.12);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            color: #ffc5bf;
+        }
+
+        @media (max-width: 1120px) {
+            .black-main-grid,
+            .black-bottom-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .black-shell {
+                margin-top: 96px;
+                padding: 0 14px;
+            }
+
+            .black-hero,
+            .black-panel {
+                padding: 18px;
+                border-radius: 24px;
+            }
+
+            .black-map-stage {
+                min-height: 380px;
+            }
+
+            .black-stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .metric-bars {
+                gap: 8px;
+                overflow-x: auto;
+                padding-bottom: 4px;
+            }
+
+            .metric-bars.hours {
+                gap: 4px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .black-stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .black-meta-row {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow-top"></div>
+    <div class="bg-glow-bottom"></div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="app_icon.png" alt="П.Е.Д.А.Л.🤫" class="logo-icon-img">
+                <span class="logo-text">П.Е.Д.А.Л.🤫</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Начало</a>
+                <a href="gallery.html" class="nav-pill nav-gallery">Галерия</a>
+                <a href="open_data.html" class="nav-pill nav-open-data">Отворени данни</a>
+                <a href="black_map.html" class="nav-pill nav-black-map" aria-current="page">Черна Карта</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="black-shell">
+        <section class="black-hero">
+            <div class="black-kicker">
+                <span class="material-icons-round">crisis_alert</span>
+                <span>Черна Карта</span>
+            </div>
+            <h1 class="black-title">Публична карта на пътните инциденти в България</h1>
+            <p class="black-copy">
+                Визуализация на официални публични записи за ПТП с карта на България, сезонност, часове на риск и най-натоварени зони.
+                Данните се подреждат в удобен публичен преглед и се обновяват веднъж месечно.
+            </p>
+            <div class="black-meta-row">
+                <div id="black-map-updated" class="black-updated">Обновяваме данните...</div>
+                <div id="year-filters" class="year-filters"></div>
+            </div>
+            <div id="black-map-error" class="error-box" hidden></div>
+        </section>
+
+        <section class="black-main-grid">
+            <div class="black-panel">
+                <div class="black-panel-head">
+                    <div>
+                        <h2 class="black-panel-title">Карта на концентрацията</h2>
+                        <p id="black-map-summary" class="black-panel-copy">Показваме зони с повече регистрирани инциденти и по-висока тежест.</p>
+                    </div>
+                </div>
+                <div id="black-map-stage" class="black-map-stage" aria-live="polite"></div>
+                <div class="black-legend">
+                    <span class="legend-pill"><span class="legend-dot warm"></span> повече инциденти</span>
+                    <span class="legend-pill"><span class="legend-dot hot"></span> по-висока тежест</span>
+                </div>
+            </div>
+
+            <aside class="black-side">
+                <div id="black-map-stats" class="black-stats-grid"></div>
+                <div class="black-panel">
+                    <h2 class="black-panel-title">Най-рискови зони</h2>
+                    <p class="black-summary-copy">Тук показваме най-плътните клетки от текущия срез, за да се виждат районите, които изпъкват най-силно.</p>
+                    <div id="black-map-hotspots" class="hotspot-list"></div>
+                </div>
+            </aside>
+        </section>
+
+        <section class="black-bottom-grid">
+            <div class="black-panel">
+                <h2 class="black-panel-title">По месеци</h2>
+                <p class="black-panel-copy">Сезонност и периоди с повече натоварване по официалните записи.</p>
+                <div id="black-map-months" class="metric-bars"></div>
+            </div>
+
+            <div class="black-panel">
+                <h2 class="black-panel-title">По часове</h2>
+                <p class="black-panel-copy">Часове от денонощието, в които записите се сгъстяват най-силно.</p>
+                <div id="black-map-hours" class="metric-bars hours"></div>
+            </div>
+
+            <div class="black-panel">
+                <h2 class="black-panel-title">По тип път</h2>
+                <p class="black-panel-copy">Най-натоварените категории пътна мрежа в избрания срез.</p>
+                <div id="black-map-road-classes" class="road-class-list"></div>
+            </div>
+
+            <div class="black-panel">
+                <h2 class="black-panel-title">Какво виждате</h2>
+                <div class="method-list">
+                    <div class="method-item">
+                        <strong>Карта на България</strong>
+                        По-светлите ядра показват по-силна концентрация и по-висока тежест в дадения район.
+                    </div>
+                    <div class="method-item">
+                        <strong>Обновяване веднъж месечно</strong>
+                        Подходящо за дълъг преглед на тенденции, сезонност и общата картина по години.
+                    </div>
+                    <div class="method-item">
+                        <strong>Какво включва</strong>
+                        Карта, сезонност по месеци, активност по часове и най-натоварени категории пътна мрежа.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="black_map.js?v=1"></script>
+</body>
+</html>

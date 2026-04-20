@@ -21,3 +21,13 @@ Generated public data now includes:
 - `data/media-reaction-summaries.json`
 
 `media-reaction-summaries.json` is used by the website for public like/dislike counts, so anonymous visitors do not need live AppSync reads for reactions.
+
+## Black map snapshot refresh
+
+`Черна Карта` uses `data/black-map-snapshot.json`, which is generated from the public CloudFront file at `public/statistics.json`.
+
+- The generator script is `scripts/generate_black_map_snapshot.mjs`
+- The scheduled workflow is `.github/workflows/refresh-black-map-snapshot.yml`
+- It runs once per month and does not require any repository secrets
+
+This keeps the website on a lightweight cached snapshot instead of downloading the larger statistics source file on every page view.
