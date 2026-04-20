@@ -4,6 +4,16 @@ const GALLERY_CONFIG = Object.freeze({
     cacheKeyManifest: 'gallery_manifest_cache_v1',
     cacheKeySeen: 'gallery_seen_urls_v1',
     cacheDurationMs: 24 * 60 * 60 * 1000,
+    cloudFrontBaseUrl: 'https://d3g9kruk81dvbk.cloudfront.net',
+    rankingUrls: Object.freeze({
+        liked: 'https://d3g9kruk81dvbk.cloudfront.net/public/top_liked_media.json',
+        disliked: 'https://d3g9kruk81dvbk.cloudfront.net/public/top_disliked_media.json',
+    }),
+    rankingCacheKeys: Object.freeze({
+        liked: 'gallery_top_liked_cache_v1',
+        disliked: 'gallery_top_disliked_cache_v1',
+    }),
+    rankingCacheDurationMs: 26 * 60 * 60 * 1000,
 });
 
 const galleryState = {
@@ -22,6 +32,10 @@ const galleryState = {
     reactionRequestId: 0,
     reactionBusy: false,
     reactionSummary: null,
+    topLikedItems: [],
+    topDislikedItems: [],
+    rankingsLoaded: false,
+    rankingsPromise: null,
 };
 
 const FEATURED_PEDAL_COPY = Object.freeze({
@@ -39,6 +53,21 @@ const FEATURED_PEDAL_COPY = Object.freeze({
         title: '🏆 П.Е.Д.А.Л. на Месеца',
         subtitle: 'Шампионът на нахалството',
     },
+});
+
+const RANKING_COPY = Object.freeze({
+    liked: Object.freeze({
+        emptyMessage: 'Още няма достатъчно харесвани снимки за класация.',
+        errorMessage: 'Класацията с най-харесваните снимки временно не е налична.',
+        updatedPrefix: 'Дневна класация, обновена',
+        fallbackTitle: 'Одобрена снимка от галерията',
+    }),
+    disliked: Object.freeze({
+        emptyMessage: 'Още няма достатъчно нехаресвани снимки за класация.',
+        errorMessage: 'Класацията с най-нехаресваните снимки временно не е налична.',
+        updatedPrefix: 'Дневна класация, обновена',
+        fallbackTitle: 'Одобрена снимка от галерията',
+    }),
 });
 
 function isVideoFile(item) {
@@ -103,6 +132,66 @@ function getMapsQuery(item) {
 
 function getMapsUrl(item) {
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getMapsQuery(item))}`;
+}
+
+function buildPublicMediaUrl(mediaKey) {
+    const normalizedMediaKey = window.PedalReactions?.normalizeMediaKey?.(mediaKey)
+        || window.PedalComments?.normalizeMediaKey?.(mediaKey)
+        || String(mediaKey || '').trim();
+    if (!normalizedMediaKey) {
+        return '';
+    }
+
+    const encodedPath = normalizedMediaKey
+        .split('/')
+        .map(segment => encodeURIComponent(segment))
+        .join('/');
+
+    return `${GALLERY_CONFIG.cloudFrontBaseUrl}/${encodedPath}`;
+}
+
+function getRankingCache(type) {
+    const cacheKey = GALLERY_CONFIG.rankingCacheKeys[type];
+    if (!cacheKey) {
+        return null;
+    }
+
+    try {
+        const raw = localStorage.getItem(cacheKey);
+        if (!raw) {
+            return null;
+        }
+
+        const payload = JSON.parse(raw);
+        if (!payload || !Array.isArray(payload.items)) {
+            return null;
+        }
+
+        const ageMs = Date.now() - Number(payload.cachedAt || 0);
+        if (ageMs >= GALLERY_CONFIG.rankingCacheDurationMs) {
+            return null;
+        }
+
+        return payload;
+    } catch (_) {
+        return null;
+    }
+}
+
+function saveRankingCache(type, payload) {
+    const cacheKey = GALLERY_CONFIG.rankingCacheKeys[type];
+    if (!cacheKey) {
+        return;
+    }
+
+    try {
+        localStorage.setItem(cacheKey, JSON.stringify({
+            ...payload,
+            cachedAt: Date.now(),
+        }));
+    } catch (_) {
+        // Ignore localStorage failures.
+    }
 }
 
 function getCachedManifest() {
@@ -413,6 +502,250 @@ function renderFeaturedSection(featured) {
     items.forEach((item, index) => {
         gridEl.appendChild(buildFeaturedCard(item, index));
     });
+}
+
+function getFallbackRankingTitle(mediaKey, type) {
+    const normalizedKey = String(mediaKey || '').trim();
+    if (!normalizedKey) {
+        return RANKING_COPY[type]?.fallbackTitle || 'Одобрена снимка';
+    }
+
+    const segments = normalizedKey.split('/').filter(Boolean);
+    const plate = segments.length >= 3 ? segments[2] : '';
+    return plate
+        ? `${RANKING_COPY[type]?.fallbackTitle || 'Одобрена снимка'} • ${plate}`
+        : (RANKING_COPY[type]?.fallbackTitle || normalizedKey);
+}
+
+function getManifestItemByKey(mediaKey) {
+    return galleryState.manifestItems.find(item => item.key === mediaKey)
+        || galleryState.featuredItems.find(item => item.key === mediaKey)
+        || null;
+}
+
+function normalizeRankingPayload(payload) {
+    const items = Array.isArray(payload?.items) ? payload.items : [];
+    return {
+        lastUpdated: payload?.lastUpdated || '',
+        items: items
+            .filter(item => item && item.mediaKey)
+            .slice(0, 5)
+            .map(item => ({
+                rank: Number.isFinite(Number(item.rank)) ? Number(item.rank) : 0,
+                mediaKey: String(item.mediaKey),
+                likes: Number.isFinite(Number(item.likes)) ? Number(item.likes) : 0,
+                dislikes: Number.isFinite(Number(item.dislikes)) ? Number(item.dislikes) : 0,
+                updatedAt: item.updatedAt || '',
+            })),
+    };
+}
+
+async function fetchRankingPayload(type) {
+    const response = await fetch(GALLERY_CONFIG.rankingUrls[type], {
+        cache: 'no-store',
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+
+    return normalizeRankingPayload(await response.json());
+}
+
+async function loadRankingPayload(type) {
+    const cached = getRankingCache(type);
+
+    try {
+        const payload = await fetchRankingPayload(type);
+        saveRankingCache(type, payload);
+        return payload;
+    } catch (error) {
+        if (cached) {
+            return normalizeRankingPayload(cached);
+        }
+
+        throw error;
+    }
+}
+
+function normalizeRankingItem(entry, type) {
+    const manifestItem = getManifestItemByKey(entry.mediaKey);
+    const fallbackTitle = getFallbackRankingTitle(entry.mediaKey, type);
+    const timestamp = manifestItem?.timestamp || entry.updatedAt || '';
+
+    return {
+        ...(manifestItem || {}),
+        key: entry.mediaKey,
+        url: manifestItem?.url || buildPublicMediaUrl(entry.mediaKey),
+        timestamp,
+        locationLabel: manifestItem?.locationLabel || fallbackTitle,
+        location: manifestItem?.location || '',
+        rank: entry.rank,
+        likes: entry.likes,
+        dislikes: entry.dislikes,
+        isVideo: Boolean(manifestItem?.isVideo),
+    };
+}
+
+function setRankingCopy(type, message) {
+    const el = document.getElementById(
+        type === 'liked' ? 'gallery-ranking-liked-copy' : 'gallery-ranking-disliked-copy'
+    );
+    if (el) {
+        el.textContent = message;
+    }
+}
+
+function buildRankingEmptyState(message) {
+    const emptyEl = document.createElement('div');
+    emptyEl.className = 'gallery-ranking-empty';
+    emptyEl.textContent = message;
+    return emptyEl;
+}
+
+function buildRankingCard(item, index, items, type) {
+    const button = document.createElement('button');
+    button.className = `gallery-ranking-card ${type}`;
+    button.type = 'button';
+    button.addEventListener('click', () => openViewer(index, items));
+
+    const media = document.createElement('div');
+    media.className = 'gallery-ranking-media';
+
+    const image = document.createElement('img');
+    image.loading = 'lazy';
+    image.decoding = 'async';
+    image.src = item.url;
+    image.alt = getLocationLabel(item);
+    media.appendChild(image);
+
+    const rank = document.createElement('div');
+    rank.className = 'gallery-ranking-rank';
+    rank.textContent = `#${item.rank || index + 1}`;
+    media.appendChild(rank);
+
+    const body = document.createElement('div');
+    body.className = 'gallery-ranking-body';
+
+    const title = document.createElement('div');
+    title.className = 'gallery-ranking-item-title';
+    title.textContent = getLocationLabel(item);
+
+    const meta = document.createElement('div');
+    meta.className = 'gallery-ranking-item-meta';
+    meta.textContent = formatDate(getItemTimestamp(item));
+
+    const stats = document.createElement('div');
+    stats.className = 'gallery-ranking-stats';
+    stats.innerHTML = `
+        <span class="gallery-ranking-pill like">
+            <span class="material-icons-round">thumb_up</span>
+            <span>${item.likes}</span>
+        </span>
+        <span class="gallery-ranking-pill dislike">
+            <span class="material-icons-round">thumb_down</span>
+            <span>${item.dislikes}</span>
+        </span>
+    `;
+
+    body.appendChild(title);
+    body.appendChild(meta);
+    body.appendChild(stats);
+
+    const open = document.createElement('div');
+    open.className = 'gallery-ranking-open material-icons-round';
+    open.textContent = 'open_in_full';
+
+    button.appendChild(media);
+    button.appendChild(body);
+    button.appendChild(open);
+
+    return button;
+}
+
+function renderRankingList(type, payload) {
+    const listEl = document.getElementById(
+        type === 'liked' ? 'gallery-top-liked-list' : 'gallery-top-disliked-list'
+    );
+    if (!listEl) {
+        return;
+    }
+
+    const items = payload.items.map(item => normalizeRankingItem(item, type));
+    if (type === 'liked') {
+        galleryState.topLikedItems = items;
+    } else {
+        galleryState.topDislikedItems = items;
+    }
+
+    listEl.innerHTML = '';
+
+    if (!items.length) {
+        listEl.appendChild(buildRankingEmptyState(RANKING_COPY[type].emptyMessage));
+        setRankingCopy(type, RANKING_COPY[type].emptyMessage);
+        return;
+    }
+
+    const updatedAt = payload.lastUpdated || items[0]?.updatedAt || '';
+    setRankingCopy(
+        type,
+        updatedAt
+            ? `${RANKING_COPY[type].updatedPrefix} ${formatDate(updatedAt)}.`
+            : 'Дневна класация с кеширани публични резултати.'
+    );
+
+    items.forEach((item, index) => {
+        const collection = type === 'liked'
+            ? galleryState.topLikedItems
+            : galleryState.topDislikedItems;
+        listEl.appendChild(buildRankingCard(item, index, collection, type));
+    });
+}
+
+async function loadRankings() {
+    if (galleryState.rankingsLoaded) {
+        return;
+    }
+
+    if (galleryState.rankingsPromise) {
+        await galleryState.rankingsPromise;
+        return;
+    }
+
+    galleryState.rankingsPromise = Promise.allSettled([
+        loadRankingPayload('liked'),
+        loadRankingPayload('disliked'),
+    ]).then(results => {
+        const [likedResult, dislikedResult] = results;
+
+        if (likedResult.status === 'fulfilled') {
+            renderRankingList('liked', likedResult.value);
+        } else {
+            const listEl = document.getElementById('gallery-top-liked-list');
+            if (listEl) {
+                listEl.innerHTML = '';
+                listEl.appendChild(buildRankingEmptyState(RANKING_COPY.liked.errorMessage));
+            }
+            setRankingCopy('liked', RANKING_COPY.liked.errorMessage);
+        }
+
+        if (dislikedResult.status === 'fulfilled') {
+            renderRankingList('disliked', dislikedResult.value);
+        } else {
+            const listEl = document.getElementById('gallery-top-disliked-list');
+            if (listEl) {
+                listEl.innerHTML = '';
+                listEl.appendChild(buildRankingEmptyState(RANKING_COPY.disliked.errorMessage));
+            }
+            setRankingCopy('disliked', RANKING_COPY.disliked.errorMessage);
+        }
+
+        galleryState.rankingsLoaded = true;
+    }).finally(() => {
+        galleryState.rankingsPromise = null;
+    });
+
+    await galleryState.rankingsPromise;
 }
 
 function renderGallery(items) {
@@ -1486,6 +1819,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderRandomBatch();
     });
 
-    await loadManifest();
-    renderRandomBatch();
+    const manifestReady = await loadManifest();
+    await loadRankings();
+
+    if (manifestReady) {
+        renderRandomBatch();
+    }
 });

@@ -159,6 +159,229 @@
             gap: 20px;
         }
 
+        .gallery-ranking-section {
+            margin-bottom: 30px;
+        }
+
+        .gallery-ranking-head {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .gallery-ranking-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffd882;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .gallery-ranking-heading {
+            font-size: 1.6rem;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+        }
+
+        .gallery-ranking-copy {
+            color: var(--text-muted);
+            max-width: 760px;
+            line-height: 1.7;
+        }
+
+        .gallery-ranking-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-ranking-column {
+            border-radius: 28px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(180deg, rgba(17, 17, 17, 0.96), rgba(10, 10, 10, 0.94));
+            box-shadow: 0 20px 42px rgba(0, 0, 0, 0.22);
+            display: grid;
+            gap: 16px;
+        }
+
+        .gallery-ranking-column.liked {
+            border-color: rgba(72, 196, 116, 0.16);
+        }
+
+        .gallery-ranking-column.disliked {
+            border-color: rgba(255, 108, 108, 0.16);
+        }
+
+        .gallery-ranking-column-head {
+            display: grid;
+            gap: 6px;
+        }
+
+        .gallery-ranking-column-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.12rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .gallery-ranking-column-title.liked {
+            color: #ddffe6;
+        }
+
+        .gallery-ranking-column-title.disliked {
+            color: #ffe0e0;
+        }
+
+        .gallery-ranking-column-copy {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.55;
+        }
+
+        .gallery-ranking-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .gallery-ranking-card {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 96px minmax(0, 1fr) auto;
+            gap: 14px;
+            align-items: center;
+            color: #fff;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .gallery-ranking-card:hover,
+        .gallery-ranking-card:focus-visible {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .gallery-ranking-card.liked:hover,
+        .gallery-ranking-card.liked:focus-visible {
+            border-color: rgba(72, 196, 116, 0.24);
+        }
+
+        .gallery-ranking-card.disliked:hover,
+        .gallery-ranking-card.disliked:focus-visible {
+            border-color: rgba(255, 108, 108, 0.24);
+        }
+
+        .gallery-ranking-media {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #040404;
+        }
+
+        .gallery-ranking-media img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .gallery-ranking-rank {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            min-width: 34px;
+            padding: 6px 8px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.74);
+            color: #fff;
+            font-size: 0.76rem;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .gallery-ranking-body {
+            min-width: 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .gallery-ranking-item-title {
+            font-size: 0.98rem;
+            font-weight: 800;
+            line-height: 1.45;
+            color: #fff3cf;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .gallery-ranking-item-meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            color: rgba(255, 255, 255, 0.64);
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+        }
+
+        .gallery-ranking-stats {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-ranking-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .gallery-ranking-pill.like {
+            background: rgba(72, 196, 116, 0.16);
+            color: #dfffe8;
+        }
+
+        .gallery-ranking-pill.dislike {
+            background: rgba(255, 108, 108, 0.16);
+            color: #ffe1e1;
+        }
+
+        .gallery-ranking-open {
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 1.1rem;
+        }
+
+        .gallery-ranking-empty {
+            padding: 16px 18px;
+            border-radius: 20px;
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+            line-height: 1.65;
+        }
+
         .featured-pedal-card {
             position: relative;
             overflow: hidden;
@@ -1082,6 +1305,10 @@
             .gallery-featured-grid {
                 grid-template-columns: 1fr;
             }
+
+            .gallery-ranking-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 520px) {
@@ -1100,6 +1327,29 @@
 
             .gallery-featured-heading {
                 font-size: 1.34rem;
+            }
+
+            .gallery-ranking-heading {
+                font-size: 1.34rem;
+            }
+
+            .gallery-ranking-column {
+                padding: 16px;
+                border-radius: 24px;
+            }
+
+            .gallery-ranking-card {
+                grid-template-columns: 82px minmax(0, 1fr);
+                gap: 12px;
+                padding: 10px;
+            }
+
+            .gallery-ranking-open {
+                display: none;
+            }
+
+            .gallery-ranking-item-title {
+                font-size: 0.92rem;
             }
 
             .featured-pedal-card,
@@ -1291,6 +1541,41 @@
             <div id="gallery-featured-grid" class="gallery-featured-grid" aria-live="polite"></div>
         </section>
 
+        <section id="gallery-ranking-section" class="gallery-ranking-section" aria-labelledby="gallery-ranking-heading">
+            <div class="gallery-ranking-head">
+                <div class="gallery-ranking-kicker">
+                    <span class="material-icons-round">leaderboard</span>
+                    <span>Дневни класации</span>
+                </div>
+                <h2 id="gallery-ranking-heading" class="gallery-ranking-heading">Топ 5 най-харесвани и най-нехаресвани снимки</h2>
+                <p class="gallery-ranking-copy">
+                    Същите snapshot класации, които се обновяват ежедневно и в приложението.
+                </p>
+            </div>
+            <div class="gallery-ranking-grid">
+                <section class="gallery-ranking-column liked" aria-labelledby="gallery-ranking-liked-title">
+                    <div class="gallery-ranking-column-head">
+                        <h3 id="gallery-ranking-liked-title" class="gallery-ranking-column-title liked">
+                            <span class="material-icons-round">favorite</span>
+                            <span>Топ 5 най-харесвани</span>
+                        </h3>
+                        <p id="gallery-ranking-liked-copy" class="gallery-ranking-column-copy">Зареждаме дневната класация...</p>
+                    </div>
+                    <div id="gallery-top-liked-list" class="gallery-ranking-list" aria-live="polite"></div>
+                </section>
+                <section class="gallery-ranking-column disliked" aria-labelledby="gallery-ranking-disliked-title">
+                    <div class="gallery-ranking-column-head">
+                        <h3 id="gallery-ranking-disliked-title" class="gallery-ranking-column-title disliked">
+                            <span class="material-icons-round">thumb_down</span>
+                            <span>Топ 5 най-нехаресвани</span>
+                        </h3>
+                        <p id="gallery-ranking-disliked-copy" class="gallery-ranking-column-copy">Зареждаме дневната класация...</p>
+                    </div>
+                    <div id="gallery-top-disliked-list" class="gallery-ranking-list" aria-live="polite"></div>
+                </section>
+            </div>
+        </section>
+
         <section id="gallery-grid" class="gallery-grid" aria-live="polite"></section>
     </main>
 
@@ -1401,6 +1686,6 @@
     <script src="pedal-auth.js?v=1"></script>
     <script src="pedal-comments.js?v=3"></script>
     <script src="pedal-reactions.js?v=1"></script>
-    <script src="gallery.js?v=2"></script>
+    <script src="gallery.js?v=3"></script>
 </body>
 </html>
