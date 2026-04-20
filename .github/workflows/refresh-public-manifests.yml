@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '0 3 * * *'
 
+concurrency:
+  group: refresh-public-manifests-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -58,4 +62,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data scripts/location-cache.json
           git commit -m "Refresh public manifests"
-          git push
+
+          BRANCH_NAME="${GITHUB_REF_NAME:-main}"
+          git fetch origin "$BRANCH_NAME"
+          git pull --rebase origin "$BRANCH_NAME"
+          git push origin "HEAD:$BRANCH_NAME"
