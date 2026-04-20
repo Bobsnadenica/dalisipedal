@@ -9,7 +9,7 @@ on:
     - cron: '0 3 * * *'
 
 concurrency:
-  group: refresh-public-manifests-${{ github.ref }}
+  group: generated-public-data-${{ github.ref }}
   cancel-in-progress: false
 
 permissions:
@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -64,6 +66,20 @@ jobs:
           git commit -m "Refresh public manifests"
 
           BRANCH_NAME="${GITHUB_REF_NAME:-main}"
-          git fetch origin "$BRANCH_NAME"
-          git pull --rebase origin "$BRANCH_NAME"
-          git push origin "HEAD:$BRANCH_NAME"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin "$BRANCH_NAME"
+            git rebase "origin/$BRANCH_NAME"
+
+            if git push origin "HEAD:$BRANCH_NAME"; then
+              echo "Push succeeded on attempt $attempt."
+              exit 0
+            fi
+
+            if [ "$attempt" -eq 5 ]; then
+              echo "::error::Failed to push refreshed manifests after $attempt attempts."
+              exit 1
+            fi
+
+            echo "Push rejected on attempt $attempt. Retrying after remote updates..."
+            sleep $((attempt * 5))
+          done
