@@ -1,15 +1,9 @@
 const SNAPSHOT_URL = 'data/black-map-snapshot.json';
-const OUTLINE_URL = 'background/bulgaria-outline.json';
-const VIEWBOX = Object.freeze({
-  width: 1000,
-  height: 660,
-  paddingX: 96,
-  paddingY: 82,
-});
 
 const MONTH_LABELS = ['Яну', 'Фев', 'Мар', 'Апр', 'Май', 'Юни', 'Юли', 'Авг', 'Сеп', 'Окт', 'Ное', 'Дек'];
 const MONTH_LABELS_LONG = ['Януари', 'Февруари', 'Март', 'Април', 'Май', 'Юни', 'Юли', 'Август', 'Септември', 'Октомври', 'Ноември', 'Декември'];
 const WEEKDAY_LABELS = ['Пон', 'Вто', 'Сря', 'Чет', 'Пет', 'Съб', 'Нед'];
+const HOUR_LABELS = Array.from({ length: 24 }, (_, index) => `${String(index).padStart(2, '0')}:00`);
 const CITY_HINTS = [
   { name: 'София', lat: 42.6977, lng: 23.3219, dx: -20, dy: -10 },
   { name: 'Пловдив', lat: 42.1354, lng: 24.7453, dx: -24, dy: 18 },
@@ -18,12 +12,11 @@ const CITY_HINTS = [
   { name: 'Русе', lat: 43.8356, lng: 25.9657, dx: -8, dy: -12 },
   { name: 'Стара Загора', lat: 42.4258, lng: 25.6345, dx: -24, dy: 18 },
 ];
+const DEFAULT_MAP_CENTER = [42.7249, 25.4833];
+const DEFAULT_MAP_ZOOM = 7;
 
 const state = {
   snapshot: null,
-  outline: null,
-  project: null,
-  outlinePath: '',
   records: [],
   recordsByYear: new Map(),
   dayCapsByYearMonth: new Map(),
@@ -37,16 +30,11 @@ const state = {
   showMinor: true,
   selectedRecord: null,
   map: {
-    scale: 1,
-    offsetX: 0,
-    offsetY: 0,
-    dragActive: false,
-    startClientX: 0,
-    startClientY: 0,
-    lastClientX: 0,
-    lastClientY: 0,
-    pointerId: null,
-    raf: null,
+    instance: null,
+    layerGroup: null,
+    renderer: null,
+    renderedRecords: [],
+    hasFitted: false,
   },
 };
 
@@ -71,9 +59,7 @@ const elements = {
   mapSummary: document.getElementById('black-map-map-summary'),
   majorToggle: document.getElementById('toggle-major'),
   minorToggle: document.getElementById('toggle-minor'),
-  mapSvg: document.getElementById('black-map-svg'),
-  mapSvgLayer: document.getElementById('black-map-svg-layer'),
-  mapCanvas: document.getElementById('black-map-canvas'),
+  mapLeaflet: document.getElementById('black-map-leaflet'),
   mapStage: document.getElementById('black-map-stage'),
   mapZoomIn: document.getElementById('map-zoom-in'),
   mapZoomOut: document.getElementById('map-zoom-out'),
@@ -139,45 +125,6 @@ function decodeRecord(row, index) {
     died: row[8],
     injured: row[9],
   };
-}
-
-function createProjection(points) {
-  const bounds = points.reduce((accumulator, [lat, lng]) => ({
-    minLat: Math.min(accumulator.minLat, lat),
-    maxLat: Math.max(accumulator.maxLat, lat),
-    minLng: Math.min(accumulator.minLng, lng),
-    maxLng: Math.max(accumulator.maxLng, lng),
-  }), {
-    minLat: Number.POSITIVE_INFINITY,
-    maxLat: Number.NEGATIVE_INFINITY,
-    minLng: Number.POSITIVE_INFINITY,
-    maxLng: Number.NEGATIVE_INFINITY,
-  });
-
-  const latRange = Math.max(bounds.maxLat - bounds.minLat, 0.000001);
-  const lngRange = Math.max(bounds.maxLng - bounds.minLng, 0.000001);
-  const usableWidth = VIEWBOX.width - (VIEWBOX.paddingX * 2);
-  const usableHeight = VIEWBOX.height - (VIEWBOX.paddingY * 2);
-  const scale = Math.min(usableWidth / lngRange, usableHeight / latRange);
-  const projectedWidth = lngRange * scale;
-  const projectedHeight = latRange * scale;
-  const offsetX = (VIEWBOX.width - projectedWidth) / 2;
-  const offsetY = (VIEWBOX.height - projectedHeight) / 2;
-
-  return function project(lat, lng) {
-    return {
-      x: offsetX + ((lng - bounds.minLng) * scale),
-      y: offsetY + ((bounds.maxLat - lat) * scale),
-    };
-  };
-}
-
-function buildOutlinePath(points, project) {
-  if (!points.length) return '';
-  return `${points.map(([lat, lng], index) => {
-    const point = project(lat, lng);
-    return `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`;
-  }).join(' ')} Z`;
 }
 
 function getRoadClassName(roadClassId) {
@@ -602,180 +549,234 @@ function renderHotspots() {
   `).join('');
 }
 
-function buildMapBase() {
-  const cityLabels = CITY_HINTS.map((city) => {
-    const projected = state.project(city.lat, city.lng);
-    return `<text class="black-map-city" x="${(projected.x + city.dx).toFixed(2)}" y="${(projected.y + city.dy).toFixed(2)}">${city.name}</text>`;
-  }).join('');
-
-  elements.mapSvg.innerHTML = `
-    <defs>
-      <clipPath id="blackMapClip">
-        <path d="${state.outlinePath}"></path>
-      </clipPath>
-    </defs>
-    <g id="black-map-svg-layer">
-      <g clip-path="url(#blackMapClip)">
-        <rect x="0" y="0" width="${VIEWBOX.width}" height="${VIEWBOX.height}" class="black-map-surface"></rect>
-      </g>
-      <path class="black-map-outline-glow" d="${state.outlinePath}"></path>
-      <path class="black-map-outline" d="${state.outlinePath}"></path>
-      <text class="black-map-label" x="112" y="102">ЧЕРНА КАРТА</text>
-      ${cityLabels}
-    </g>
-  `;
-
-  elements.mapSvgLayer = document.getElementById('black-map-svg-layer');
-  updateMapTransformLayer();
+function getMapZoom() {
+  return state.map.instance ? state.map.instance.getZoom() : DEFAULT_MAP_ZOOM;
 }
 
-function updateMapTransformLayer() {
-  const { scale, offsetX, offsetY } = state.map;
-  if (elements.mapSvgLayer) {
-    elements.mapSvgLayer.setAttribute('transform', `matrix(${scale} 0 0 ${scale} ${offsetX} ${offsetY})`);
-  }
-}
-
-function getVisibleMapRecords() {
-  const visible = [];
-  const major = [];
-  const minor = [];
-  for (const record of state.filteredRecords) {
-    if (record.isMajor) {
-      major.push(record);
-    } else {
-      minor.push(record);
-    }
-  }
-
-  const scale = state.map.scale;
+function getMapRenderConfig() {
+  const zoom = getMapZoom();
   let minorStep = 20;
-  if (scale > 1.3) minorStep = 10;
-  if (scale > 2.1) minorStep = 4;
-  if (scale > 3.2) minorStep = 1;
+  if (zoom > 9) minorStep = 10;
+  if (zoom > 11) minorStep = 3;
+  if (zoom > 13) minorStep = 1;
 
   let majorStep = 1;
-  if (scale < 1.15) majorStep = 4;
-  else if (scale < 1.8) majorStep = 2;
+  let majorRadius = 7;
+  let majorOpacity = 1;
+  let majorBorder = 2;
 
-  if (state.showMinor) {
-    for (let index = 0; index < minor.length; index += minorStep) {
-      visible.push(minor[index]);
-    }
+  if (zoom < 8.5) {
+    majorStep = 4;
+    majorRadius = 3;
+    majorOpacity = 0.6;
+    majorBorder = 0;
+  } else if (zoom < 11) {
+    majorStep = 2;
+    majorRadius = 5;
+    majorOpacity = 0.8;
+    majorBorder = 1;
   }
 
-  if (state.showMajor) {
-    for (let index = 0; index < major.length; index += majorStep) {
-      visible.push(major[index]);
-    }
-  }
-
-  return visible;
-}
-
-function drawMap() {
-  const ctx = elements.mapCanvas.getContext('2d');
-  if (!ctx) return;
-
-  const dpr = window.devicePixelRatio || 1;
-  const cssWidth = elements.mapStage.clientWidth;
-  const cssHeight = elements.mapStage.clientHeight;
-  elements.mapCanvas.width = Math.round(cssWidth * dpr);
-  elements.mapCanvas.height = Math.round(cssHeight * dpr);
-  elements.mapCanvas.style.width = `${cssWidth}px`;
-  elements.mapCanvas.style.height = `${cssHeight}px`;
-
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.clearRect(0, 0, cssWidth, cssHeight);
-
-  const scaleToCssX = cssWidth / VIEWBOX.width;
-  const scaleToCssY = cssHeight / VIEWBOX.height;
-  ctx.save();
-  ctx.scale(scaleToCssX, scaleToCssY);
-  ctx.translate(state.map.offsetX, state.map.offsetY);
-  ctx.scale(state.map.scale, state.map.scale);
-
-  const visibleRecords = getVisibleMapRecords();
-  for (const record of visibleRecords) {
-    const projected = state.project(record.lat, record.lng);
-    const radius = record.isMajor ? 5.6 : 3.2;
-    ctx.beginPath();
-    ctx.fillStyle = record.isMajor ? 'rgba(255, 82, 82, 0.85)' : 'rgba(255, 193, 7, 0.38)';
-    ctx.arc(projected.x, projected.y, radius, 0, Math.PI * 2);
-    ctx.fill();
-
-    if (record.isMajor && state.map.scale > 1.2) {
-      ctx.lineWidth = 1.2;
-      ctx.strokeStyle = 'rgba(255,255,255,0.68)';
-      ctx.stroke();
-    }
-  }
-
-  if (state.selectedRecord) {
-    const projected = state.project(state.selectedRecord.lat, state.selectedRecord.lng);
-    ctx.beginPath();
-    ctx.lineWidth = 3.2;
-    ctx.strokeStyle = '#ffffff';
-    ctx.fillStyle = state.selectedRecord.isMajor ? 'rgba(255, 82, 82, 1)' : 'rgba(255, 193, 7, 0.95)';
-    ctx.arc(projected.x, projected.y, state.selectedRecord.isMajor ? 8.6 : 7.4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-  }
-
-  ctx.restore();
-  updateMapTransformLayer();
-}
-
-function scheduleMapDraw() {
-  if (state.map.raf) return;
-  state.map.raf = window.requestAnimationFrame(() => {
-    state.map.raf = null;
-    drawMap();
-  });
-}
-
-function zoomMap(factor, centerX = VIEWBOX.width / 2, centerY = VIEWBOX.height / 2) {
-  const nextScale = Math.max(1, Math.min(5.6, state.map.scale * factor));
-  const actualFactor = nextScale / state.map.scale;
-  state.map.offsetX = centerX - ((centerX - state.map.offsetX) * actualFactor);
-  state.map.offsetY = centerY - ((centerY - state.map.offsetY) * actualFactor);
-  state.map.scale = nextScale;
-  scheduleMapDraw();
-}
-
-function resetMapView() {
-  state.map.scale = 1;
-  state.map.offsetX = 0;
-  state.map.offsetY = 0;
-  scheduleMapDraw();
-}
-
-function getViewboxPointFromEvent(event) {
-  const rect = elements.mapStage.getBoundingClientRect();
   return {
-    x: ((event.clientX - rect.left) / rect.width) * VIEWBOX.width,
-    y: ((event.clientY - rect.top) / rect.height) * VIEWBOX.height,
-    rect,
+    zoom,
+    minorStep,
+    minorRadius: zoom > 12 ? 4 : zoom > 10 ? 3.4 : 2.7,
+    minorOpacity: zoom > 12 ? 0.48 : zoom > 10 ? 0.42 : 0.34,
+    majorStep,
+    majorRadius,
+    majorOpacity,
+    majorBorder,
   };
 }
 
-function findNearestVisibleRecord(worldX, worldY) {
-  const threshold = 18 / Math.max(state.map.scale, 1);
-  const visibleRecords = getVisibleMapRecords();
-  let nearest = null;
-  let minDistance = Number.POSITIVE_INFINITY;
+function collectMapSourceRecords({ sample = true, useBounds = true } = {}) {
+  const map = state.map.instance;
+  const config = getMapRenderConfig();
+  let source = state.filteredRecords.filter((record) => {
+    if (record.isMajor && !state.showMajor) return false;
+    if (!record.isMajor && !state.showMinor) return false;
+    return true;
+  });
 
-  for (const record of visibleRecords) {
-    const point = state.project(record.lat, record.lng);
-    const distance = Math.hypot(worldX - point.x, worldY - point.y);
-    const biased = record.isMajor ? distance * 0.8 : distance;
-    if (distance <= threshold && biased < minDistance) {
-      minDistance = biased;
-      nearest = record;
+  if (map && useBounds && config.zoom >= 9.5) {
+    const bounds = map.getBounds().pad(0.18);
+    source = source.filter((record) => bounds.contains([record.lat, record.lng]));
+  }
+
+  const major = [];
+  const minor = [];
+  for (const record of source) {
+    if (record.isMajor) major.push(record);
+    else minor.push(record);
+  }
+
+  if (major.length < 200) {
+    config.majorStep = 1;
+  }
+
+  if (!sample) {
+    return { records: source, config };
+  }
+
+  const records = [];
+  for (let index = 0; index < minor.length; index += config.minorStep) {
+    records.push(minor[index]);
+  }
+  for (let index = 0; index < major.length; index += config.majorStep) {
+    records.push(major[index]);
+  }
+
+  return { records, config };
+}
+
+function selectRecord(record, { pan = false } = {}) {
+  state.selectedRecord = record || null;
+  renderSelectedIncident();
+  renderLeafletMarkers();
+  if (pan && record && state.map.instance) {
+    state.map.instance.panTo([record.lat, record.lng], { animate: true, duration: 0.35 });
+  }
+}
+
+function findNearestRecordFromLatLng(latlng) {
+  const map = state.map.instance;
+  if (!map) return null;
+
+  let nearest = null;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  const searchSets = [
+    collectMapSourceRecords({ sample: false, useBounds: true }).records,
+    collectMapSourceRecords({ sample: false, useBounds: false }).records,
+  ];
+  const maxDistanceMeters = getMapZoom() >= 12 ? 350 : getMapZoom() >= 9 ? 500 : 850;
+
+  for (const records of searchSets) {
+    for (const record of records) {
+      const distance = map.distance(latlng, [record.lat, record.lng]);
+      const weightedDistance = record.isMajor ? distance * 0.8 : distance;
+      if (distance <= maxDistanceMeters && weightedDistance < bestDistance) {
+        bestDistance = weightedDistance;
+        nearest = record;
+      }
+    }
+    if (nearest) {
+      return nearest;
     }
   }
 
-  return nearest;
+  return null;
+}
+
+function fitMapToVisibleRecords() {
+  const map = state.map.instance;
+  if (!map) return;
+
+  const records = collectMapSourceRecords({ sample: false, useBounds: false }).records;
+  if (!records.length) {
+    map.setView(DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, { animate: false });
+    return;
+  }
+
+  if (records.length === 1) {
+    map.setView([records[0].lat, records[0].lng], 13, { animate: false });
+    return;
+  }
+
+  const bounds = window.L.latLngBounds(records.map((record) => [record.lat, record.lng]));
+  map.fitBounds(bounds.pad(0.18), { animate: false, padding: [18, 18], maxZoom: 13 });
+}
+
+function buildMarkerPopup(record) {
+  const typeLabel = record.isMajor ? 'Тежко ПТП' : 'Леко ПТП';
+  const casualties = [];
+  if (record.died) casualties.push(`${formatNumber(record.died)} загинали`);
+  if (record.injured) casualties.push(`${formatNumber(record.injured)} ранени`);
+  return `
+    <strong>${typeLabel}</strong><br>
+    ${String(record.day).padStart(2, '0')}.${String(record.month).padStart(2, '0')}.${record.year} • ${String(record.hour).padStart(2, '0')}:00ч<br>
+    ${escapeHtml(getRoadClassName(record.roadClassId))}<br>
+    ${casualties.length ? escapeHtml(casualties.join(' • ')) : 'Без отчетени пострадали'}
+  `;
+}
+
+function renderLeafletMarkers() {
+  const map = state.map.instance;
+  const layerGroup = state.map.layerGroup;
+  if (!map || !layerGroup) return;
+
+  layerGroup.clearLayers();
+  const { records, config } = collectMapSourceRecords({ sample: true, useBounds: true });
+  state.map.renderedRecords = records;
+
+  for (const record of records) {
+    const marker = window.L.circleMarker([record.lat, record.lng], {
+      renderer: state.map.renderer,
+      radius: record.isMajor ? config.majorRadius : config.minorRadius,
+      color: record.isMajor ? '#ffffff' : 'rgba(255,255,255,0)',
+      opacity: record.isMajor ? 0.86 : 0,
+      weight: record.isMajor ? config.majorBorder : 0,
+      fillColor: record.isMajor ? '#ff5252' : '#ffc107',
+      fillOpacity: record.isMajor ? config.majorOpacity : config.minorOpacity,
+      bubblingMouseEvents: false,
+    });
+    marker.on('click', () => {
+      selectRecord(record);
+    });
+    marker.bindPopup(buildMarkerPopup(record), {
+      closeButton: false,
+      autoPan: false,
+      offset: [0, -4],
+    });
+    marker.addTo(layerGroup);
+  }
+
+  if (state.selectedRecord) {
+    window.L.circleMarker([state.selectedRecord.lat, state.selectedRecord.lng], {
+      renderer: state.map.renderer,
+      radius: (state.selectedRecord.isMajor ? config.majorRadius : config.minorRadius) + 4,
+      color: '#ffffff',
+      opacity: 1,
+      weight: 2.6,
+      fillColor: state.selectedRecord.isMajor ? '#ff5252' : '#ffd54f',
+      fillOpacity: 0.18,
+      interactive: false,
+    }).addTo(layerGroup);
+  }
+}
+
+function initializeLeafletMap() {
+  if (state.map.instance || !elements.mapLeaflet || !window.L) return;
+
+  const map = window.L.map(elements.mapLeaflet, {
+    zoomControl: false,
+    attributionControl: false,
+    preferCanvas: true,
+    minZoom: 6,
+    maxZoom: 18,
+  });
+
+  map.setView(DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM);
+
+  window.L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    detectRetina: true,
+    crossOrigin: true,
+  }).addTo(map);
+
+  state.map.instance = map;
+  state.map.renderer = window.L.canvas({ padding: 0.5 });
+  state.map.layerGroup = window.L.layerGroup().addTo(map);
+
+  map.on('zoomend moveend', () => {
+    renderLeafletMarkers();
+  });
+
+  map.on('click', (event) => {
+    const nearest = findNearestRecordFromLatLng(event.latlng);
+    if (nearest) {
+      selectRecord(nearest);
+    }
+  });
 }
 
 function renderSelectedIncident() {
@@ -829,7 +830,7 @@ function renderMapSummary() {
   elements.majorToggle.classList.toggle('active', state.showMajor);
   elements.minorToggle.classList.toggle('active', state.showMinor);
   renderSelectedIncident();
-  scheduleMapDraw();
+  renderLeafletMarkers();
 }
 
 function renderSeverity() {
@@ -955,8 +956,15 @@ function renderActiveTab() {
     view.hidden = view.dataset.blackView !== state.activeTab;
   });
 
-  if (state.activeTab === 'map') {
-    scheduleMapDraw();
+  if (state.activeTab === 'map' && state.map.instance) {
+    window.setTimeout(() => {
+      state.map.instance.invalidateSize(false);
+      if (!state.map.hasFitted) {
+        fitMapToVisibleRecords();
+        state.map.hasFitted = true;
+      }
+      renderLeafletMarkers();
+    }, 0);
   }
 }
 
@@ -1002,81 +1010,32 @@ function registerStaticListeners() {
     renderMapSummary();
   });
 
-  elements.mapZoomFit.addEventListener('click', resetMapView);
-  elements.mapZoomIn.addEventListener('click', () => zoomMap(1.22));
-  elements.mapZoomOut.addEventListener('click', () => zoomMap(1 / 1.22));
-
-  elements.mapStage.addEventListener('wheel', (event) => {
-    event.preventDefault();
-    const point = getViewboxPointFromEvent(event);
-    zoomMap(event.deltaY < 0 ? 1.14 : 1 / 1.14, point.x, point.y);
-  }, { passive: false });
-
-  elements.mapStage.addEventListener('pointerdown', (event) => {
-    state.map.dragActive = true;
-    state.map.pointerId = event.pointerId;
-    state.map.startClientX = event.clientX;
-    state.map.startClientY = event.clientY;
-    state.map.lastClientX = event.clientX;
-    state.map.lastClientY = event.clientY;
-    elements.mapStage.setPointerCapture(event.pointerId);
+  elements.mapZoomFit.addEventListener('click', () => {
+    fitMapToVisibleRecords();
+  });
+  elements.mapZoomIn.addEventListener('click', () => {
+    if (state.map.instance) {
+      state.map.instance.setZoom(getMapZoom() + 1);
+    }
+  });
+  elements.mapZoomOut.addEventListener('click', () => {
+    if (state.map.instance) {
+      state.map.instance.setZoom(getMapZoom() - 1);
+    }
   });
 
-  elements.mapStage.addEventListener('pointermove', (event) => {
-    if (!state.map.dragActive || state.map.pointerId !== event.pointerId) return;
-    const rect = elements.mapStage.getBoundingClientRect();
-    const deltaX = ((event.clientX - state.map.lastClientX) / rect.width) * VIEWBOX.width;
-    const deltaY = ((event.clientY - state.map.lastClientY) / rect.height) * VIEWBOX.height;
-    state.map.offsetX += deltaX;
-    state.map.offsetY += deltaY;
-    state.map.lastClientX = event.clientX;
-    state.map.lastClientY = event.clientY;
-    scheduleMapDraw();
+  window.addEventListener('resize', () => {
+    if (state.map.instance) {
+      state.map.instance.invalidateSize(false);
+      renderLeafletMarkers();
+    }
   });
-
-  const finishPointer = (event) => {
-    if (state.map.pointerId != null && event.pointerId === state.map.pointerId && elements.mapStage.hasPointerCapture(event.pointerId)) {
-      elements.mapStage.releasePointerCapture(event.pointerId);
-    }
-    const movedDistance = Math.hypot(event.clientX - state.map.startClientX, event.clientY - state.map.startClientY);
-    state.map.dragActive = false;
-    state.map.pointerId = null;
-
-    if (movedDistance > 8) {
-      return;
-    }
-
-    const point = getViewboxPointFromEvent(event);
-    const worldX = (point.x - state.map.offsetX) / state.map.scale;
-    const worldY = (point.y - state.map.offsetY) / state.map.scale;
-    const nearest = findNearestVisibleRecord(worldX, worldY);
-    if (nearest) {
-      state.selectedRecord = nearest;
-      renderSelectedIncident();
-      scheduleMapDraw();
-    }
-  };
-
-  elements.mapStage.addEventListener('pointerup', finishPointer);
-  elements.mapStage.addEventListener('pointercancel', () => {
-    state.map.dragActive = false;
-    state.map.pointerId = null;
-  });
-
-  window.addEventListener('resize', scheduleMapDraw);
 }
 
 async function boot() {
   try {
-    const [snapshot, outline] = await Promise.all([
-      fetchJson(SNAPSHOT_URL),
-      fetchJson(OUTLINE_URL),
-    ]);
-
+    const snapshot = await fetchJson(SNAPSHOT_URL);
     state.snapshot = snapshot;
-    state.outline = outline;
-    state.project = createProjection(outline);
-    state.outlinePath = buildOutlinePath(outline, state.project);
     state.records = snapshot.records.map(decodeRecord);
 
     for (const record of state.records) {
@@ -1102,9 +1061,10 @@ async function boot() {
       elements.updated.textContent = `Обновено: ${formatDate(snapshot.meta.sourceGeneratedAt)} • сайт: ${formatDate(snapshot.meta.snapshotGeneratedAt)}`;
     }
 
-    buildMapBase();
+    initializeLeafletMap();
     registerStaticListeners();
     applyFilters();
+    elements.error.hidden = true;
   } catch (error) {
     console.error('Black map failed to load:', error);
     if (elements.error) {

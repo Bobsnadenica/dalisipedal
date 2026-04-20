@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <style>
         body {
             overflow-y: auto;
@@ -542,11 +543,43 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
             touch-action: none;
             user-select: none;
-            cursor: grab;
         }
 
-        .black-map-stage:active {
-            cursor: grabbing;
+        .black-map-leaflet {
+            position: absolute;
+            inset: 0;
+        }
+
+        .black-map-stage .leaflet-container {
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 30% 18%, rgba(255, 193, 7, 0.06), transparent 35%),
+                radial-gradient(circle at 70% 60%, rgba(255, 59, 48, 0.09), transparent 36%),
+                linear-gradient(180deg, rgba(12, 16, 22, 0.98), rgba(4, 4, 4, 0.98));
+            font-family: var(--font-main);
+        }
+
+        .black-map-stage .leaflet-tile {
+            filter: grayscale(1) invert(0.92) brightness(0.8) contrast(1.08);
+        }
+
+        .black-map-stage .leaflet-control-zoom,
+        .black-map-stage .leaflet-control-attribution {
+            display: none;
+        }
+
+        .black-map-stage .leaflet-popup-content-wrapper,
+        .black-map-stage .leaflet-popup-tip {
+            background: rgba(14, 14, 14, 0.96);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .black-map-stage .leaflet-popup-content {
+            margin: 10px 12px;
+            line-height: 1.5;
+            font-size: 0.9rem;
         }
 
         .black-map-svg,
@@ -1088,8 +1121,7 @@
                             </div>
                         </div>
                         <div id="black-map-stage" class="black-map-stage" aria-label="Интерактивна карта">
-                            <svg id="black-map-svg" class="black-map-svg" viewBox="0 0 1000 660" aria-hidden="true"></svg>
-                            <canvas id="black-map-canvas" class="black-map-canvas"></canvas>
+                            <div id="black-map-leaflet" class="black-map-leaflet"></div>
                         </div>
                     </div>
 
@@ -1189,6 +1221,7 @@
         </section>
     </main>
 
-    <script src="black_map.js?v=2"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="black_map.js?v=4"></script>
 </body>
 </html>
