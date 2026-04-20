@@ -638,27 +638,44 @@ function selectRecord(record, { pan = false } = {}) {
   }
 }
 
+function getSelectionThresholdPx() {
+  const zoom = getMapZoom();
+  const coarsePointer = window.matchMedia?.('(pointer: coarse)').matches;
+  let threshold = coarsePointer ? 34 : 24;
+
+  if (zoom < 8) threshold += 18;
+  else if (zoom < 10) threshold += 10;
+  else if (zoom < 12) threshold += 5;
+
+  return threshold;
+}
+
 function findNearestRecordFromLatLng(latlng) {
   const map = state.map.instance;
   if (!map) return null;
 
-  let nearest = null;
-  let bestDistance = Number.POSITIVE_INFINITY;
+  const clickPoint = map.latLngToContainerPoint(latlng);
+  const thresholdPx = getSelectionThresholdPx();
   const searchSets = [
+    state.map.renderedRecords,
     collectMapSourceRecords({ sample: false, useBounds: true }).records,
     collectMapSourceRecords({ sample: false, useBounds: false }).records,
   ];
-  const maxDistanceMeters = getMapZoom() >= 12 ? 350 : getMapZoom() >= 9 ? 500 : 850;
 
   for (const records of searchSets) {
+    let nearest = null;
+    let bestDistance = Number.POSITIVE_INFINITY;
+
     for (const record of records) {
-      const distance = map.distance(latlng, [record.lat, record.lng]);
-      const weightedDistance = record.isMajor ? distance * 0.8 : distance;
-      if (distance <= maxDistanceMeters && weightedDistance < bestDistance) {
+      const point = map.latLngToContainerPoint([record.lat, record.lng]);
+      const distance = point.distanceTo(clickPoint);
+      const weightedDistance = record.isMajor ? distance * 0.82 : distance;
+      if (distance <= thresholdPx && weightedDistance < bestDistance) {
         bestDistance = weightedDistance;
         nearest = record;
       }
     }
+
     if (nearest) {
       return nearest;
     }
@@ -720,7 +737,7 @@ function renderLeafletMarkers() {
       bubblingMouseEvents: false,
     });
     marker.on('click', () => {
-      selectRecord(record);
+      selectRecord(record, { pan: true });
     });
     marker.bindPopup(buildMarkerPopup(record), {
       closeButton: false,
@@ -774,7 +791,7 @@ function initializeLeafletMap() {
   map.on('click', (event) => {
     const nearest = findNearestRecordFromLatLng(event.latlng);
     if (nearest) {
-      selectRecord(nearest);
+      selectRecord(nearest, { pan: true });
     }
   });
 }
