@@ -2,7 +2,7 @@ const DATASETS = Object.freeze([
     {
         id: 'major_roads',
         title: 'Републикански пътища',
-        subtitle: 'Основната пътна мрежа като PolyLineZ',
+        subtitle: 'Основната пътна мрежа като линеен слой',
         shp: 'api_data/major_roads/RI_Road.shp',
         dbf: 'api_data/major_roads/RI_Road.dbf',
         prj: 'api_data/major_roads/RI_Road.prj',
@@ -11,7 +11,7 @@ const DATASETS = Object.freeze([
     {
         id: 'municipality_roads',
         title: 'Общински пътища',
-        subtitle: 'Municipality roads като PolyLine',
+        subtitle: 'Общинска пътна мрежа като линеен слой',
         shp: 'api_data/ob6tinski_put/Municipality_roads.shp',
         dbf: 'api_data/ob6tinski_put/Municipality_roads.dbf',
         prj: 'api_data/ob6tinski_put/Municipality_roads.prj',
@@ -20,7 +20,7 @@ const DATASETS = Object.freeze([
     {
         id: 'km_points',
         title: 'Километрични точки',
-        subtitle: 'Маркировки по километража като PointZ',
+        subtitle: 'Маркировки по километража като точков слой',
         shp: 'api_data/km/RI_RoadLabel.shp',
         dbf: 'api_data/km/RI_RoadLabel.dbf',
         prj: 'api_data/km/RI_RoadLabel.prj',
@@ -29,7 +29,7 @@ const DATASETS = Object.freeze([
     {
         id: 'bridges',
         title: 'Мостове',
-        subtitle: 'PointZ слой за мостови съоръжения',
+        subtitle: 'Точков слой за мостови съоръжения',
         shp: 'api_data/bridge/RI_Bridge_point.shp',
         dbf: 'api_data/bridge/RI_Bridge_point.dbf',
         prj: 'api_data/bridge/RI_Bridge_point.prj',
@@ -38,7 +38,7 @@ const DATASETS = Object.freeze([
     {
         id: 'tunnels',
         title: 'Тунели',
-        subtitle: 'PointZ слой за тунели',
+        subtitle: 'Точков слой за тунели',
         shp: 'api_data/tunnels/RI_Tunnel_point.shp',
         dbf: 'api_data/tunnels/RI_Tunnel_point.dbf',
         prj: 'api_data/tunnels/RI_Tunnel_point.prj',
@@ -52,11 +52,11 @@ const state = {
 };
 
 const SHAPE_TYPE_NAMES = Object.freeze({
-    0: 'Null Shape',
-    1: 'Point',
-    3: 'PolyLine',
-    11: 'PointZ',
-    13: 'PolyLineZ',
+    0: 'Празна геометрия',
+    1: 'Точка',
+    3: 'Линия',
+    11: 'Точка Z',
+    13: 'Линия Z',
 });
 
 function formatNumber(value) {
@@ -87,21 +87,21 @@ function escapeHtml(value) {
 
 function extractProjectionName(prjText) {
     const match = String(prjText || '').match(/^(?:PROJCS|GEOGCS)\["([^"]+)"/);
-    return match ? match[1] : 'Unknown projection';
+    return match ? match[1] : 'Неизвестна проекция';
 }
 
 function parseDbfFieldType(type) {
     switch (type) {
     case 'C':
-        return 'Text';
+        return 'Текст';
     case 'N':
-        return 'Number';
+        return 'Число';
     case 'F':
-        return 'Float';
+        return 'Дробно число';
     case 'D':
-        return 'Date';
+        return 'Дата';
     case 'L':
-        return 'Boolean';
+        return 'Булево';
     default:
         return type;
     }
@@ -393,7 +393,7 @@ function drawMap() {
             mapStatusEl.textContent = 'Няма активни слоеве за визуализация.';
         }
         if (mapBoundsEl) {
-            mapBoundsEl.textContent = 'Bounding box: ...';
+            mapBoundsEl.textContent = 'Граници: ...';
         }
         return;
     }
@@ -459,7 +459,7 @@ function drawMap() {
     }
 
     if (mapBoundsEl) {
-        mapBoundsEl.textContent = `Bounding box: ${formatBounds(bounds)}`;
+        mapBoundsEl.textContent = `Граници: ${formatBounds(bounds)}`;
     }
 }
 
@@ -558,25 +558,25 @@ function renderDatasetCards() {
 
             <div class="dataset-meta">
                 <div class="dataset-meta-item">
-                    <div class="dataset-meta-label">Geometry</div>
+                    <div class="dataset-meta-label">Геометрия</div>
                     <div class="dataset-meta-value">${escapeHtml(dataset.geometry.shapeTypeLabel)}</div>
                 </div>
                 <div class="dataset-meta-item">
-                    <div class="dataset-meta-label">Projection</div>
+                    <div class="dataset-meta-label">Проекция</div>
                     <div class="dataset-meta-value">${escapeHtml(dataset.projectionName)}</div>
                 </div>
                 <div class="dataset-meta-item">
-                    <div class="dataset-meta-label">Bounding Box</div>
+                    <div class="dataset-meta-label">Граници</div>
                     <div class="dataset-meta-value">${escapeHtml(formatBounds(dataset.geometry.bbox))}</div>
                 </div>
                 <div class="dataset-meta-item">
-                    <div class="dataset-meta-label">Feature Preview</div>
+                    <div class="dataset-meta-label">Геометрии</div>
                     <div class="dataset-meta-value">${formatNumber(dataset.geometry.features.length)} геометрии</div>
                 </div>
             </div>
 
             <div>
-                <div class="dataset-meta-label">Fields</div>
+                <div class="dataset-meta-label">Полета</div>
                 <div class="field-list">
                     ${dataset.attributes.fields.map(field => `
                         <span class="field-pill">${escapeHtml(field.name)} · ${escapeHtml(parseDbfFieldType(field.type))}</span>
@@ -585,7 +585,7 @@ function renderDatasetCards() {
             </div>
 
             <div>
-                <div class="dataset-meta-label">Sample Rows</div>
+                <div class="dataset-meta-label">Примерни редове</div>
                 ${renderSamplesTable(dataset)}
             </div>
         `;
@@ -632,8 +632,8 @@ async function init() {
         renderDatasetCards();
         drawMap();
     } catch (error) {
-        console.error('Failed to load API datasets:', error);
-        setErrorMessage(`Не успяхме да заредим shapefile данните: ${error.message || error}`);
+        console.error('Failed to load open data layers:', error);
+        setErrorMessage(`Не успяхме да заредим наличните слоеве: ${error.message || error}`);
     }
 }
 

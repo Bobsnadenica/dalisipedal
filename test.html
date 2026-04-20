@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>API Data Test | П.Е.Д.А.Л.🤫</title>
-    <meta name="robots" content="noindex, nofollow">
+    <title>Отворени данни | П.Е.Д.А.Л.🤫</title>
+    <meta name="description" content="Отворени данни и публични справки за пътната мрежа, въздуха, VIN проверки и технически преглед.">
+    <meta name="robots" content="index, follow">
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -66,6 +67,99 @@
             max-width: 860px;
             line-height: 1.75;
             font-size: 1.02rem;
+        }
+
+        .open-data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 28px;
+        }
+
+        .open-data-card {
+            display: grid;
+            gap: 14px;
+            padding: 18px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-decoration: none;
+            color: #fff;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .open-data-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .open-data-card.road:hover {
+            border-color: rgba(248, 197, 85, 0.28);
+        }
+
+        .open-data-card.air:hover {
+            border-color: rgba(104, 216, 255, 0.28);
+        }
+
+        .open-data-card.vin:hover {
+            border-color: rgba(126, 229, 140, 0.28);
+        }
+
+        .open-data-card.inspection:hover {
+            border-color: rgba(255, 139, 139, 0.28);
+        }
+
+        .open-data-card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .open-data-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff3cf;
+        }
+
+        .open-data-card.road .open-data-icon {
+            background: rgba(248, 197, 85, 0.16);
+            color: #ffe5a6;
+        }
+
+        .open-data-card.air .open-data-icon {
+            background: rgba(104, 216, 255, 0.16);
+            color: #bceeff;
+        }
+
+        .open-data-card.vin .open-data-icon {
+            background: rgba(126, 229, 140, 0.16);
+            color: #dffff0;
+        }
+
+        .open-data-card.inspection .open-data-icon {
+            background: rgba(255, 139, 139, 0.16);
+            color: #ffe1e1;
+        }
+
+        .open-data-arrow {
+            color: rgba(255, 255, 255, 0.54);
+        }
+
+        .open-data-title {
+            font-size: 1.08rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .open-data-copy {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 0.94rem;
         }
 
         .test-layout {
@@ -349,6 +443,10 @@
                 font-size: 2.15rem;
             }
 
+            .open-data-grid {
+                grid-template-columns: 1fr;
+            }
+
             .test-stats {
                 grid-template-columns: 1fr;
             }
@@ -379,7 +477,7 @@
             <div class="nav-links">
                 <a href="index.html">Начало</a>
                 <a href="gallery.html" class="nav-pill nav-gallery">Галерия</a>
-                <a href="test.html" class="nav-pill nav-ninja" aria-current="page">API Data Test</a>
+                <a href="test.html" class="nav-pill nav-ninja" aria-current="page">Отворени данни</a>
             </div>
         </div>
     </nav>
@@ -388,27 +486,69 @@
         <section class="test-hero">
             <div class="test-kicker">
                 <span class="material-icons-round">data_object</span>
-                <span>Government Road Data</span>
+                <span>Отворени данни</span>
             </div>
-            <h1 class="test-title">Визуален преглед на данните в <code>api_data/</code></h1>
+            <h1 class="test-title">Публични справки и отворени данни</h1>
             <p class="test-copy">
-                Тази страница зарежда shapefile слоевете директно от проекта, показва геометриите им върху една обща карта
-                и дава бърз преглед на полетата, броя записи и примерни редове за всеки dataset.
+                На едно място събираме полезни публични източници и визуализации за пътната мрежа, качеството на въздуха и
+                държавни справки за превозни средства.
             </p>
+            <div class="open-data-grid">
+                <a href="#road-network-section" class="open-data-card road">
+                    <div class="open-data-card-head">
+                        <div class="open-data-icon">
+                            <span class="material-icons-round">map</span>
+                        </div>
+                        <span class="open-data-arrow material-icons-round">south_east</span>
+                    </div>
+                    <div class="open-data-title">Данни за пътната мрежа</div>
+                    <div class="open-data-copy">Карта и визуален преглед на основни пътища, общински пътища, километражни точки, мостове и тунели.</div>
+                </a>
+                <a href="https://eea.government.bg/airq" class="open-data-card air" target="_blank" rel="noopener noreferrer">
+                    <div class="open-data-card-head">
+                        <div class="open-data-icon">
+                            <span class="material-icons-round">air</span>
+                        </div>
+                        <span class="open-data-arrow material-icons-round">open_in_new</span>
+                    </div>
+                    <div class="open-data-title">Данни за качеството на въздуха</div>
+                    <div class="open-data-copy">Официална система в реално време за качеството на атмосферния въздух.</div>
+                </a>
+                <a href="https://public-eis.rta.government.bg/public-vehicle-check/vin-check" class="open-data-card vin" target="_blank" rel="noopener noreferrer">
+                    <div class="open-data-card-head">
+                        <div class="open-data-icon">
+                            <span class="material-icons-round">badge</span>
+                        </div>
+                        <span class="open-data-arrow material-icons-round">open_in_new</span>
+                    </div>
+                    <div class="open-data-title">Проверка на ППС по VIN номер</div>
+                    <div class="open-data-copy">Публична справка за превозно средство чрез VIN номер.</div>
+                </a>
+                <a href="https://rta.government.bg/services/check-inspection/index.html" class="open-data-card inspection" target="_blank" rel="noopener noreferrer">
+                    <div class="open-data-card-head">
+                        <div class="open-data-icon">
+                            <span class="material-icons-round">fact_check</span>
+                        </div>
+                        <span class="open-data-arrow material-icons-round">open_in_new</span>
+                    </div>
+                    <div class="open-data-title">Проверка на технически преглед</div>
+                    <div class="open-data-copy">Официална онлайн проверка за валиден технически преглед.</div>
+                </a>
+            </div>
         </section>
 
-        <section class="test-layout">
+        <section id="road-network-section" class="test-layout">
             <div class="test-panel">
                 <div class="test-panel-head">
                     <div>
-                        <h2 class="test-panel-title">Обща карта и слоеве</h2>
-                        <p class="test-panel-copy">Полилинии и точки се проектират в общи координати, за да се види реално какво покриват тези данни.</p>
+                        <h2 class="test-panel-title">Данни за пътната мрежа</h2>
+                        <p class="test-panel-copy">Полилинии и точки се проектират в общи координати, за да се види реално какво покриват наличните слоеве.</p>
                     </div>
                 </div>
 
                 <div id="test-stats" class="test-stats">
                     <div class="test-stat">
-                        <div class="test-stat-label">Datasets</div>
+                        <div class="test-stat-label">Слоеве</div>
                         <div id="stat-datasets" class="test-stat-value">0</div>
                     </div>
                     <div class="test-stat">
@@ -426,8 +566,8 @@
                 <div class="map-frame">
                     <canvas id="data-map" width="1200" height="620"></canvas>
                     <div class="map-status">
-                        <div id="map-status" class="map-status-chip">Зареждаме shapefile данните...</div>
-                        <div id="map-bounds" class="map-status-chip">Bounding box: ...</div>
+                        <div id="map-status" class="map-status-chip">Зареждаме слоевете...</div>
+                        <div id="map-bounds" class="map-status-chip">Граници: ...</div>
                     </div>
                 </div>
             </div>
@@ -435,17 +575,17 @@
             <div class="test-panel">
                 <div class="test-panel-head">
                     <div>
-                        <h2 class="test-panel-title">Dataset преглед</h2>
-                        <p class="test-panel-copy">Полетата и sample rows идват от DBF частта на shapefile-ите.</p>
+                        <h2 class="test-panel-title">Слоеве и примерни данни</h2>
+                        <p class="test-panel-copy">Полетата и примерните редове идват от атрибутната част на наличните слоеве.</p>
                     </div>
                 </div>
                 <div id="dataset-stack" class="dataset-stack">
-                    <div class="loading-panel">Зареждаме слоевете от <code>api_data/</code>...</div>
+                    <div class="loading-panel">Зареждаме слоевете...</div>
                 </div>
             </div>
         </section>
     </main>
 
-    <script src="test.js?v=1"></script>
+    <script src="test.js?v=2"></script>
 </body>
 </html>
