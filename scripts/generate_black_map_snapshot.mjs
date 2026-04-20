@@ -228,6 +228,15 @@ async function main() {
 
   const years = [...sourceYears].sort((left, right) => left - right);
   const yearKeys = ['all', ...years.map(String)];
+  const latestByYear = {};
+  const compactRecords = [];
+  const normalizedRoadClassLookup = {
+    0: ROAD_CLASS_LABELS[0],
+  };
+
+  for (const [roadClassId, label] of Object.entries(roadClassLookup)) {
+    normalizedRoadClassLookup[roadClassId] = translateRoadClass(toInt(roadClassId), label);
+  }
 
   const summaryByYear = Object.fromEntries(yearKeys.map(key => [key, createStatsBucket()]));
   const monthlyByYear = Object.fromEntries(yearKeys.map(key => [key, Array.from({ length: 12 }, () => 0)]));
@@ -239,6 +248,30 @@ async function main() {
 
   for (const record of processed) {
     const scopedKeys = ['all', String(record.year)];
+    const latestForYear = latestByYear[record.year];
+    if (
+      !latestForYear ||
+      record.month > latestForYear.month ||
+      (record.month === latestForYear.month && record.day > latestForYear.day)
+    ) {
+      latestByYear[record.year] = {
+        month: record.month,
+        day: record.day,
+      };
+    }
+
+    compactRecords.push([
+      Math.round(record.lat * 10000),
+      Math.round(record.lng * 10000),
+      record.isMajor ? 1 : 0,
+      record.year,
+      record.month,
+      record.day,
+      record.hour,
+      record.roadClassId,
+      record.died,
+      record.injured,
+    ]);
 
     for (const key of scopedKeys) {
       addToStats(summaryByYear[key], record);
@@ -349,6 +382,7 @@ async function main() {
       sourceGeneratedAt: rawJson.meta?.generatedAt || null,
       snapshotGeneratedAt: new Date().toISOString(),
       years,
+      latestByYear,
       sourceRecordCount: processed.length,
       mappableRecordCount: mappableRecords,
       grid: {
@@ -362,6 +396,9 @@ async function main() {
         },
       },
     },
+    lookups: {
+      roadClasses: normalizedRoadClassLookup,
+    },
     summaryByYear: Object.fromEntries(
       yearKeys.map(key => [key, finalizeStats(summaryByYear[key])]),
     ),
@@ -370,9 +407,10 @@ async function main() {
     roadClassesByYear: serialisedRoadClasses,
     heatmapByYear: serialisedHeatmaps,
     hotspotsByYear: serialisedHotspots,
+    records: compactRecords,
   };
 
-  await fs.writeFile(outputPath, `${JSON.stringify(snapshot, null, 2)}\n`, 'utf8');
+  await fs.writeFile(outputPath, `${JSON.stringify(snapshot)}\n`, 'utf8');
 
   console.log(JSON.stringify({
     years: snapshot.meta.years,

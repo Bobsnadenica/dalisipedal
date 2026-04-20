@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Черна Карта | П.Е.Д.А.Л.🤫</title>
-    <meta name="description" content="Черна Карта с публична визуализация на пътни инциденти в България по официални отворени данни, обновявана веднъж месечно.">
+    <meta name="description" content="Черна Карта с интерактивна визуализация на пътни инциденти в България по официални публични данни, обновявана веднъж месечно.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.dalisipedal.com/black_map.html">
     <link rel="icon" type="image/png" href="app_icon.png">
@@ -19,7 +19,7 @@
         }
 
         .black-shell {
-            max-width: 1320px;
+            max-width: 1360px;
             margin: 108px auto 88px;
             padding: 0 20px;
             position: relative;
@@ -28,8 +28,7 @@
 
         .black-hero,
         .black-panel,
-        .black-stat-card,
-        .hotspot-card {
+        .black-filter-shell {
             background: linear-gradient(180deg, rgba(16, 16, 16, 0.98), rgba(7, 7, 7, 0.96));
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
@@ -39,7 +38,7 @@
         .black-hero {
             border-radius: 32px;
             padding: 30px;
-            margin-bottom: 24px;
+            margin-bottom: 18px;
         }
 
         .black-kicker {
@@ -58,31 +57,41 @@
         }
 
         .black-title {
-            font-size: clamp(2.6rem, 5vw, 4.4rem);
+            font-size: clamp(2.8rem, 5vw, 4.4rem);
             line-height: 0.98;
             letter-spacing: -0.05em;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
+            max-width: 980px;
         }
 
         .black-copy {
             color: var(--text-muted);
-            max-width: 900px;
+            max-width: 920px;
             line-height: 1.8;
             font-size: 1.02rem;
         }
 
-        .black-meta-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 18px;
-            margin-top: 24px;
+        .black-updated {
+            margin-top: 18px;
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 0.9rem;
         }
 
-        .black-updated {
-            color: rgba(255, 255, 255, 0.64);
-            font-size: 0.9rem;
+        .error-box {
+            margin-top: 18px;
+            border-radius: 22px;
+            padding: 14px 16px;
+            background: rgba(255, 59, 48, 0.12);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+            color: #ffc5bf;
+        }
+
+        .black-filter-shell {
+            border-radius: 28px;
+            padding: 18px;
+            margin-bottom: 18px;
+            display: grid;
+            gap: 16px;
         }
 
         .year-filters {
@@ -111,15 +120,99 @@
             background: rgba(255, 167, 38, 0.12);
         }
 
-        .black-main-grid {
+        .filter-row {
             display: grid;
-            grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.7fr);
-            gap: 22px;
-            align-items: start;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .filter-select-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .filter-select-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.56);
+            font-weight: 800;
+        }
+
+        .filter-select {
+            width: 100%;
+            min-height: 44px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font: inherit;
+            padding: 0 14px;
+            outline: none;
+        }
+
+        .filter-select option {
+            color: #111;
+        }
+
+        .black-workspace {
+            display: grid;
+            gap: 18px;
+        }
+
+        .black-tabbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tab-button {
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.72);
+            border-radius: 999px;
+            padding: 11px 16px;
+            font: inherit;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+        }
+
+        .tab-button .material-icons-round {
+            font-size: 18px;
+        }
+
+        .tab-button.active,
+        .tab-button:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 167, 38, 0.24);
+            background: rgba(255, 167, 38, 0.12);
+            color: #fff;
+        }
+
+        .black-view-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+            gap: 18px;
+        }
+
+        .overview-main,
+        .overview-side {
+            display: grid;
+            gap: 18px;
         }
 
         .black-panel {
-            border-radius: 30px;
+            border-radius: 28px;
             padding: 22px;
         }
 
@@ -132,7 +225,7 @@
         }
 
         .black-panel-title {
-            font-size: 1.3rem;
+            font-size: 1.26rem;
             font-weight: 800;
             letter-spacing: -0.03em;
         }
@@ -143,7 +236,302 @@
             font-size: 0.94rem;
         }
 
+        .black-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .black-stat-card {
+            border-radius: 24px;
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .black-stat-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .black-stat-label {
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+        }
+
+        .black-stat-icon {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 20px;
+        }
+
+        .black-stat-value {
+            margin-top: 8px;
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .black-stat-copy {
+            margin-top: 10px;
+            color: var(--text-muted);
+            line-height: 1.55;
+            font-size: 0.86rem;
+        }
+
+        .black-stat-card.neutral .black-stat-value { color: #ffffff; }
+        .black-stat-card.danger .black-stat-value { color: #ff8a80; }
+        .black-stat-card.fatal .black-stat-value { color: #ffb74d; }
+        .black-stat-card.warn .black-stat-value { color: #ffe082; }
+
+        .comparison-card {
+            display: grid;
+            gap: 14px;
+        }
+
+        .comparison-hint {
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 0.84rem;
+            line-height: 1.6;
+        }
+
+        .comparison-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: center;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .comparison-row:last-child {
+            padding-bottom: 0;
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .comparison-label {
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .comparison-values {
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 0.86rem;
+        }
+
+        .comparison-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            font-weight: 800;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .comparison-pill.good {
+            background: rgba(52, 199, 89, 0.14);
+            border-color: rgba(52, 199, 89, 0.22);
+            color: #8cf3ac;
+        }
+
+        .comparison-pill.bad {
+            background: rgba(255, 82, 82, 0.14);
+            border-color: rgba(255, 82, 82, 0.22);
+            color: #ffb0a9;
+        }
+
+        .comparison-pill.flat {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .trend-head {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .trend-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.88rem;
+        }
+
+        .legend-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-line {
+            width: 22px;
+            height: 3px;
+            border-radius: 999px;
+            background: currentColor;
+        }
+
+        .legend-line.current { color: #ffc107; }
+        .legend-line.compare { color: #5c9dff; }
+
+        .trend-note {
+            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.56);
+            font-size: 0.84rem;
+        }
+
+        .trend-svg {
+            width: 100%;
+            display: block;
+        }
+
+        .trend-grid-line {
+            stroke: rgba(255, 255, 255, 0.06);
+            stroke-width: 1;
+        }
+
+        .trend-area {
+            fill: rgba(255, 193, 7, 0.12);
+        }
+
+        .trend-line {
+            fill: none;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .trend-line.current { stroke: #ffc107; }
+        .trend-line.compare { stroke: #5c9dff; }
+
+        .trend-dot.current { fill: #ffc107; }
+        .trend-dot.compare { fill: #5c9dff; }
+
+        .trend-axis-label {
+            fill: rgba(255, 255, 255, 0.56);
+            font-size: 11px;
+            text-anchor: middle;
+            font-family: var(--font-main);
+        }
+
+        .hotspot-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .hotspot-card {
+            border-radius: 22px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 14px;
+            align-items: start;
+        }
+
+        .hotspot-rank {
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffe0b2;
+            font-weight: 800;
+        }
+
+        .hotspot-name {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .hotspot-meta,
+        .hotspot-coords,
+        .empty-copy {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .map-workspace {
+            display: grid;
+            grid-template-columns: minmax(0, 1.32fr) minmax(320px, 0.68fr);
+            gap: 18px;
+        }
+
+        .map-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .map-summary {
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.92rem;
+        }
+
+        .map-toggles,
+        .map-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .map-toggle,
+        .map-control-btn {
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.78);
+            font: inherit;
+            border-radius: 999px;
+            min-height: 40px;
+            padding: 0 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+        }
+
+        .map-toggle.active,
+        .map-toggle:hover,
+        .map-control-btn:hover {
+            transform: translateY(-1px);
+            color: #fff;
+        }
+
+        .map-toggle.active[data-tone="major"] {
+            background: rgba(255, 82, 82, 0.14);
+            border-color: rgba(255, 82, 82, 0.24);
+        }
+
+        .map-toggle.active[data-tone="minor"] {
+            background: rgba(255, 193, 7, 0.12);
+            border-color: rgba(255, 193, 7, 0.24);
+        }
+
         .black-map-stage {
+            position: relative;
             min-height: 520px;
             border-radius: 24px;
             overflow: hidden;
@@ -152,12 +540,26 @@
                 radial-gradient(circle at 70% 60%, rgba(255, 59, 48, 0.09), transparent 36%),
                 linear-gradient(180deg, rgba(12, 16, 22, 0.98), rgba(4, 4, 4, 0.98));
             border: 1px solid rgba(255, 255, 255, 0.06);
+            touch-action: none;
+            user-select: none;
+            cursor: grab;
         }
 
-        .black-map-stage svg {
+        .black-map-stage:active {
+            cursor: grabbing;
+        }
+
+        .black-map-svg,
+        .black-map-canvas {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
             display: block;
+        }
+
+        .black-map-surface {
+            fill: rgba(20, 31, 46, 0.34);
         }
 
         .black-map-outline {
@@ -191,168 +593,223 @@
             letter-spacing: 0.18em;
         }
 
-        .black-legend {
+        .map-inspector {
+            display: grid;
+            gap: 16px;
+            align-content: start;
+        }
+
+        .selected-empty {
+            min-height: 180px;
+            border-radius: 22px;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 22px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            line-height: 1.7;
+        }
+
+        .selected-card {
+            display: grid;
+            gap: 16px;
+        }
+
+        .incident-headline {
             display: flex;
-            flex-wrap: wrap;
             gap: 14px;
-            align-items: center;
-            margin-top: 14px;
-            color: rgba(255, 255, 255, 0.72);
+            align-items: flex-start;
+        }
+
+        .incident-headline .material-icons-round {
+            font-size: 30px;
+            margin-top: 2px;
+        }
+
+        .incident-headline.major .material-icons-round,
+        .incident-headline.major .incident-type {
+            color: #ff8a80;
+        }
+
+        .incident-headline.minor .material-icons-round,
+        .incident-headline.minor .incident-type {
+            color: #ffd54f;
+        }
+
+        .incident-type {
+            font-weight: 800;
+            font-size: 1.08rem;
+            margin-bottom: 4px;
+        }
+
+        .incident-time {
+            color: rgba(255, 255, 255, 0.58);
             font-size: 0.9rem;
         }
 
-        .legend-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        .incident-road {
+            padding: 10px 12px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-weight: 700;
         }
 
-        .legend-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 999px;
-        }
-
-        .legend-dot.warm {
-            background: rgba(255, 87, 34, 0.88);
-            box-shadow: 0 0 18px rgba(255, 87, 34, 0.28);
-        }
-
-        .legend-dot.hot {
-            background: rgba(255, 193, 7, 0.96);
-            box-shadow: 0 0 18px rgba(255, 193, 7, 0.28);
-        }
-
-        .black-side {
-            display: grid;
-            gap: 18px;
-        }
-
-        .black-stats-grid {
+        .incident-casualties {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 12px;
         }
 
-        .black-stat-card {
-            border-radius: 24px;
-            padding: 18px;
+        .incident-metric {
+            padding: 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .black-stat-label {
-            color: rgba(255, 255, 255, 0.62);
-            font-size: 0.76rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+        .incident-metric-label {
+            display: block;
+            color: rgba(255, 255, 255, 0.56);
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+        }
+
+        .incident-metric strong {
+            font-size: 1.3rem;
+        }
+
+        .incident-location-label {
+            color: rgba(255, 255, 255, 0.56);
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+        }
+
+        .incident-location-value {
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 0.92rem;
+        }
+
+        .incident-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
             font-weight: 800;
         }
 
-        .black-stat-value {
-            margin-top: 8px;
-            font-size: clamp(1.7rem, 3vw, 2.5rem);
-            font-weight: 800;
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .severity-shell {
+            display: grid;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .severity-donut {
+            width: min(250px, 100%);
+            aspect-ratio: 1;
+            margin: 0 auto;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at center, rgba(9, 9, 9, 0.98) 0 38%, transparent 39%),
+                conic-gradient(#ff5252 0 var(--major-percent, 0%), rgba(68, 138, 255, 0.95) var(--major-percent, 0%) 100%);
+            display: grid;
+            place-items: center;
+            position: relative;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+
+        .severity-center {
+            text-align: center;
+        }
+
+        .severity-center strong {
+            display: block;
+            font-size: 2rem;
             line-height: 1;
         }
 
-        .black-stat-copy {
-            margin-top: 10px;
-            color: var(--text-muted);
-            line-height: 1.55;
-            font-size: 0.86rem;
+        .severity-center span {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
         }
 
-        .black-stat-card.neutral .black-stat-value { color: #ffffff; }
-        .black-stat-card.danger .black-stat-value { color: #ff8a80; }
-        .black-stat-card.fatal .black-stat-value { color: #ffb74d; }
-        .black-stat-card.warn .black-stat-value { color: #ffe082; }
-
-        .black-summary-copy {
-            color: var(--text-muted);
-            line-height: 1.7;
-            margin-top: 10px;
-            margin-bottom: 14px;
-        }
-
-        .hotspot-list {
+        .severity-legend {
             display: grid;
             gap: 10px;
         }
 
-        .hotspot-card {
-            border-radius: 22px;
-            padding: 14px 16px;
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 14px;
-            align-items: start;
+        .severity-legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.78);
         }
 
-        .hotspot-rank {
-            width: 38px;
-            height: 38px;
-            border-radius: 14px;
+        .severity-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+        }
+
+        .severity-dot.major { background: #ff5252; }
+        .severity-dot.minor { background: #448aff; }
+
+        .inline-metric-list {
             display: grid;
-            place-items: center;
+            gap: 12px;
+        }
+
+        .inline-metric-row {
+            display: grid;
+            grid-template-columns: minmax(90px, auto) minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .inline-metric-label,
+        .inline-metric-value {
+            color: rgba(255, 255, 255, 0.82);
+            font-weight: 700;
+        }
+
+        .inline-metric-track,
+        .road-class-track {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
             background: rgba(255, 255, 255, 0.06);
-            color: #ffe0b2;
-            font-weight: 800;
+            overflow: hidden;
         }
 
-        .hotspot-name {
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            margin-bottom: 4px;
-        }
-
-        .hotspot-meta,
-        .hotspot-coords {
-            color: var(--text-muted);
-            font-size: 0.88rem;
-            line-height: 1.55;
-        }
-
-        .black-bottom-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 22px;
-            margin-top: 22px;
-        }
-
-        .metric-bars {
-            display: grid;
-            grid-template-columns: repeat(12, minmax(0, 1fr));
-            gap: 10px;
-            align-items: end;
-            min-height: 178px;
-        }
-
-        .metric-bars.hours {
-            grid-template-columns: repeat(24, minmax(0, 1fr));
-            gap: 6px;
-        }
-
-        .metric-bar-wrap {
-            display: grid;
-            gap: 8px;
-            align-content: end;
+        .inline-metric-fill,
+        .road-class-fill {
+            display: block;
             height: 100%;
+            border-radius: inherit;
         }
 
-        .metric-bar-value {
-            color: rgba(255, 255, 255, 0.66);
-            font-size: 0.72rem;
-            text-align: center;
+        .inline-metric-fill.fatal {
+            background: linear-gradient(90deg, rgba(255, 82, 82, 0.92), rgba(255, 138, 128, 0.96));
         }
 
-        .metric-bar {
-            border-radius: 999px 999px 12px 12px;
-            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
-        }
-
-        .metric-bar-label {
-            color: rgba(255, 255, 255, 0.62);
-            font-size: 0.72rem;
-            text-align: center;
+        .inline-metric-fill.warn {
+            background: linear-gradient(90deg, rgba(255, 171, 64, 0.92), rgba(255, 224, 130, 0.96));
         }
 
         .road-class-list {
@@ -379,100 +836,109 @@
             font-size: 0.9rem;
         }
 
-        .road-class-track {
-            width: 100%;
-            height: 10px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.06);
-            overflow: hidden;
-        }
-
         .road-class-fill {
-            display: block;
-            height: 100%;
-            border-radius: inherit;
             background: linear-gradient(90deg, rgba(255, 193, 7, 0.84), rgba(255, 87, 34, 0.9));
         }
 
-        .method-list {
+        .mini-bar-grid {
             display: grid;
-            gap: 12px;
-            color: var(--text-muted);
-            line-height: 1.7;
+            align-items: end;
+            gap: 10px;
+            min-height: 190px;
         }
 
-        .method-item {
-            padding: 16px 18px;
-            border-radius: 22px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .mini-bar-grid.monthly {
+            grid-template-columns: repeat(12, minmax(0, 1fr));
         }
 
-        .method-item strong {
-            color: #fff;
-            display: block;
-            margin-bottom: 6px;
+        .mini-bar-grid.weekday {
+            grid-template-columns: repeat(7, minmax(0, 1fr));
         }
 
-        .empty-copy {
-            color: var(--text-muted);
-            line-height: 1.7;
+        .mini-bar-grid.hourly {
+            grid-template-columns: repeat(24, minmax(0, 1fr));
+            gap: 6px;
         }
 
-        .error-box {
-            margin-top: 18px;
-            border-radius: 22px;
-            padding: 14px 16px;
-            background: rgba(255, 59, 48, 0.12);
-            border: 1px solid rgba(255, 59, 48, 0.2);
-            color: #ffc5bf;
+        .mini-bar-wrap {
+            display: grid;
+            gap: 8px;
+            align-content: end;
+            height: 100%;
         }
 
-        @media (max-width: 1120px) {
-            .black-main-grid,
-            .black-bottom-grid {
+        .mini-bar-wrap.compact {
+            gap: 5px;
+        }
+
+        .mini-bar-value {
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 0.72rem;
+            text-align: center;
+        }
+
+        .mini-bar {
+            border-radius: 999px 999px 10px 10px;
+            background: linear-gradient(180deg, rgba(92, 157, 255, 0.98), rgba(72, 196, 255, 0.78));
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
+        }
+
+        .mini-bar.weekend {
+            background: linear-gradient(180deg, rgba(255, 171, 64, 0.96), rgba(255, 214, 79, 0.82));
+        }
+
+        .mini-bar-label {
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 0.72rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 1180px) {
+            .overview-grid,
+            .map-workspace,
+            .details-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        @media (max-width: 720px) {
+        @media (max-width: 760px) {
             .black-shell {
                 margin-top: 96px;
                 padding: 0 14px;
             }
 
             .black-hero,
-            .black-panel {
-                padding: 18px;
+            .black-panel,
+            .black-filter-shell {
                 border-radius: 24px;
+                padding: 18px;
+            }
+
+            .black-stats-grid,
+            .incident-casualties {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr;
             }
 
             .black-map-stage {
-                min-height: 380px;
-            }
-
-            .black-stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .metric-bars {
-                gap: 8px;
-                overflow-x: auto;
-                padding-bottom: 4px;
-            }
-
-            .metric-bars.hours {
-                gap: 4px;
+                min-height: 420px;
             }
         }
 
         @media (max-width: 560px) {
-            .black-stats-grid {
-                grid-template-columns: 1fr;
+            .mini-bar-grid.monthly,
+            .mini-bar-grid.hourly {
+                overflow-x: auto;
+                padding-bottom: 4px;
             }
 
-            .black-meta-row {
-                align-items: flex-start;
+            .tab-button {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -503,82 +969,226 @@
                 <span class="material-icons-round">crisis_alert</span>
                 <span>Черна Карта</span>
             </div>
-            <h1 class="black-title">Публична карта на пътните инциденти в България</h1>
-            <p class="black-copy">
-                Визуализация на официални публични записи за ПТП с карта на България, сезонност, часове на риск и най-натоварени зони.
-                Данните се подреждат в удобен публичен преглед и се обновяват веднъж месечно.
+            <h1 class="black-title">Интерактивна карта на пътните инциденти в България</h1>
+            <p id="black-map-lead" class="black-copy">
+                Преглед на официалните публични данни за ПТП с филтри по година и месец, карта, сравнение и детайлен анализ на риска.
             </p>
-            <div class="black-meta-row">
-                <div id="black-map-updated" class="black-updated">Обновяваме данните...</div>
-                <div id="year-filters" class="year-filters"></div>
-            </div>
+            <div id="black-map-updated" class="black-updated">Обновяваме данните...</div>
             <div id="black-map-error" class="error-box" hidden></div>
         </section>
 
-        <section class="black-main-grid">
-            <div class="black-panel">
-                <div class="black-panel-head">
-                    <div>
-                        <h2 class="black-panel-title">Карта на концентрацията</h2>
-                        <p id="black-map-summary" class="black-panel-copy">Показваме зони с повече регистрирани инциденти и по-висока тежест.</p>
-                    </div>
-                </div>
-                <div id="black-map-stage" class="black-map-stage" aria-live="polite"></div>
-                <div class="black-legend">
-                    <span class="legend-pill"><span class="legend-dot warm"></span> повече инциденти</span>
-                    <span class="legend-pill"><span class="legend-dot hot"></span> по-висока тежест</span>
-                </div>
+        <section class="black-filter-shell">
+            <div id="year-filters" class="year-filters"></div>
+            <div class="filter-row">
+                <label class="filter-select-group">
+                    <span class="filter-select-label">Месец</span>
+                    <select id="month-filter" class="filter-select"></select>
+                </label>
+                <label class="filter-select-group">
+                    <span class="filter-select-label">Сравни с година</span>
+                    <select id="comparison-filter" class="filter-select"></select>
+                </label>
             </div>
-
-            <aside class="black-side">
-                <div id="black-map-stats" class="black-stats-grid"></div>
-                <div class="black-panel">
-                    <h2 class="black-panel-title">Най-рискови зони</h2>
-                    <p class="black-summary-copy">Тук показваме най-плътните клетки от текущия срез, за да се виждат районите, които изпъкват най-силно.</p>
-                    <div id="black-map-hotspots" class="hotspot-list"></div>
-                </div>
-            </aside>
         </section>
 
-        <section class="black-bottom-grid">
-            <div class="black-panel">
-                <h2 class="black-panel-title">По месеци</h2>
-                <p class="black-panel-copy">Сезонност и периоди с повече натоварване по официалните записи.</p>
-                <div id="black-map-months" class="metric-bars"></div>
+        <section class="black-workspace">
+            <div class="black-tabbar" role="tablist" aria-label="Черна карта секции">
+                <button class="tab-button active" type="button" role="tab" aria-selected="true" data-black-tab="overview">
+                    <span class="material-icons-round">bar_chart</span>
+                    <span>Общо</span>
+                </button>
+                <button class="tab-button" type="button" role="tab" aria-selected="false" data-black-tab="map">
+                    <span class="material-icons-round">map</span>
+                    <span>Карта</span>
+                </button>
+                <button class="tab-button" type="button" role="tab" aria-selected="false" data-black-tab="details">
+                    <span class="material-icons-round">insights</span>
+                    <span>Детайли</span>
+                </button>
             </div>
 
-            <div class="black-panel">
-                <h2 class="black-panel-title">По часове</h2>
-                <p class="black-panel-copy">Часове от денонощието, в които записите се сгъстяват най-силно.</p>
-                <div id="black-map-hours" class="metric-bars hours"></div>
-            </div>
-
-            <div class="black-panel">
-                <h2 class="black-panel-title">По тип път</h2>
-                <p class="black-panel-copy">Най-натоварените категории пътна мрежа в избрания срез.</p>
-                <div id="black-map-road-classes" class="road-class-list"></div>
-            </div>
-
-            <div class="black-panel">
-                <h2 class="black-panel-title">Какво виждате</h2>
-                <div class="method-list">
-                    <div class="method-item">
-                        <strong>Карта на България</strong>
-                        По-светлите ядра показват по-силна концентрация и по-висока тежест в дадения район.
+            <section class="black-view-grid overview-grid" data-black-view="overview">
+                <div class="overview-main">
+                    <div class="black-panel">
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">Ключови показатели</h2>
+                                <p class="black-panel-copy">Същият тип бърз преглед като в приложението, но в web версия за публичен достъп.</p>
+                            </div>
+                        </div>
+                        <div id="black-map-stats" class="black-stats-grid"></div>
                     </div>
-                    <div class="method-item">
-                        <strong>Обновяване веднъж месечно</strong>
-                        Подходящо за дълъг преглед на тенденции, сезонност и общата картина по години.
+
+                    <div id="black-map-comparison" class="black-panel" hidden>
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">Сравнение с предходна година</h2>
+                                <p id="black-map-comparison-hint" class="comparison-hint"></p>
+                            </div>
+                        </div>
+                        <div id="black-map-comparison-body" class="comparison-card"></div>
                     </div>
-                    <div class="method-item">
-                        <strong>Какво включва</strong>
-                        Карта, сезонност по месеци, активност по часове и най-натоварени категории пътна мрежа.
+
+                    <div class="black-panel">
+                        <div class="trend-head">
+                            <div>
+                                <h2 id="black-map-trend-title" class="black-panel-title">Тренд</h2>
+                                <p class="black-panel-copy">Линия по месеци или по дни според избрания филтър.</p>
+                            </div>
+                            <div id="black-map-trend-legend" class="trend-legend"></div>
+                        </div>
+                        <div id="black-map-trend-chart"></div>
+                        <div id="black-map-trend-note" class="trend-note"></div>
                     </div>
                 </div>
-            </div>
+
+                <aside class="overview-side">
+                    <div class="black-panel">
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">Най-рискови зони</h2>
+                                <p class="black-panel-copy">Зоните, които изпъкват най-силно в избрания срез.</p>
+                            </div>
+                        </div>
+                        <div id="black-map-hotspots" class="hotspot-list"></div>
+                    </div>
+                </aside>
+            </section>
+
+            <section class="black-view-grid" data-black-view="map" hidden>
+                <div class="map-workspace">
+                    <div class="black-panel map-board">
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">Карта на инцидентите</h2>
+                                <p id="black-map-map-summary" class="map-summary">Зареждаме картата...</p>
+                            </div>
+                        </div>
+                        <div class="map-toolbar">
+                            <div class="map-toggles">
+                                <button id="toggle-major" class="map-toggle active" type="button" data-tone="major">
+                                    <span class="material-icons-round">warning_amber</span>
+                                    <span>Тежки</span>
+                                </button>
+                                <button id="toggle-minor" class="map-toggle active" type="button" data-tone="minor">
+                                    <span class="material-icons-round">info</span>
+                                    <span>Леки</span>
+                                </button>
+                            </div>
+                            <div class="map-controls">
+                                <button id="map-zoom-fit" class="map-control-btn" type="button">
+                                    <span class="material-icons-round">crop_free</span>
+                                </button>
+                                <button id="map-zoom-out" class="map-control-btn" type="button">
+                                    <span class="material-icons-round">remove</span>
+                                </button>
+                                <button id="map-zoom-in" class="map-control-btn" type="button">
+                                    <span class="material-icons-round">add</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="black-map-stage" class="black-map-stage" aria-label="Интерактивна карта">
+                            <svg id="black-map-svg" class="black-map-svg" viewBox="0 0 1000 660" aria-hidden="true"></svg>
+                            <canvas id="black-map-canvas" class="black-map-canvas"></canvas>
+                        </div>
+                    </div>
+
+                    <aside class="black-panel map-inspector">
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">Избран инцидент</h2>
+                                <p class="black-panel-copy">Докосни или кликни върху точка на картата, за да видиш детайли.</p>
+                            </div>
+                        </div>
+                        <div id="selected-incident-empty" class="selected-empty">
+                            Няма избран инцидент още.<br>
+                            Използвай картата, zoom контролите и toggles за тежки/леки ПТП.
+                        </div>
+                        <div id="selected-incident" class="selected-card" hidden>
+                            <div id="selected-incident-meta"></div>
+                            <div id="selected-incident-casualties" class="incident-casualties"></div>
+                            <div>
+                                <div class="incident-location-label">Локация</div>
+                                <div id="selected-incident-coords" class="incident-location-value"></div>
+                            </div>
+                            <a id="selected-incident-action" class="incident-action" href="#" target="_blank" rel="noopener noreferrer">
+                                <span class="material-icons-round">map</span>
+                                <span>Виж в Maps</span>
+                            </a>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            <section class="black-view-grid" data-black-view="details" hidden>
+                <div class="details-grid">
+                    <div class="black-panel">
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">Тежест на инцидентите</h2>
+                                <p class="black-panel-copy">Разпределение между тежки и леки инциденти в текущия срез.</p>
+                            </div>
+                        </div>
+                        <div class="severity-shell">
+                            <div id="severity-donut" class="severity-donut" style="--major-percent: 0%"></div>
+                            <div id="severity-legend" class="severity-legend"></div>
+                        </div>
+                    </div>
+
+                    <div class="black-panel">
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">Пострадали</h2>
+                                <p class="black-panel-copy">Бързо сравнение между загинали и ранени.</p>
+                            </div>
+                        </div>
+                        <div id="casualty-bars" class="inline-metric-list"></div>
+                    </div>
+
+                    <div class="black-panel">
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">По месеци</h2>
+                                <p class="black-panel-copy">Сезонност на записите за избраната година и филтър.</p>
+                            </div>
+                        </div>
+                        <div id="details-monthly-bars" class="mini-bar-grid monthly"></div>
+                    </div>
+
+                    <div class="black-panel">
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">По дни от седмицата</h2>
+                                <p class="black-panel-copy">Кои дни натрупват повече записи.</p>
+                            </div>
+                        </div>
+                        <div id="details-weekday-bars" class="mini-bar-grid weekday"></div>
+                    </div>
+
+                    <div class="black-panel">
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">По часове</h2>
+                                <p class="black-panel-copy">Часове от денонощието с по-силна концентрация.</p>
+                            </div>
+                        </div>
+                        <div id="details-hourly-bars" class="mini-bar-grid hourly"></div>
+                    </div>
+
+                    <div class="black-panel">
+                        <div class="black-panel-head">
+                            <div>
+                                <h2 class="black-panel-title">По тип път</h2>
+                                <p class="black-panel-copy">Най-често срещаните категории пътна мрежа в този срез.</p>
+                            </div>
+                        </div>
+                        <div id="details-road-classes" class="road-class-list"></div>
+                    </div>
+                </div>
+            </section>
         </section>
     </main>
 
-    <script src="black_map.js?v=1"></script>
+    <script src="black_map.js?v=2"></script>
 </body>
 </html>
