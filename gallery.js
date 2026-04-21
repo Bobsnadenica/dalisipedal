@@ -36,6 +36,8 @@ const galleryState = {
     topDislikedItems: [],
     rankingsLoaded: false,
     rankingsPromise: null,
+    initialDeepLink: null,
+    initialDeepLinkHandled: false,
 };
 
 const FEATURED_PEDAL_COPY = Object.freeze({
@@ -134,10 +136,14 @@ function getMapsUrl(item) {
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getMapsQuery(item))}`;
 }
 
+function normalizeGalleryMediaKey(value) {
+    return window.PedalReactions?.normalizeMediaKey?.(value)
+        || window.PedalComments?.normalizeMediaKey?.(value)
+        || String(value || '').trim();
+}
+
 function buildPublicMediaUrl(mediaKey) {
-    const normalizedMediaKey = window.PedalReactions?.normalizeMediaKey?.(mediaKey)
-        || window.PedalComments?.normalizeMediaKey?.(mediaKey)
-        || String(mediaKey || '').trim();
+    const normalizedMediaKey = normalizeGalleryMediaKey(mediaKey);
     if (!normalizedMediaKey) {
         return '';
     }
@@ -148,6 +154,63 @@ function buildPublicMediaUrl(mediaKey) {
         .join('/');
 
     return `${GALLERY_CONFIG.cloudFrontBaseUrl}/${encodedPath}`;
+}
+
+function getInitialDeepLinkState() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+        mediaKey: normalizeGalleryMediaKey(params.get('mediaKey')),
+        openComments: params.get('comments') === '1',
+    };
+}
+
+function buildGalleryShareUrl(mediaKey, options = {}) {
+    const normalizedMediaKey = normalizeGalleryMediaKey(mediaKey);
+    const url = new URL('gallery.html', window.location.href);
+    url.search = '';
+
+    if (normalizedMediaKey) {
+        url.searchParams.set('mediaKey', normalizedMediaKey);
+    }
+
+    if (options.openComments) {
+        url.searchParams.set('comments', '1');
+    }
+
+    return url.toString();
+}
+
+function syncViewerUrl(options = {}) {
+    if (!window.history?.replaceState) {
+        return;
+    }
+
+    const url = new URL(window.location.href);
+
+    if (options.clear) {
+        url.searchParams.delete('mediaKey');
+        url.searchParams.delete('comments');
+    } else {
+        const mediaKey = normalizeGalleryMediaKey(options.mediaKey || getCurrentViewerMediaKey());
+        if (!mediaKey) {
+            url.searchParams.delete('mediaKey');
+            url.searchParams.delete('comments');
+        } else {
+            url.searchParams.set('mediaKey', mediaKey);
+            if (options.openComments ?? galleryState.commentsPanelOpen) {
+                url.searchParams.set('comments', '1');
+            } else {
+                url.searchParams.delete('comments');
+            }
+        }
+    }
+
+    const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+    if (nextUrl !== currentUrl) {
+        window.history.replaceState(window.history.state, '', nextUrl);
+    }
 }
 
 function getRankingCache(type) {
@@ -518,9 +581,52 @@ function getFallbackRankingTitle(mediaKey, type) {
 }
 
 function getManifestItemByKey(mediaKey) {
-    return galleryState.manifestItems.find(item => item.key === mediaKey)
-        || galleryState.featuredItems.find(item => item.key === mediaKey)
+    const normalizedMediaKey = normalizeGalleryMediaKey(mediaKey);
+    return galleryState.manifestItems.find(item => normalizeGalleryMediaKey(item?.key || item?.url) === normalizedMediaKey)
+        || galleryState.featuredItems.find(item => normalizeGalleryMediaKey(item?.key || item?.url) === normalizedMediaKey)
         || null;
+}
+
+function findItemIndexByMediaKey(items, mediaKey) {
+    const normalizedMediaKey = normalizeGalleryMediaKey(mediaKey);
+    if (!normalizedMediaKey || !Array.isArray(items) || !items.length) {
+        return -1;
+    }
+
+    return items.findIndex(item =>
+        normalizeGalleryMediaKey(item?.key || item?.url) === normalizedMediaKey
+    );
+}
+
+function resolveViewerTargetByMediaKey(mediaKey) {
+    const normalizedMediaKey = normalizeGalleryMediaKey(mediaKey);
+    if (!normalizedMediaKey) {
+        return null;
+    }
+
+    const collections = [
+        galleryState.currentBatch,
+        galleryState.featuredItems,
+        galleryState.topLikedItems,
+        galleryState.topDislikedItems,
+    ];
+
+    for (const items of collections) {
+        const index = findItemIndexByMediaKey(items, normalizedMediaKey);
+        if (index >= 0) {
+            return { items, index };
+        }
+    }
+
+    const manifestItem = getManifestItemByKey(normalizedMediaKey);
+    if (manifestItem) {
+        return {
+            items: [manifestItem],
+            index: 0,
+        };
+    }
+
+    return null;
 }
 
 function normalizeRankingPayload(payload) {
@@ -780,6 +886,7 @@ function closeViewer() {
         return;
     }
 
+    syncViewerUrl({ clear: true });
     viewerEl.classList.remove('is-open');
     viewerEl.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('viewer-open');
@@ -795,7 +902,7 @@ function closeViewer() {
     galleryState.commentsPanelOpen = false;
     galleryState.reactionBusy = false;
     galleryState.reactionSummary = null;
-    setCommentsOverlayOpen(false);
+    setCommentsOverlayOpen(false, { syncUrl: false });
     resetCommentsPanel();
     resetReactionSummary();
 }
@@ -1042,6 +1149,13 @@ function setCommentsOverlayOpen(isOpen, options = {}) {
         updateCommentsAuthUi();
         renderCommentsForCurrentItem(options);
     }
+
+    if (options.syncUrl !== false) {
+        syncViewerUrl({
+            mediaKey: getCurrentViewerMediaKey(),
+            openComments: galleryState.commentsPanelOpen,
+        });
+    }
 }
 
 function buildCommentItem(comment) {
@@ -1116,9 +1230,7 @@ function getCurrentViewerItem() {
 
 function getCurrentViewerMediaKey() {
     const item = getCurrentViewerItem();
-    return window.PedalReactions?.normalizeMediaKey?.(item?.key || item?.url || '')
-        || window.PedalComments?.normalizeMediaKey?.(item?.key || item?.url || '')
-        || '';
+    return normalizeGalleryMediaKey(item?.key || item?.url || '');
 }
 
 function setReactionStatus(message, options = {}) {
@@ -1615,9 +1727,16 @@ function renderViewerItem(options = {}) {
             forceRefresh: Boolean(options.forceRefresh),
         });
     }
+
+    if (options.syncUrl !== false) {
+        syncViewerUrl({
+            mediaKey: getCurrentViewerMediaKey(),
+            openComments: galleryState.commentsPanelOpen,
+        });
+    }
 }
 
-function openViewer(index, items = galleryState.currentBatch) {
+function openViewer(index, items = galleryState.currentBatch, options = {}) {
     galleryState.viewerItems = items;
     galleryState.currentIndex = index;
     galleryState.commentsPanelOpen = false;
@@ -1630,8 +1749,42 @@ function openViewer(index, items = galleryState.currentBatch) {
     viewerEl.classList.add('is-open');
     viewerEl.setAttribute('aria-hidden', 'false');
     document.body.classList.add('viewer-open');
-    setCommentsOverlayOpen(false);
-    renderViewerItem();
+    setCommentsOverlayOpen(false, { syncUrl: false });
+    renderViewerItem({
+        forceRefresh: Boolean(options.forceRefresh),
+        syncUrl: options.syncUrl,
+    });
+
+    if (options.openComments) {
+        setCommentsOverlayOpen(true, {
+            forceRefresh: Boolean(options.forceRefresh),
+            syncUrl: options.syncUrl,
+        });
+    }
+}
+
+function maybeOpenInitialDeepLink() {
+    if (galleryState.initialDeepLinkHandled) {
+        return;
+    }
+
+    galleryState.initialDeepLinkHandled = true;
+    const deepLink = galleryState.initialDeepLink;
+    if (!deepLink?.mediaKey) {
+        return;
+    }
+
+    const target = resolveViewerTargetByMediaKey(deepLink.mediaKey);
+    if (!target) {
+        console.info('[PEDAL gallery] Shared mediaKey not found in current website data set.', {
+            mediaKey: deepLink.mediaKey,
+        });
+        return;
+    }
+
+    openViewer(target.index, target.items, {
+        openComments: deepLink.openComments,
+    });
 }
 
 function moveViewer(step) {
@@ -1812,6 +1965,7 @@ function bindViewerEvents() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    galleryState.initialDeepLink = getInitialDeepLinkState();
     restoreSeenUrls();
     bindViewerEvents();
     updateComposerCounter();
@@ -1840,4 +1994,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (manifestReady) {
         renderRandomBatch();
     }
+
+    maybeOpenInitialDeepLink();
+});
+
+window.PedalGallery = Object.freeze({
+    buildGalleryShareUrl,
+    normalizeMediaKey: normalizeGalleryMediaKey,
 });
