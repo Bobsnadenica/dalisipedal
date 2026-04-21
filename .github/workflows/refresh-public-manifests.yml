@@ -55,14 +55,14 @@ jobs:
 
       - name: Commit changes
         run: |
-          if git diff --quiet -- data scripts/location-cache.json; then
+          if git diff --quiet -- data share scripts/location-cache.json; then
             echo "No manifest changes detected."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data scripts/location-cache.json
+          git add data share scripts/location-cache.json
           git commit -m "Refresh public manifests"
 
           BRANCH_NAME="${GITHUB_REF_NAME:-main}"

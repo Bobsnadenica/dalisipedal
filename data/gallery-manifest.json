@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-04-19T23:31:47.145Z",
-  "itemCount": 499,
+  "generatedAt": "2026-04-21T10:36:29.142Z",
+  "itemCount": 511,
   "featured": {
     "week": {
       "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1775381185024.jpg",
@@ -18,6 +18,76 @@
   },
   "items": [
     {
+      "key": "approved/CB/2007XE/20260420_18350_b89d28.mp4",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/2007XE/20260420_18350_b89d28.mp4",
+      "timestamp": "2026-04-20T14:33:34.006226000Z",
+      "location": "42.70881, 23.29931",
+      "locationLabel": "Пловдив, ж.к. Света Троица, София",
+      "latitude": 42.70881323181135,
+      "longitude": 23.299305631138957,
+      "isVideo": true
+    },
+    {
+      "key": "approved/CB/8827CX/20260420_18233_ab1984.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/8827CX/20260420_18233_ab1984.jpg",
+      "timestamp": "2026-04-20T06:28:20.311278000Z",
+      "location": "42.66444, 23.29556",
+      "locationLabel": "ж.к. Гоце Делчев, София",
+      "latitude": 42.664438720393534,
+      "longitude": 23.295559007951187,
+      "isVideo": false
+    },
+    {
+      "key": "approved/A/2471BP/20260420_18146_0667c8.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/A/2471BP/20260420_18146_0667c8.jpg",
+      "timestamp": "2026-04-19T21:29:33.335770000Z",
+      "location": "42.66063, 23.24741",
+      "locationLabel": "бул. Цар Борис III, кв. Княжево, София",
+      "latitude": 42.660627609740885,
+      "longitude": 23.24740714268175,
+      "isVideo": false
+    },
+    {
+      "key": "approved/E/7715HK/20260420_175710_608f93.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/E/7715HK/20260420_175710_608f93.jpg",
+      "timestamp": "2026-04-19T11:51:03.489526000Z",
+      "location": "42.72219, 23.26010",
+      "locationLabel": "Преполац, ж.к. Люлин, София",
+      "latitude": 42.72219022921535,
+      "longitude": 23.260098808222512,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CA/3569CA/20260420_172824_3d6111.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CA/3569CA/20260420_172824_3d6111.jpg",
+      "timestamp": "2026-04-18T09:55:43.910021000Z",
+      "location": "42.69676, 23.30937",
+      "locationLabel": "бул. Ген. Скобелев, ж.к. Зона Б-5-3, София",
+      "latitude": 42.69676387672163,
+      "longitude": 23.309370520996985,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1306BO/20260420_172735_7cdf4b.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1306BO/20260420_172735_7cdf4b.jpg",
+      "timestamp": "2026-04-18T07:56:31.563399000Z",
+      "location": "42.66163, 23.25114",
+      "locationLabel": "бул. Цар Борис III 303, м. Гърдова глава, София",
+      "latitude": 42.66162749809416,
+      "longitude": 23.251144087194742,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/2240HC/20260421_102638_12796a.mp4",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/2240HC/20260421_102638_12796a.mp4",
+      "timestamp": "2026-04-16T14:35:19.499684000Z",
+      "location": "42.69899, 23.29002",
+      "locationLabel": "Хъшове, ж.к. Разсадник-Коньовица, София",
+      "latitude": 42.69899256367843,
+      "longitude": 23.29002489621187,
+      "isVideo": true
+    },
+    {
       "key": "approved/CB/3097HO/20260418_23234_9fb46d.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3097HO/20260418_23234_9fb46d.jpg",
       "timestamp": "2026-04-16T07:38:37.246428000Z",
@@ -25,6 +95,56 @@
       "locationLabel": "Ген. Кирил Ботев 5, ж.к. Гоце Делчев, София",
       "latitude": 42.665814279336416,
       "longitude": 23.29111326739893,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/HORSE/20260421_102621_706e58.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/HORSE/20260421_102621_706e58.jpg",
+      "timestamp": "2026-04-16T07:07:18.883699000Z",
+      "location": "42.65910, 23.29965",
+      "locationLabel": "Луи Айер, ж.к. Манастирски ливади, София",
+      "latitude": 42.65909892307907,
+      "longitude": 23.299647901689443,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/6009ME/20260420_172241_d83b97.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/6009ME/20260420_172241_d83b97.jpg",
+      "timestamp": "2026-04-16T05:27:37.196411000Z",
+      "location": "42.62934, 23.38273",
+      "locationLabel": "Проф. Александър Танев 11, ж.к. Младост 4, София",
+      "latitude": 42.62933733633032,
+      "longitude": 23.38272510183683,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1072AO/20260420_174010_7a666b.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1072AO/20260420_174010_7a666b.jpg",
+      "timestamp": "2026-04-15T19:36:59.392010000Z",
+      "location": "42.708467, 23.288762",
+      "locationLabel": "Георче Петров, ж.к. Света Троица, София",
+      "latitude": 42.70846710442225,
+      "longitude": 23.288761816096574,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/0240XE/20260420_171924_ef84de.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/0240XE/20260420_171924_ef84de.jpg",
+      "timestamp": "2026-04-15T19:31:37.773333000Z",
+      "location": "42.64206, 23.37231",
+      "locationLabel": "бл. 220, ж.к. Младост 2, София",
+      "latitude": 42.642063515293394,
+      "longitude": 23.372310835033907,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CA/1033XM/20260420_171637_b7d682.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CA/1033XM/20260420_171637_b7d682.jpg",
+      "timestamp": "2026-04-15T18:36:52.704015000Z",
+      "location": "42.648100, 23.407697",
+      "locationLabel": "ж.к. Дружба, София",
+      "latitude": 42.64809976490641,
+      "longitude": 23.407697420382636,
       "isVideo": false
     },
     {

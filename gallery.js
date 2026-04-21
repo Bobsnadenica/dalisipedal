@@ -180,6 +180,34 @@ function buildGalleryShareUrl(mediaKey, options = {}) {
     return url.toString();
 }
 
+function shareSlugFromMediaKey(mediaKey) {
+    return normalizeGalleryMediaKey(mediaKey)
+        .split('/')
+        .filter(Boolean)
+        .map(segment =>
+            encodeURIComponent(segment)
+                .replace(/~/g, '%7E')
+                .replace(/%/g, '_')
+        )
+        .join('~');
+}
+
+function buildGallerySocialShareUrl(mediaKey, options = {}) {
+    const normalizedMediaKey = normalizeGalleryMediaKey(mediaKey);
+    if (!normalizedMediaKey) {
+        return '';
+    }
+
+    const url = new URL(`share/${shareSlugFromMediaKey(normalizedMediaKey)}.html`, window.location.href);
+    url.search = '';
+
+    if (options.openComments) {
+        url.searchParams.set('comments', '1');
+    }
+
+    return url.toString();
+}
+
 function syncViewerUrl(options = {}) {
     if (!window.history?.replaceState) {
         return;
@@ -1278,7 +1306,7 @@ function getCurrentViewerShareUrl(options = {}) {
         return '';
     }
 
-    return buildGalleryShareUrl(mediaKey, {
+    return buildGallerySocialShareUrl(mediaKey, {
         openComments: options.openComments ?? galleryState.commentsPanelOpen,
     });
 }
@@ -2138,5 +2166,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 window.PedalGallery = Object.freeze({
     buildGalleryShareUrl,
+    buildGallerySocialShareUrl,
     normalizeMediaKey: normalizeGalleryMediaKey,
 });

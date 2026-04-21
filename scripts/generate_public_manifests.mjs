@@ -1,20 +1,25 @@
 #!/usr/bin/env node
 
 import { createHash, createHmac } from 'node:crypto';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const siteRoot = path.resolve(__dirname, '..');
 const dataDir = path.resolve(siteRoot, 'data');
+const shareDir = path.resolve(siteRoot, 'share');
 const galleryManifestPath = path.resolve(dataDir, 'gallery-manifest.json');
 const ninjaManifestPath = path.resolve(dataDir, 'ninja-manifest.json');
 const reactionSummariesPath = path.resolve(dataDir, 'media-reaction-summaries.json');
 const geocodeCachePath = path.resolve(__dirname, 'location-cache.json');
 const localAppConfigPath = path.resolve(siteRoot, '../pedal/lib/amplifyconfiguration.dart');
 
+const SITE_BASE_URL = 'https://www.dalisipedal.com';
 const CLOUD_FRONT_BASE_URL = 'https://d3g9kruk81dvbk.cloudfront.net';
+const TOP_LIKED_SNAPSHOT_URL = `${CLOUD_FRONT_BASE_URL}/public/top_liked_media.json`;
+const TOP_DISLIKED_SNAPSHOT_URL = `${CLOUD_FRONT_BASE_URL}/public/top_disliked_media.json`;
+const APP_ICON_URL = `${SITE_BASE_URL}/app_icon.png`;
 const AWS_REGION = process.env.PEDAL_AWS_REGION || 'eu-central-1';
 const GALLERY_LIMIT = 600;
 const NINJA_LIMIT = 50;
@@ -109,8 +114,305 @@ function collapseWhitespace(value) {
     return String(value || '').replace(/\s+/g, ' ').trim();
 }
 
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
 function isCoordinateLocation(value) {
     return /^\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*$/.test(value);
+}
+
+function normalizeMediaKey(value) {
+    const trimmed = String(value || '').trim();
+    if (!trimmed) {
+        return '';
+    }
+
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+        const parsed = new URL(trimmed);
+        const pathOnly = parsed.pathname.startsWith('/')
+            ? parsed.pathname.slice(1)
+            : parsed.pathname;
+        return decodeURIComponent(pathOnly);
+    }
+
+    const pathOnly = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed;
+    return decodeURIComponent(pathOnly);
+}
+
+function shareSlugFromMediaKey(mediaKey) {
+    return normalizeMediaKey(mediaKey)
+        .split('/')
+        .filter(Boolean)
+        .map(segment =>
+            encodeURIComponent(segment)
+                .replace(/~/g, '%7E')
+                .replace(/%/g, '_')
+        )
+        .join('~');
+}
+
+function buildGalleryDeepLink(mediaKey, options = {}) {
+    const url = new URL('/gallery.html', SITE_BASE_URL);
+    const normalizedMediaKey = normalizeMediaKey(mediaKey);
+    if (normalizedMediaKey) {
+        url.searchParams.set('mediaKey', normalizedMediaKey);
+    }
+
+    if (options.openComments) {
+        url.searchParams.set('comments', '1');
+    }
+
+    return url.toString();
+}
+
+function buildSharePageUrl(mediaKey, options = {}) {
+    const slug = shareSlugFromMediaKey(mediaKey);
+    const url = new URL(`/share/${slug}.html`, SITE_BASE_URL);
+    if (options.openComments) {
+        url.searchParams.set('comments', '1');
+    }
+    return url.toString();
+}
+
+function buildThumbUrlFromMediaKey(mediaKey) {
+    const normalizedMediaKey = normalizeMediaKey(mediaKey);
+    const segments = normalizedMediaKey.split('/').filter(Boolean);
+
+    if (segments.length < 4 || segments[0] !== 'approved') {
+        return '';
+    }
+
+    const fileName = segments.pop();
+    const thumbKey = [...segments, 'thumbs', fileName].join('/');
+    return `${CLOUD_FRONT_BASE_URL}/${encodeCloudFrontKey(thumbKey)}`;
+}
+
+function isImageMediaKey(mediaKey) {
+    return /\.(jpg|jpeg|png|webp)$/i.test(mediaKey);
+}
+
+function isVideoMediaKey(mediaKey) {
+    return /\.(mp4|mov|m4v|webm)$/i.test(mediaKey);
+}
+
+function fallbackTitleFromMediaKey(mediaKey) {
+    const segments = normalizeMediaKey(mediaKey).split('/').filter(Boolean);
+    const plate = segments.length >= 3 ? segments[2] : '';
+
+    if (plate && segments[0] === 'approved') {
+        return `Сигнал за ${plate} | П.Е.Д.А.Л.🤫`;
+    }
+
+    if (segments[0] === 'pedal_of_the_month') {
+        return 'П.Е.Д.А.Л. на деня / месеца | П.Е.Д.А.Л.🤫';
+    }
+
+    if (segments[0] === 'approved' && segments[1] === 'ninja') {
+        return 'Покемони и Нинджи | П.Е.Д.А.Л.🤫';
+    }
+
+    return 'Сигнал в П.Е.Д.А.Л.🤫';
+}
+
+function buildShareTitle(entry) {
+    const locationLabel = collapseWhitespace(entry.locationLabel);
+    const featuredTitle = collapseWhitespace(entry.featuredTitle);
+
+    if (featuredTitle) {
+        return `${featuredTitle} | П.Е.Д.А.Л.🤫`;
+    }
+
+    if (locationLabel && !isCoordinateLocation(locationLabel)) {
+        return `${locationLabel} | П.Е.Д.А.Л.🤫`;
+    }
+
+    return fallbackTitleFromMediaKey(entry.key);
+}
+
+function buildShareDescription(entry) {
+    const locationLabel = collapseWhitespace(entry.locationLabel);
+    const dateLabel = collapseWhitespace(entry.timestamp || entry.lastModified || '');
+    const pieces = [];
+
+    if (entry.featuredSubtitle) {
+        pieces.push(collapseWhitespace(entry.featuredSubtitle));
+    }
+
+    if (locationLabel && !isCoordinateLocation(locationLabel)) {
+        pieces.push(locationLabel);
+    }
+
+    if (dateLabel) {
+        pieces.push(`Кадър от ${dateLabel}`);
+    }
+
+    pieces.push('Отвори снимката или видеото в П.Е.Д.А.Л.🤫 с коментари и реакции.');
+    return pieces.join(' • ');
+}
+
+function buildSocialPreviewImage(entry) {
+    if (isImageMediaKey(entry.key)) {
+        return entry.url;
+    }
+
+    const thumbUrl = buildThumbUrlFromMediaKey(entry.key);
+    if (thumbUrl && isVideoMediaKey(entry.key)) {
+        return thumbUrl;
+    }
+
+    return APP_ICON_URL;
+}
+
+function buildSocialPreviewType(entry) {
+    return isVideoMediaKey(entry.key) ? 'video.other' : 'article';
+}
+
+function buildSharePageHtml(entry) {
+    const canonicalShareUrl = buildSharePageUrl(entry.key);
+    const galleryUrl = buildGalleryDeepLink(entry.key);
+    const openCommentsUrl = buildGalleryDeepLink(entry.key, { openComments: true });
+    const title = buildShareTitle(entry);
+    const description = buildShareDescription(entry);
+    const imageUrl = buildSocialPreviewImage(entry);
+    const ogType = buildSocialPreviewType(entry);
+    const mediaUrl = entry.url;
+
+    return `<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(title)}</title>
+  <meta name="description" content="${escapeHtml(description)}">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="${escapeHtml(canonicalShareUrl)}">
+  <meta property="og:site_name" content="П.Е.Д.А.Л.🤫">
+  <meta property="og:locale" content="bg_BG">
+  <meta property="og:type" content="${escapeHtml(ogType)}">
+  <meta property="og:url" content="${escapeHtml(canonicalShareUrl)}">
+  <meta property="og:title" content="${escapeHtml(title)}">
+  <meta property="og:description" content="${escapeHtml(description)}">
+  <meta property="og:image" content="${escapeHtml(imageUrl)}">
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="${escapeHtml(title)}">
+  <meta property="twitter:description" content="${escapeHtml(description)}">
+  <meta property="twitter:image" content="${escapeHtml(imageUrl)}">
+  ${isVideoMediaKey(entry.key) ? `<meta property="og:video" content="${escapeHtml(mediaUrl)}">` : ''}
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(circle at top, rgba(255,193,7,0.18), transparent 42%), #050505;
+      color: #fff;
+      font-family: Inter, Arial, sans-serif;
+    }
+    .share-card {
+      width: min(620px, 100%);
+      background: rgba(16, 16, 16, 0.92);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.34);
+    }
+    .share-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,193,7,0.12);
+      color: #ffc107;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 16px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 5vw, 42px);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+    p {
+      margin: 0 0 20px;
+      color: rgba(255,255,255,0.76);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+    .share-preview {
+      width: 100%;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #111;
+      margin-bottom: 18px;
+    }
+    .share-preview img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 1.91 / 1;
+      object-fit: cover;
+    }
+    .share-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .share-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      font-weight: 800;
+    }
+    .share-link.secondary {
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+  </style>
+  <script>
+    (function () {
+      var galleryUrl = ${JSON.stringify(galleryUrl)};
+      var galleryCommentsUrl = ${JSON.stringify(openCommentsUrl)};
+      var params = new URLSearchParams(window.location.search);
+      var target = params.get('comments') === '1' ? galleryCommentsUrl : galleryUrl;
+      window.addEventListener('load', function () {
+        window.location.replace(target);
+      });
+    }());
+  </script>
+</head>
+<body>
+  <main class="share-card">
+    <div class="share-kicker">П.Е.Д.А.Л.🤫</div>
+    <h1>${escapeHtml(title)}</h1>
+    <p>${escapeHtml(description)}</p>
+    <div class="share-preview">
+      <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(title)}">
+    </div>
+    <div class="share-actions">
+      <a class="share-link" href="${escapeHtml(galleryUrl)}">Отвори сигнала</a>
+      <a class="share-link secondary" href="${escapeHtml(openCommentsUrl)}">Отвори с коментари</a>
+    </div>
+  </main>
+</body>
+</html>
+`;
 }
 
 function formatLocationFromResponse(payload) {
@@ -781,6 +1083,100 @@ async function buildReactionSummariesSnapshot(config, galleryManifest, ninjaMani
     };
 }
 
+async function fetchPublicRankingSnapshot(url) {
+    const response = await fetch(url, {
+        cache: 'no-store',
+    });
+
+    if (!response.ok) {
+        throw new Error(`Ranking snapshot error: HTTP ${response.status}`);
+    }
+
+    const payload = await response.json();
+    return Array.isArray(payload?.items) ? payload.items : [];
+}
+
+function mergeShareEntry(map, rawEntry) {
+    const key = normalizeMediaKey(rawEntry?.key || rawEntry?.mediaKey || '');
+    if (!key) {
+        return;
+    }
+
+    const existing = map.get(key) || {};
+    const url = rawEntry?.url || `${CLOUD_FRONT_BASE_URL}/${encodeCloudFrontKey(key)}`;
+    const merged = {
+        key,
+        url,
+        timestamp: rawEntry?.timestamp || rawEntry?.lastModified || existing.timestamp || '',
+        lastModified: rawEntry?.lastModified || existing.lastModified || '',
+        locationLabel: collapseWhitespace(rawEntry?.locationLabel || existing.locationLabel || ''),
+        featuredTitle: rawEntry?.featuredTitle || existing.featuredTitle || '',
+        featuredSubtitle: rawEntry?.featuredSubtitle || existing.featuredSubtitle || '',
+        isVideo: typeof rawEntry?.isVideo === 'boolean'
+            ? rawEntry.isVideo
+            : (typeof existing.isVideo === 'boolean' ? existing.isVideo : isVideoMediaKey(key)),
+    };
+
+    map.set(key, merged);
+}
+
+async function buildSharePageEntries(galleryManifest, ninjaManifest) {
+    const shareEntries = new Map();
+
+    galleryManifest.items.forEach(item => mergeShareEntry(shareEntries, item));
+    ninjaManifest.items.forEach(item => mergeShareEntry(shareEntries, {
+        ...item,
+        locationLabel: 'Покемони и Нинджи',
+    }));
+
+    if (galleryManifest.featured?.week?.key) {
+        mergeShareEntry(shareEntries, {
+            ...galleryManifest.featured.week,
+            featuredTitle: '☀️ П.Е.Д.А.Л. на Седмицата',
+            featuredSubtitle: 'Избрана изцепка за седмицата',
+        });
+    }
+
+    if (galleryManifest.featured?.month?.key) {
+        mergeShareEntry(shareEntries, {
+            ...galleryManifest.featured.month,
+            featuredTitle: '🏆 П.Е.Д.А.Л. на Месеца',
+            featuredSubtitle: 'Шампионът на нахалството',
+        });
+    }
+
+    const rankingSnapshots = await Promise.allSettled([
+        fetchPublicRankingSnapshot(TOP_LIKED_SNAPSHOT_URL),
+        fetchPublicRankingSnapshot(TOP_DISLIKED_SNAPSHOT_URL),
+    ]);
+
+    rankingSnapshots.forEach(result => {
+        if (result.status !== 'fulfilled') {
+            console.warn(result.reason instanceof Error ? result.reason.message : String(result.reason));
+            return;
+        }
+
+        result.value.forEach(item => mergeShareEntry(shareEntries, {
+            key: item.mediaKey,
+            timestamp: item.updatedAt || '',
+            isVideo: false,
+        }));
+    });
+
+    return [...shareEntries.values()];
+}
+
+async function writeSharePages(entries) {
+    await rm(shareDir, { recursive: true, force: true });
+    await mkdir(shareDir, { recursive: true });
+
+    await Promise.all(entries.map(async entry => {
+        const filePath = path.join(shareDir, `${shareSlugFromMediaKey(entry.key)}.html`);
+        const html = buildSharePageHtml(entry);
+        await writeFile(filePath, `${html}\n`, 'utf8');
+    }));
+}
+
 async function main() {
     const config = await loadConfig();
     const geocodeCache = await loadJsonFile(geocodeCachePath, {});
@@ -811,12 +1207,17 @@ async function main() {
     );
     await saveJsonFile(reactionSummariesPath, reactionSummaries);
 
+    console.log('Building social share pages...');
+    const sharePageEntries = await buildSharePageEntries(galleryManifest, ninjaManifest);
+    await writeSharePages(sharePageEntries);
+
     console.log(
         JSON.stringify(
             {
                 galleryItems: galleryManifest.itemCount,
                 ninjaItems: ninjaManifest.itemCount,
                 reactionSummaries: reactionSummaries.itemCount,
+                sharePages: sharePageEntries.length,
                 featuredWeek: galleryManifest.featured?.week?.key ?? null,
                 featuredMonth: galleryManifest.featured?.month?.key ?? null,
                 generatedAt: galleryManifest.generatedAt,
