@@ -272,6 +272,17 @@ function buildSocialPreviewType(entry) {
     return isVideoMediaKey(entry.key) ? 'video.other' : 'article';
 }
 
+function getPreviewImageMimeType(imageUrl) {
+    const lower = String(imageUrl || '').toLowerCase();
+    if (lower.endsWith('.png')) {
+        return 'image/png';
+    }
+    if (lower.endsWith('.webp')) {
+        return 'image/webp';
+    }
+    return 'image/jpeg';
+}
+
 function buildSharePageHtml(entry) {
     const canonicalShareUrl = buildSharePageUrl(entry.key);
     const galleryUrl = buildGalleryDeepLink(entry.key);
@@ -298,7 +309,12 @@ function buildSharePageHtml(entry) {
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
   <meta property="og:image" content="${escapeHtml(imageUrl)}">
+  <meta property="og:image:secure_url" content="${escapeHtml(imageUrl)}">
+  <meta property="og:image:type" content="${getPreviewImageMimeType(imageUrl)}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="${escapeHtml(canonicalShareUrl)}">
   <meta property="twitter:title" content="${escapeHtml(title)}">
   <meta property="twitter:description" content="${escapeHtml(description)}">
   <meta property="twitter:image" content="${escapeHtml(imageUrl)}">

@@ -262,22 +262,6 @@ async function copyTextToClipboard(value) {
     }
 }
 
-function openPopup(url, name) {
-    const popup = window.open(
-        url,
-        name,
-        'popup=yes,width=640,height=720,menubar=no,toolbar=no,status=no'
-    );
-
-    if (popup) {
-        popup.focus?.();
-        return true;
-    }
-
-    window.open(url, '_blank', 'noopener,noreferrer');
-    return false;
-}
-
 function getRankingCache(type) {
     const cacheKey = GALLERY_CONFIG.rankingCacheKeys[type];
     if (!cacheKey) {
@@ -1346,17 +1330,19 @@ function syncShareButtons() {
 }
 
 async function shareCurrentItemToFacebook() {
-    const shareUrl = getCurrentViewerShareUrl();
+    const mediaKey = getCurrentViewerMediaKey();
+    const shareUrl = buildGallerySocialShareUrl(mediaKey, { openComments: false });
     if (!shareUrl) {
         setShareStatus('Липсва валиден линк за споделяне.', { isError: true });
         return;
     }
 
     setShareStatus('');
-    openPopup(
-        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
-        'pedal-facebook-share'
-    );
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    const popup = window.open(facebookUrl, '_blank', 'noopener,noreferrer');
+    if (!popup) {
+        window.location.href = facebookUrl;
+    }
 }
 
 async function shareCurrentVideoToTikTok() {
