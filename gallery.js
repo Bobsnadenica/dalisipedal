@@ -213,6 +213,43 @@ function syncViewerUrl(options = {}) {
     }
 }
 
+async function copyTextToClipboard(value) {
+    if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+        return true;
+    }
+
+    const textArea = document.createElement('textarea');
+    textArea.value = value;
+    textArea.setAttribute('readonly', '');
+    textArea.style.position = 'absolute';
+    textArea.style.left = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    try {
+        return document.execCommand('copy');
+    } finally {
+        textArea.remove();
+    }
+}
+
+function openPopup(url, name) {
+    const popup = window.open(
+        url,
+        name,
+        'popup=yes,width=640,height=720,menubar=no,toolbar=no,status=no'
+    );
+
+    if (popup) {
+        popup.focus?.();
+        return true;
+    }
+
+    window.open(url, '_blank', 'noopener,noreferrer');
+    return false;
+}
+
 function getRankingCache(type) {
     const cacheKey = GALLERY_CONFIG.rankingCacheKeys[type];
     if (!cacheKey) {
@@ -905,6 +942,8 @@ function closeViewer() {
     setCommentsOverlayOpen(false, { syncUrl: false });
     resetCommentsPanel();
     resetReactionSummary();
+    setShareStatus('');
+    syncShareButtons();
 }
 
 function getAuthState() {
@@ -1231,6 +1270,99 @@ function getCurrentViewerItem() {
 function getCurrentViewerMediaKey() {
     const item = getCurrentViewerItem();
     return normalizeGalleryMediaKey(item?.key || item?.url || '');
+}
+
+function getCurrentViewerShareUrl(options = {}) {
+    const mediaKey = getCurrentViewerMediaKey();
+    if (!mediaKey) {
+        return '';
+    }
+
+    return buildGalleryShareUrl(mediaKey, {
+        openComments: options.openComments ?? galleryState.commentsPanelOpen,
+    });
+}
+
+function setShareStatus(message, options = {}) {
+    const statusEl = document.getElementById('gallery-share-status');
+    if (!statusEl) {
+        return;
+    }
+
+    statusEl.className = 'gallery-share-status';
+    if (options.isError) {
+        statusEl.classList.add('is-error');
+    }
+
+    statusEl.textContent = message || '';
+    statusEl.hidden = !message;
+}
+
+function syncShareButtons() {
+    const facebookBtn = document.getElementById('gallery-share-facebook');
+    const tiktokBtn = document.getElementById('gallery-share-tiktok');
+    const item = getCurrentViewerItem();
+    const shareUrl = getCurrentViewerShareUrl();
+    const isVideo = isVideoFile(item);
+    const hasShareableMedia = Boolean(item && shareUrl);
+
+    if (facebookBtn) {
+        facebookBtn.hidden = !hasShareableMedia;
+        facebookBtn.disabled = !hasShareableMedia;
+    }
+
+    if (tiktokBtn) {
+        tiktokBtn.hidden = !hasShareableMedia || !isVideo;
+        tiktokBtn.disabled = !hasShareableMedia || !isVideo;
+    }
+}
+
+async function shareCurrentItemToFacebook() {
+    const shareUrl = getCurrentViewerShareUrl();
+    if (!shareUrl) {
+        setShareStatus('Липсва валиден линк за споделяне.', { isError: true });
+        return;
+    }
+
+    setShareStatus('');
+    openPopup(
+        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+        'pedal-facebook-share'
+    );
+}
+
+async function shareCurrentVideoToTikTok() {
+    const item = getCurrentViewerItem();
+    const shareUrl = getCurrentViewerShareUrl();
+
+    if (!item || !isVideoFile(item) || !shareUrl) {
+        setShareStatus('TikTok споделянето е налично само за видеа.', { isError: true });
+        return;
+    }
+
+    const sharePayload = {
+        title: 'Видео от П.Е.Д.А.Л.🤫',
+        text: 'Виж това видео в П.Е.Д.А.Л.🤫',
+        url: shareUrl,
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(sharePayload);
+            setShareStatus('Отвори се системното споделяне за TikTok.');
+            return;
+        }
+
+        await copyTextToClipboard(shareUrl);
+        setShareStatus('Линкът е копиран. Поставете го в TikTok.');
+    } catch (error) {
+        if (error?.name === 'AbortError') {
+            setShareStatus('');
+            return;
+        }
+
+        setShareStatus('Не успяхме да подготвим TikTok споделяне.', { isError: true });
+    }
 }
 
 function setReactionStatus(message, options = {}) {
@@ -1712,6 +1844,8 @@ function renderViewerItem(options = {}) {
         nextBtn.disabled = galleryState.currentIndex >= galleryState.viewerItems.length - 1;
     }
 
+    setShareStatus('');
+    syncShareButtons();
     syncReactionAuthUi();
     loadReactionSummaryForCurrentItem({
         forceRefresh: Boolean(options.forceRefresh),
@@ -1873,6 +2007,8 @@ function bindViewerEvents() {
     const commentInput = document.getElementById('gallery-comment-input');
     const likeBtn = document.getElementById('gallery-reaction-like');
     const dislikeBtn = document.getElementById('gallery-reaction-dislike');
+    const shareFacebookBtn = document.getElementById('gallery-share-facebook');
+    const shareTikTokBtn = document.getElementById('gallery-share-tiktok');
 
     if (!viewerEl) {
         return;
@@ -1894,6 +2030,8 @@ function bindViewerEvents() {
     commentInput?.addEventListener('input', updateComposerCounter);
     likeBtn?.addEventListener('click', () => toggleReaction('LIKE'));
     dislikeBtn?.addEventListener('click', () => toggleReaction('DISLIKE'));
+    shareFacebookBtn?.addEventListener('click', shareCurrentItemToFacebook);
+    shareTikTokBtn?.addEventListener('click', shareCurrentVideoToTikTok);
 
     viewerEl.addEventListener('click', event => {
         if (event.target === viewerEl) {
