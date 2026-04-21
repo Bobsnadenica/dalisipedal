@@ -648,11 +648,11 @@ function buildRankingCard(item, index, items, type) {
     stats.innerHTML = `
         <span class="gallery-ranking-pill like">
             <span class="material-icons-round">thumb_up</span>
-            <span>${item.likes}</span>
+            <span>Like</span>
         </span>
         <span class="gallery-ranking-pill dislike">
             <span class="material-icons-round">thumb_down</span>
-            <span>${item.dislikes}</span>
+            <span>Dislike</span>
         </span>
     `;
 

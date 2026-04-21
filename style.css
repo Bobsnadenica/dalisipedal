@@ -56,6 +56,11 @@ body { background: var(--bg); color: var(--text-main); font-family: var(--font-m
     transform: translateY(-1px);
 }
 
+.nav-links > a[aria-current="page"]:not(.nav-pill):not(.btn-nav) {
+    color: #fff;
+    text-shadow: 0 0 14px rgba(255, 255, 255, 0.18);
+}
+
 .nav-fb {
     color: #8dc1ff !important;
     background: rgba(24, 119, 242, 0.14);
@@ -125,6 +130,25 @@ body { background: var(--bg); color: var(--text-main); font-family: var(--font-m
     color: #fff !important;
     border-color: rgba(255, 167, 38, 0.24);
     background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-pill[aria-current="page"] {
+    color: #fff !important;
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.nav-gallery[aria-current="page"] {
+    color: #fff4d5 !important;
+    border-color: rgba(255, 193, 7, 0.46);
+    background: rgba(255, 193, 7, 0.2);
+    box-shadow: 0 10px 24px rgba(255, 193, 7, 0.14), inset 0 0 0 1px rgba(255, 193, 7, 0.08);
+}
+
+.nav-open-data[aria-current="page"],
+.nav-black-map[aria-current="page"] {
+    color: #fff !important;
 }
 
 .nav-support { color: #FF3B30 !important; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; transition: transform 0.2s; }
