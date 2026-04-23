@@ -202,10 +202,9 @@ function isVideoMediaKey(mediaKey) {
 
 function fallbackTitleFromMediaKey(mediaKey) {
     const segments = normalizeMediaKey(mediaKey).split('/').filter(Boolean);
-    const plate = segments.length >= 3 ? segments[2] : '';
 
-    if (plate && segments[0] === 'approved') {
-        return `Сигнал за ${plate} | П.Е.Д.А.Л.🤫`;
+    if (segments[0] === 'approved') {
+        return 'Сигнал в П.Е.Д.А.Л.🤫';
     }
 
     if (segments[0] === 'pedal_of_the_month') {

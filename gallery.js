@@ -622,11 +622,7 @@ function getFallbackRankingTitle(mediaKey, type) {
         return RANKING_COPY[type]?.fallbackTitle || 'Одобрена снимка';
     }
 
-    const segments = normalizedKey.split('/').filter(Boolean);
-    const plate = segments.length >= 3 ? segments[2] : '';
-    return plate
-        ? `${RANKING_COPY[type]?.fallbackTitle || 'Одобрена снимка'} • ${plate}`
-        : (RANKING_COPY[type]?.fallbackTitle || normalizedKey);
+    return RANKING_COPY[type]?.fallbackTitle || 'Одобрена снимка';
 }
 
 function getManifestItemByKey(mediaKey) {
@@ -634,6 +630,31 @@ function getManifestItemByKey(mediaKey) {
     return galleryState.manifestItems.find(item => normalizeGalleryMediaKey(item?.key || item?.url) === normalizedMediaKey)
         || galleryState.featuredItems.find(item => normalizeGalleryMediaKey(item?.key || item?.url) === normalizedMediaKey)
         || null;
+}
+
+function isSupportedDeepLinkMediaKey(mediaKey) {
+    return /^approved\/.+\.(jpg|jpeg|png|webp|mp4|mov|m4v|webm)$/i.test(
+        normalizeGalleryMediaKey(mediaKey)
+    );
+}
+
+function buildStandaloneItemFromMediaKey(mediaKey) {
+    const normalizedMediaKey = normalizeGalleryMediaKey(mediaKey);
+    if (!isSupportedDeepLinkMediaKey(normalizedMediaKey)) {
+        return null;
+    }
+
+    return {
+        key: normalizedMediaKey,
+        url: buildPublicMediaUrl(normalizedMediaKey),
+        timestamp: '',
+        location: '',
+        locationLabel: 'Сигнал в П.Е.Д.А.Л.',
+        latitude: null,
+        longitude: null,
+        isVideo: /\.(mp4|mov|m4v|webm)$/i.test(normalizedMediaKey),
+        isStandaloneDeepLink: true,
+    };
 }
 
 function findItemIndexByMediaKey(items, mediaKey) {
@@ -675,7 +696,13 @@ function resolveViewerTargetByMediaKey(mediaKey) {
         };
     }
 
-    return null;
+    const standaloneItem = buildStandaloneItemFromMediaKey(normalizedMediaKey);
+    return standaloneItem
+        ? {
+            items: [standaloneItem],
+            index: 0,
+        }
+        : null;
 }
 
 function normalizeRankingPayload(payload) {
