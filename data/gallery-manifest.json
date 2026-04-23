@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-04-23T05:23:42.458Z",
-  "itemCount": 511,
+  "generatedAt": "2026-04-23T11:27:27.881Z",
+  "itemCount": 514,
   "featured": {
     "week": {
       "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1775381185024.jpg",
@@ -17,6 +17,36 @@
     }
   },
   "items": [
+    {
+      "key": "approved/BP/6476CH/BP6476CH_292f0ff383f8.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/BP/6476CH/BP6476CH_292f0ff383f8.jpg",
+      "timestamp": "2026-04-23T11:23:41.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/0265CB/CB0265CB_77e4c39ce5a1.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/0265CB/CB0265CB_77e4c39ce5a1.jpg",
+      "timestamp": "2026-04-23T11:02:22.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PK/8662KB/PK8662KB_18215e4ce65d.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PK/8662KB/PK8662KB_18215e4ce65d.jpg",
+      "timestamp": "2026-04-23T10:46:07.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
     {
       "key": "approved/CB/2007XE/20260420_18350_b89d28.mp4",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/2007XE/20260420_18350_b89d28.mp4",
