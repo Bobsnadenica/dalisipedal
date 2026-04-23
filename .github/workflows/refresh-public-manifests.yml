@@ -6,8 +6,7 @@ env:
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/5 * * * *'
-    - cron: '0 3 * * *'
+    - cron: '35 6 * * *'
 
 concurrency:
   group: generated-public-data-${{ github.ref }}
