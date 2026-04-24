@@ -102,15 +102,34 @@ jobs:
         if: steps.changes.outputs.any_changes != 'true'
         run: echo "No manifest changes detected."
 
+      - name: Detect manifest upload credentials
+        id: upload_auth
+        env:
+          PEDAL_MANIFEST_UPLOAD_ROLE_ARN: ${{ secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN }}
+          PEDAL_AWS_ACCESS_KEY_ID: ${{ secrets.PEDAL_AWS_ACCESS_KEY_ID }}
+          PEDAL_AWS_SECRET_ACCESS_KEY: ${{ secrets.PEDAL_AWS_SECRET_ACCESS_KEY }}
+        run: |
+          if [ -n "$PEDAL_MANIFEST_UPLOAD_ROLE_ARN" ]; then
+            echo "has_role_upload_credentials=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_role_upload_credentials=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [ -n "$PEDAL_AWS_ACCESS_KEY_ID" ] && [ -n "$PEDAL_AWS_SECRET_ACCESS_KEY" ]; then
+            echo "has_static_upload_credentials=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_static_upload_credentials=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Configure AWS credentials for manifest upload (OIDC)
-        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN != ''
+        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && steps.upload_auth.outputs.has_role_upload_credentials == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-central-1
           role-to-assume: ${{ secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN }}
 
       - name: Configure AWS credentials for manifest upload (static secrets fallback)
-        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN == '' && secrets.PEDAL_AWS_ACCESS_KEY_ID != '' && secrets.PEDAL_AWS_SECRET_ACCESS_KEY != ''
+        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && steps.upload_auth.outputs.has_role_upload_credentials != 'true' && steps.upload_auth.outputs.has_static_upload_credentials == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-central-1
@@ -118,7 +137,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.PEDAL_AWS_SECRET_ACCESS_KEY }}
 
       - name: Upload gallery manifest to S3
-        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && (secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN != '' || (secrets.PEDAL_AWS_ACCESS_KEY_ID != '' && secrets.PEDAL_AWS_SECRET_ACCESS_KEY != ''))
+        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && (steps.upload_auth.outputs.has_role_upload_credentials == 'true' || steps.upload_auth.outputs.has_static_upload_credentials == 'true')
         run: |
           aws s3 cp \
             data/gallery-manifest.json \
@@ -127,7 +146,7 @@ jobs:
             --cache-control "public,max-age=300,s-maxage=300,must-revalidate"
 
       - name: Missing manifest upload credentials
-        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN == '' && (secrets.PEDAL_AWS_ACCESS_KEY_ID == '' || secrets.PEDAL_AWS_SECRET_ACCESS_KEY == '')
+        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && steps.upload_auth.outputs.has_role_upload_credentials != 'true' && steps.upload_auth.outputs.has_static_upload_credentials != 'true'
         run: |
           echo "::warning::Gallery manifest was refreshed in GitHub, but S3 upload was skipped because no upload credentials are configured."
           echo "::warning::Add PEDAL_MANIFEST_UPLOAD_ROLE_ARN (recommended) or PEDAL_AWS_ACCESS_KEY_ID / PEDAL_AWS_SECRET_ACCESS_KEY."
