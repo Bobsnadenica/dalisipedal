@@ -1395,9 +1395,22 @@ async function shareCurrentItemToFacebook() {
 
     setShareStatus('');
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-    const popup = window.open(facebookUrl, '_blank', 'noopener,noreferrer');
-    if (!popup) {
-        window.location.href = facebookUrl;
+    const popup = window.open(facebookUrl, '_blank');
+    if (popup) {
+        popup.opener = null;
+        return;
+    }
+
+    try {
+        const copied = await copyTextToClipboard(shareUrl);
+        setShareStatus(
+            copied
+                ? 'Facebook прозорецът беше блокиран. Линкът е копиран.'
+                : 'Facebook прозорецът беше блокиран. Копирайте линка ръчно.',
+            { isError: true }
+        );
+    } catch (_) {
+        setShareStatus('Facebook прозорецът беше блокиран. Копирайте линка ръчно.', { isError: true });
     }
 }
 

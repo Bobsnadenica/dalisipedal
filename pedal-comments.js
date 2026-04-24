@@ -1,7 +1,6 @@
 (function initPedalComments(global) {
     const CONFIG = Object.freeze({
         graphqlEndpoint: 'https://5otrnlraozcdni6ekx27cy5exe.appsync-api.eu-central-1.amazonaws.com/graphql',
-        apiKey: 'da2-6lagph7zcvfuzicgqenbfvyyqi',
         cacheTtlMs: 2 * 60 * 1000,
         persistentCacheTtlMs: 10 * 60 * 1000,
         persistentCachePrefix: 'pedal_comment_thread_v2:',
@@ -18,28 +17,6 @@
                 mediaKey: $mediaKey
                 sortDirection: ASC
                 filter: { status: { eq: ACTIVE } }
-                limit: $limit
-                nextToken: $nextToken
-            ) {
-                items {
-                    id
-                    mediaKey
-                    userId
-                    usernameSnapshot
-                    content
-                    status
-                    createdAt
-                    updatedAt
-                }
-                nextToken
-            }
-        }
-    `;
-
-    const SYNC_MEDIA_COMMENTS_QUERY = `
-        query SyncMediaComments($filter: ModelMediaCommentFilterInput, $limit: Int, $nextToken: String) {
-            syncMediaComments(
-                filter: $filter
                 limit: $limit
                 nextToken: $nextToken
             ) {
@@ -87,11 +64,6 @@
 
     function logError(message, details = {}) {
         console.error(`${DEBUG_PREFIX} ${message}`, details);
-    }
-
-    function isUnauthorizedError(error) {
-        const message = String(error?.message || '').toLowerCase();
-        return message.includes('not authorized') || message.includes('unauthorized');
     }
 
     function sortCommentsAscending(items) {
@@ -246,19 +218,14 @@
             'content-type': 'application/json',
         };
 
-        if (context.authMode === 'userPool') {
-            if (!context.authorizationToken) {
-                throw new Error('Липсва активна потребителска сесия.');
-            }
-            headers.Authorization = context.authorizationToken;
-        } else if (CONFIG.apiKey) {
-            headers['x-api-key'] = CONFIG.apiKey;
+        if (context.authMode !== 'userPool' || !context.authorizationToken) {
+            throw new Error('Коментарите са видими само за влезли потребители.');
         }
+        headers.Authorization = context.authorizationToken;
 
         const requestDetails = {
             endpoint: CONFIG.graphqlEndpoint,
-            authMode: context.authMode || 'apiKey',
-            hasApiKeyHeader: Boolean(headers['x-api-key']),
+            authMode: 'userPool',
             hasAuthorizationHeader: Boolean(headers.Authorization),
             mediaKey: context.mediaKey || null,
         };
@@ -381,6 +348,12 @@
             ? Math.trunc(options.limit)
             : CONFIG.defaultLimit;
         const limit = Math.max(1, Math.min(requestedLimit, CONFIG.defaultLimit));
+        const authState = getAuthState();
+        const authorizationToken = getAuthorizationToken();
+
+        if (!authState?.isLoggedIn || !authorizationToken) {
+            throw new Error('Коментарите са видими само за влезли потребители.');
+        }
 
         const cached = commentsCache.get(normalizedMediaKey);
         if (
@@ -405,51 +378,22 @@
         logDebug('Loading comments thread.', {
             mediaKey: normalizedMediaKey,
             endpoint: CONFIG.graphqlEndpoint,
-            hasApiKeyHeader: Boolean(CONFIG.apiKey),
+            authMode: 'userPool',
         });
 
-        let items = [];
+        const data = await graphQlRequest(COMMENTS_BY_MEDIA_KEY_QUERY, {
+            mediaKey: normalizedMediaKey,
+            limit,
+            nextToken: null,
+        }, {
+            mediaKey: normalizedMediaKey,
+            authMode: 'userPool',
+            authorizationToken,
+        });
 
-        try {
-            const data = await graphQlRequest(COMMENTS_BY_MEDIA_KEY_QUERY, {
-                mediaKey: normalizedMediaKey,
-                limit,
-                nextToken: null,
-            }, {
-                mediaKey: normalizedMediaKey,
-                authMode: 'apiKey',
-            });
-
-            items = Array.isArray(data.commentsByMediaKey?.items)
-                ? data.commentsByMediaKey.items.filter(Boolean)
-                : [];
-        } catch (error) {
-            if (!isUnauthorizedError(error)) {
-                throw error;
-            }
-
-            logDebug('Primary commentsByMediaKey read is unauthorized; trying public syncMediaComments fallback.', {
-                mediaKey: normalizedMediaKey,
-                endpoint: CONFIG.graphqlEndpoint,
-                hasApiKeyHeader: Boolean(CONFIG.apiKey),
-            });
-
-            const fallbackData = await graphQlRequest(SYNC_MEDIA_COMMENTS_QUERY, {
-                filter: {
-                    mediaKey: { eq: normalizedMediaKey },
-                    status: { eq: 'ACTIVE' },
-                },
-                limit,
-                nextToken: null,
-            }, {
-                mediaKey: normalizedMediaKey,
-                authMode: 'apiKey',
-            });
-
-            items = Array.isArray(fallbackData.syncMediaComments?.items)
-                ? fallbackData.syncMediaComments.items.filter(Boolean)
-                : [];
-        }
+        let items = Array.isArray(data.commentsByMediaKey?.items)
+            ? data.commentsByMediaKey.items.filter(Boolean)
+            : [];
 
         items = sortCommentsAscending(items);
 
@@ -564,6 +508,11 @@
     }
 
     function getCachedComments(mediaKey) {
+        const authState = getAuthState();
+        if (!authState?.isLoggedIn || !getAuthorizationToken()) {
+            return null;
+        }
+
         const normalizedMediaKey = normalizeMediaKey(mediaKey);
         if (!normalizedMediaKey) {
             return null;
@@ -580,6 +529,14 @@
         }
 
         return cached.items;
+    }
+
+    if (global.PedalAuth?.subscribe) {
+        global.PedalAuth.subscribe(authState => {
+            if (!authState?.isLoggedIn) {
+                clearCommentsCache();
+            }
+        });
     }
 
     function getCachedCommentCount(mediaKey) {
