@@ -4,103 +4,327 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roadmap | П.Е.Д.А.Л.🤫</title>
+    <meta name="description" content="Актуална пътна карта на П.Е.Д.А.Л.🤫: какво вече е live, какво доизграждаме и какво следва.">
     <link rel="icon" type="image/png" href="app_icon.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
-        body { overflow-y: auto; }
-        .doc-container {
-            max-width: 900px;
-            margin: 120px auto 60px;
-            padding: 50px;
-            background: #121212;
-            border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.05);
-            position: relative;
-            z-index: 10;
+        body {
+            overflow-y: auto;
         }
 
-        h1 { margin-bottom: 10px; font-size: 2.5rem; letter-spacing: -1px; }
-        .subtitle { color: var(--text-muted); margin-bottom: 50px; display: block; }
+        .roadmap-shell {
+            position: relative;
+            z-index: 1;
+            width: min(1160px, calc(100% - 32px));
+            margin: 118px auto 56px;
+        }
 
-        h2 { margin-top: 40px; margin-bottom: 20px; color: white; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
-        
-        .bug-box {
-            background: rgba(52, 199, 89, 0.05);
-            border: 1px dashed rgba(52, 199, 89, 0.3);
-            padding: 30px;
-            border-radius: 16px;
+        .roadmap-hero {
+            padding: 38px;
+            border-radius: 34px;
+            background:
+                radial-gradient(circle at top right, rgba(255, 193, 7, 0.16), transparent 36%),
+                linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(10, 10, 10, 0.96));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.26);
+            margin-bottom: 24px;
+        }
+
+        .roadmap-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffe6a6;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .roadmap-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.9fr);
+            gap: 24px;
+            align-items: end;
+            margin-top: 18px;
+        }
+
+        .roadmap-title {
+            margin: 0 0 12px;
+            font-size: clamp(2.4rem, 5vw, 4.4rem);
+            line-height: 0.98;
+            letter-spacing: -0.06em;
+        }
+
+        .roadmap-copy {
+            max-width: 760px;
             color: var(--text-muted);
-            font-family: var(--font-mono);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .roadmap-highlight {
+            display: grid;
+            gap: 14px;
+            padding: 22px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .roadmap-highlight-label {
+            color: rgba(255, 255, 255, 0.56);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .roadmap-highlight-title {
+            font-size: 1.34rem;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+        }
+
+        .roadmap-highlight-copy {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .roadmap-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .roadmap-meta-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #f2f2f2;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .roadmap-meta-chip .material-icons-round {
+            font-size: 18px;
+            color: #ffd666;
+        }
+
+        .roadmap-stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .roadmap-stat {
+            padding: 20px 22px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .roadmap-stat-number {
+            font-size: 2.1rem;
+            font-weight: 800;
+            letter-spacing: -0.06em;
+            margin-bottom: 8px;
+        }
+
+        .roadmap-stat-label {
+            color: #f4f4f4;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .roadmap-stat-copy {
+            color: var(--text-muted);
+            line-height: 1.6;
             font-size: 0.9rem;
         }
-        .bug-icon { font-size: 40px; color: #34C759; margin-bottom: 15px; display: block; text-align: center; }
-        .bug-list { list-style: none; padding: 0; }
-        .bug-list li { margin-bottom: 10px; padding-left: 24px; position: relative; text-decoration: line-through; color: #666; }
-        .bug-list li::before { content: 'check'; font-family: 'Material Icons Round'; position: absolute; left: 0; color: #34C759; font-weight: bold; font-size: 16px; }
+
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .roadmap-panel {
+            padding: 24px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .roadmap-panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .roadmap-panel-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.18rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .roadmap-panel-title .material-icons-round {
+            font-size: 22px;
+        }
+
+        .roadmap-panel-badge {
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .roadmap-panel-badge.done {
+            background: rgba(52, 199, 89, 0.14);
+            color: #9cf2b5;
+        }
+
+        .roadmap-panel-badge.progress {
+            background: rgba(255, 193, 7, 0.14);
+            color: #ffe59c;
+        }
+
+        .roadmap-panel-badge.next {
+            background: rgba(111, 201, 255, 0.14);
+            color: #b8e8ff;
+        }
 
         .roadmap-list {
             list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            display: grid;
+            gap: 12px;
+            padding: 0;
+            margin: 0;
         }
+
         .roadmap-item {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: 32px minmax(0, 1fr);
+            gap: 12px;
+            padding: 14px 14px 14px 12px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .roadmap-item-icon {
+            width: 32px;
+            height: 32px;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: 0.2s;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, 0.06);
         }
-        .roadmap-item:hover {
-            background: rgba(255,255,255,0.05);
-            transform: translateX(5px);
-        }
-        .status-icon {
-            color: var(--text-muted);
-            font-size: 24px;
-        }
-        .item-text {
-            font-weight: 600;
-            color: #ccc;
-            flex: 1;
-        }
-        
-        .completed .status-icon { color: #34C759; }
-        .completed .item-text { text-decoration: line-through; color: #666; }
-        
-        .progress .status-icon { color: #FFC107; }
-        .progress .item-text { color: #fff; }
 
-        .funding-badge {
-            background: linear-gradient(45deg, #FFC107, #FF9800);
-            color: black;
-            font-size: 0.75rem;
+        .roadmap-item-icon .material-icons-round {
+            font-size: 18px;
+        }
+
+        .roadmap-item.done .roadmap-item-icon {
+            background: rgba(52, 199, 89, 0.14);
+            color: #9cf2b5;
+        }
+
+        .roadmap-item.progress .roadmap-item-icon {
+            background: rgba(255, 193, 7, 0.14);
+            color: #ffe59c;
+        }
+
+        .roadmap-item.next .roadmap-item-icon {
+            background: rgba(111, 201, 255, 0.14);
+            color: #b8e8ff;
+        }
+
+        .roadmap-item-title {
             font-weight: 800;
-            padding: 4px 8px;
-            border-radius: 4px;
-            margin-right: 8px;
-            display: inline-block;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: -0.02em;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-bottom: 30px;
+        .roadmap-item-copy {
             color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: 0.2s;
+            font-size: 0.93rem;
+            line-height: 1.65;
         }
-        .back-link:hover { color: var(--primary); transform: translateX(-5px); }
 
-        @media (max-width: 600px) {
-            .doc-container { padding: 25px; margin-top: 100px; }
-            h1 { font-size: 2rem; }
+        .roadmap-note {
+            margin-top: 24px;
+            padding: 18px 20px;
+            border-radius: 22px;
+            background: rgba(255, 193, 7, 0.08);
+            border: 1px solid rgba(255, 193, 7, 0.18);
+            color: #ffeab5;
+            line-height: 1.7;
+        }
+
+        .roadmap-note strong {
+            color: #fff4d1;
+        }
+
+        @media (max-width: 1024px) {
+            .roadmap-hero-grid,
+            .roadmap-grid,
+            .roadmap-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .roadmap-shell {
+                width: min(100% - 20px, 100%);
+                margin-top: 96px;
+                margin-bottom: 40px;
+            }
+
+            .roadmap-hero,
+            .roadmap-panel,
+            .roadmap-stat {
+                padding: 20px;
+                border-radius: 24px;
+            }
+
+            .roadmap-title {
+                font-size: 2.35rem;
+            }
+
+            .roadmap-copy {
+                font-size: 0.96rem;
+            }
+
+            .roadmap-meta {
+                gap: 8px;
+            }
+
+            .roadmap-meta-chip {
+                width: 100%;
+                justify-content: flex-start;
+            }
         }
     </style>
 </head>
@@ -112,98 +336,259 @@
     <nav class="navbar">
         <div class="container nav-container">
             <a href="index.html" class="logo">
-                <img src="app_icon.png" alt="P.E.D.A.L." class="logo-icon-img">
+                <img src="app_icon.png" alt="П.Е.Д.А.Л.🤫" class="logo-icon-img">
                 <span class="logo-text">П.Е.Д.А.Л.🤫</span>
             </a>
+            <div class="nav-links">
+                <a href="how_to_use.html">Как се използва?</a>
+                <a href="gallery.html" class="nav-pill nav-gallery">Галерия</a>
+                <a href="open_data.html" class="nav-pill nav-open-data">Отворени данни</a>
+                <a href="black_map.html" class="nav-pill nav-black-map">Черна Карта</a>
+                <a href="https://www.facebook.com/profile.php?id=61573169923288" class="nav-pill nav-fb nav-social" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M13.5 21v-7h2.4l.4-3h-2.8V9.5c0-1 .3-1.8 1.9-1.8h1.1V4.6c-.5-.1-1.4-.2-2.5-.2-2.5 0-4.2 1.5-4.2 4.4V11H7v3h2.8v7h3.7z"/>
+                    </svg>
+                </a>
+                <a href="https://www.tiktok.com/@dalisipedal" class="nav-pill nav-tiktok nav-social" target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M14 3c.3 1.7 1.3 3.1 2.9 3.9 1 .5 2.1.7 3.2.7v3.1c-1.5 0-3-.4-4.3-1.1v5.4c0 3.5-2.8 6.3-6.3 6.3S3.2 18.5 3.2 15s2.8-6.3 6.3-6.3c.3 0 .6 0 .9.1v3.2c-.3-.1-.6-.2-.9-.2-1.8 0-3.2 1.4-3.2 3.2s1.4 3.2 3.2 3.2 3.2-1.4 3.2-3.2V3H14z"/>
+                    </svg>
+                </a>
+                <a href="how_to.html">Как работи?</a>
+                <a href="index.html#download" class="btn-nav">Изтегли</a>
+            </div>
         </div>
     </nav>
 
-    <div class="doc-container fade-in">
-        <a href="index.html" class="back-link">← Начало / Home</a>
+    <main class="roadmap-shell fade-in">
+        <section class="roadmap-hero">
+            <div class="roadmap-kicker">
+                <span class="material-icons-round">route</span>
+                <span>Roadmap</span>
+            </div>
 
-        <h1>Roadmap 🗺️</h1>
-        <span class="subtitle">План за развитие на проекта.</span>
+            <div class="roadmap-hero-grid">
+                <div>
+                    <h1 class="roadmap-title">Пътната карта вече е доста по-напред.</h1>
+                    <p class="roadmap-copy">
+                        Тази страница вече не е wishlist. Тя показва какво реално е live в П.Е.Д.А.Л.🤫, какво доизграждаме в момента
+                        и кои са следващите най-смислени стъпки за приложението, сайта и публичните данни около тях.
+                    </p>
 
-        <h2>
-            <span class="material-icons-round" style="color: #34C759;">task_alt</span>
-            Изчистени проблеми
-        </h2>
-        <div class="bug-box">
-            <span class="material-icons-round bug-icon">verified</span>
-            <ul class="bug-list">
-                <li><strong>Achievements:</strong> Бутонът "Виж наградата" е изрязан/скрит в някои резолюции.</li>
-                <li><strong>Моите сигнали:</strong> Историята се пази само локално на устройството, а не се синхронизира с профила (облака).</li>
-            </ul>
-            <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.6; text-align: center;">Докладвайте нови грешки на complaints@dalisipedal.com</p>
+                    <div class="roadmap-meta">
+                        <div class="roadmap-meta-chip">
+                            <span class="material-icons-round">task_alt</span>
+                            <span>Галерия, коментари и реакции вече работят</span>
+                        </div>
+                        <div class="roadmap-meta-chip">
+                            <span class="material-icons-round">public</span>
+                            <span>Сайтът вече е реална публична платформа, не само landing page</span>
+                        </div>
+                        <div class="roadmap-meta-chip">
+                            <span class="material-icons-round">cloud_done</span>
+                            <span>CloudFront + snapshot/manifest оптимизация за ниска цена</span>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="roadmap-highlight">
+                    <div class="roadmap-highlight-label">Текущ фокус</div>
+                    <div class="roadmap-highlight-title">Довършваме умните automation-и и moderation layer-а.</div>
+                    <div class="roadmap-highlight-copy">
+                        Най-важното оттук нататък е по-малко ръчна работа: по-добър login flow за сайта, по-силни admin инструменти,
+                        автоматизация около публичните сигнали и по-сигурен blur pipeline преди одобрение.
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="roadmap-stats">
+            <article class="roadmap-stat">
+                <div class="roadmap-stat-number">8+</div>
+                <div class="roadmap-stat-label">Големи неща вече са live</div>
+                <div class="roadmap-stat-copy">Публична галерия, ninja секция, comments, reactions, deep links, rankings, open data и Черна Карта.</div>
+            </article>
+            <article class="roadmap-stat">
+                <div class="roadmap-stat-number">2</div>
+                <div class="roadmap-stat-label">Работещи публични data страници</div>
+                <div class="roadmap-stat-copy">Отворени данни и Черна Карта вече показват реални външни и snapshot данни, не макети.</div>
+            </article>
+            <article class="roadmap-stat">
+                <div class="roadmap-stat-number">3</div>
+                <div class="roadmap-stat-label">Нови социални слоя</div>
+                <div class="roadmap-stat-copy">Коментари, like/dislike реакции и shareable линкове към точен кадър с thumbnail preview.</div>
+            </article>
+            <article class="roadmap-stat">
+                <div class="roadmap-stat-number">1</div>
+                <div class="roadmap-stat-label">Обща посока</div>
+                <div class="roadmap-stat-copy">По-малко ръчни стъпки, по-малко AWS разходи и повече реална полезност за хората.</div>
+            </article>
+        </section>
+
+        <section class="roadmap-grid">
+            <article class="roadmap-panel">
+                <div class="roadmap-panel-head">
+                    <div class="roadmap-panel-title">
+                        <span class="material-icons-round" style="color:#9cf2b5;">task_alt</span>
+                        <span>Вече live</span>
+                    </div>
+                    <span class="roadmap-panel-badge done">готово</span>
+                </div>
+
+                <ul class="roadmap-list">
+                    <li class="roadmap-item done">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">photo_library</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Публична галерия и Покемони и Нинджи</div>
+                            <div class="roadmap-item-copy">Сайтът вече зарежда реални публични снимки и видеа от manifest-и, а не твърдо записани примери.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item done">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">forum</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Коментари + login UI за сайта</div>
+                            <div class="roadmap-item-copy">Отваряш точен кадър, виждаш thread-а и имаш реална основа сайтът да използва същия backend като приложението.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item done">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">thumbs_up_down</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Like / Dislike реакции</div>
+                            <div class="roadmap-item-copy">Реакциите вече са общ слой между app и website и работят по стабилния media key за всяка снимка.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item done">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">share</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Shareable website линкове</div>
+                            <div class="roadmap-item-copy">Можем да споделяме конкретен кадър чрез website линк с preview, вместо само суров CloudFront файл.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item done">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">leaderboard</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Класации и featured избори</div>
+                            <div class="roadmap-item-copy">Топ харесвани, топ нехаресвани, П.Е.Д.А.Л. на седмицата и П.Е.Д.А.Л. на месеца вече имат място на сайта.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item done">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">explore</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Черна Карта и Отворени данни</div>
+                            <div class="roadmap-item-copy">Платформата вече показва и по-широк граждански контекст чрез реални публични данни и по-богата карта.</div>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="roadmap-panel">
+                <div class="roadmap-panel-head">
+                    <div class="roadmap-panel-title">
+                        <span class="material-icons-round" style="color:#ffe59c;">hourglass_bottom</span>
+                        <span>В процес</span>
+                    </div>
+                    <span class="roadmap-panel-badge progress">активно</span>
+                </div>
+
+                <ul class="roadmap-list">
+                    <li class="roadmap-item progress">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">military_tech</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Още постижения и free upgrade path</div>
+                            <div class="roadmap-item-copy">Има вече посока и демо логика, но achievement системата може да стане значително по-богата и по-забавна.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item progress">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">verified_user</span></div>
+                        <div>
+                            <div class="roadmap-item-title">По-чист сайт login flow за коментиране</div>
+                            <div class="roadmap-item-copy">Основата е готова, но UX-ът около вход, сесия и moderation tools още се доизпипва.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item progress">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">smart_toy</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Автоматизации за публичните сигнали</div>
+                            <div class="roadmap-item-copy">Следващата голяма стъпка е backend automation за нови manifest additions, social posting и по-малко ръчна поддръжка.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item progress">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">blur_on</span></div>
+                        <div>
+                            <div class="roadmap-item-title">По-сигурен blur pipeline</div>
+                            <div class="roadmap-item-copy">Целта е старите снимки и бъдещите одобрения да минават през по-надеждно замъгляване на номера преди публичност.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item progress">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">speed</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Още cost optimization</div>
+                            <div class="roadmap-item-copy">CloudFront и snapshot-ите вече помагат много, но все още има място за още по-умни кешове и по-малко live заявки.</div>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="roadmap-panel">
+                <div class="roadmap-panel-head">
+                    <div class="roadmap-panel-title">
+                        <span class="material-icons-round" style="color:#b8e8ff;">flag</span>
+                        <span>Следва</span>
+                    </div>
+                    <span class="roadmap-panel-badge next">следващо</span>
+                </div>
+
+                <ul class="roadmap-list">
+                    <li class="roadmap-item next">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">poll</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Социологически проучвания и въпроси</div>
+                            <div class="roadmap-item-copy">Има място за жив civic layer с въпроси, локални теми и по-ясен обществен пулс около проблемите на пътя.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item next">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">mail</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Обратна връзка за сигналите</div>
+                            <div class="roadmap-item-copy">Имейл или друг прозрачен канал за статус към подателя ще помогне хората да усещат по-ясно движението по сигнала.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item next">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">admin_panel_settings</span></div>
+                        <div>
+                            <div class="roadmap-item-title">По-силни admin инструменти от web</div>
+                            <div class="roadmap-item-copy">По-безопасни moderation действия, управление на съдържание и по-малко зависимост от ръчни обходни пътища.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item next">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">emoji_events</span></div>
+                        <div>
+                            <div class="roadmap-item-title">Още класации и сезонни акценти</div>
+                            <div class="roadmap-item-copy">Освен top liked/disliked, има потенциал за градове, квартали, периоди и по-забавни тематични селекции.</div>
+                        </div>
+                    </li>
+                    <li class="roadmap-item next">
+                        <div class="roadmap-item-icon"><span class="material-icons-round">auto_awesome</span></div>
+                        <div>
+                            <div class="roadmap-item-title">По-умен plate detection без излишни AWS разходи</div>
+                            <div class="roadmap-item-copy">Посоката е по-офлайн, по-евтино и по-контролирано разпознаване, вместо да се разчита изцяло на скъп cloud OCR.</div>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <div class="roadmap-note">
+            <strong>Накратко:</strong> вече не сме на етап „дали изобщо ще стане“. Основната посока вече е реална и работеща.
+            Оттук нататък фокусът е по-скоро върху polish, automation, moderation и още по-добра гражданска полезност.
         </div>
 
-        <h2>
-            <span class="material-icons-round" style="color: var(--primary);">construction</span>
-            Статус на разработката
-        </h2>
-        
-        <ul class="roadmap-list">
-            <li class="roadmap-item completed">
-                <span class="material-icons-round status-icon">check_circle</span>
-                <span class="item-text">Чат система</span>
-            </li>
-            <li class="roadmap-item completed">
-                <span class="material-icons-round status-icon">check_circle</span>
-                <span class="item-text">Тайна функция 🤫</span>
-            </li>
-            <li class="roadmap-item completed">
-                <span class="material-icons-round status-icon">check_circle</span>
-                <span class="item-text">Разширена статистика</span>
-            </li>
-            <li class="roadmap-item completed">
-                <span class="material-icons-round status-icon">check_circle</span>
-                <span class="item-text">Още малки игрички (Gamification)</span>
-            </li>
-
-            <li class="roadmap-item progress">
-                <span class="material-icons-round status-icon">hourglass_bottom</span>
-                <span class="item-text">Още постижения (50% Готово)</span>
-            </li>
-
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">poll</span>
-                <span class="item-text">Въпроси за гласуване (Polls)</span>
-            </li>
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">tune</span>
-                <span class="item-text">Оптимизация на лимити (чат, качване, търсене)</span>
-            </li>
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">leaderboard</span>
-                <span class="item-text">Повече класации</span>
-            </li>
-            <li class="roadmap-item" style="border-color: rgba(255, 193, 7, 0.3);">
-                <span class="material-icons-round status-icon" style="color: var(--primary);">auto_awesome</span>
-                <span class="item-text">
-                    <span class="funding-badge">ЦЕЛ: €100</span>
-                    Автоматично AI разпознаване на номера
-                </span>
-            </li>
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">thumbs_up_down</span>
-                <span class="item-text">Гласуване за снимки (Upvote/Downvote)</span>
-            </li>
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">mark_email_read</span>
-                <span class="item-text">Обратна връзка за сигнала по имейл</span>
-            </li>
-            <li class="roadmap-item">
-                <span class="material-icons-round status-icon">stars</span>
-                <span class="item-text">П.Е.Д.А.Л. на седмицата</span>
-            </li>
-        </ul>
-
-        <footer style="margin-top: 60px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: #666; text-align: center;">
+        <footer style="margin-top: 42px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.84rem; color: #666; text-align: center;">
             &copy; 2026 П.Е.Д.А.Л.🤫 Team. Всички права запазени.
             <span style="margin: 0 10px;">|</span>
             <a href="privacy_policy.html" style="color: #666; text-decoration: none;">Политика за поверителност</a>
         </footer>
-    </div>
+    </main>
 
 </body>
 </html>
