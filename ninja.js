@@ -426,7 +426,7 @@ function updateCommentsAuthUi(authState = getAuthState()) {
 
     if (noteEl) {
         noteEl.hidden = authState.isLoggedIn;
-        noteEl.textContent = 'Вход за коментар';
+        noteEl.textContent = 'Коментарите са видими само за влезли потребители.';
     }
 
     if (sessionEl) {
@@ -449,8 +449,19 @@ function updateCommentsAuthUi(authState = getAuthState()) {
         logoutBtn.hidden = !authState.isLoggedIn;
     }
 
+    syncCommentsCountVisibility(authState);
     updateComposerCounter();
     syncComposerAvailability();
+}
+
+function syncCommentsCountVisibility(authState = getAuthState()) {
+    const isLoggedIn = Boolean(authState?.isLoggedIn);
+    ['ninja-comments-count', 'ninja-comments-toggle-count'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.hidden = !isLoggedIn;
+        }
+    });
 }
 
 function setCommentsStatus(message, options = {}) {
@@ -623,6 +634,18 @@ function syncReactionAuthUi(authState = getAuthState()) {
     if (dislikeBtn) {
         dislikeBtn.title = isLoggedIn ? 'Не харесвам' : 'Влезте, за да реагирате';
     }
+
+    syncReactionCountVisibility(authState);
+}
+
+function syncReactionCountVisibility(authState = getAuthState()) {
+    const isLoggedIn = Boolean(authState?.isLoggedIn);
+    ['ninja-reaction-like-count', 'ninja-reaction-dislike-count'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.hidden = !isLoggedIn;
+        }
+    });
 }
 
 function applyReactionSummary(summary = getEmptyReactionSummary()) {
@@ -712,6 +735,12 @@ async function loadReactionSummaryForCurrentItem(options = {}) {
         applyReactionSummary(cachedSummary || getEmptyReactionSummary(mediaKey));
     }
 
+    const authState = getAuthState();
+    if (!authState.isLoggedIn) {
+        setReactionStatus('Харесванията са видими само за влезли потребители.');
+        return;
+    }
+
     try {
         const summary = await window.PedalReactions.getReactionSummary(mediaKey, {
             forceRefresh: Boolean(options.forceRefresh),
@@ -787,9 +816,15 @@ async function toggleReaction(value) {
 }
 
 async function prefetchCommentsCountForCurrentItem(options = {}) {
+    const authState = getAuthState();
+    if (!authState.isLoggedIn) {
+        setCommentsCount('');
+        return;
+    }
+
     const mediaKey = getCurrentViewerMediaKey();
     if (!mediaKey || !window.PedalComments?.listComments) {
-        setCommentsCount(0);
+        setCommentsCount('');
         return;
     }
 
@@ -840,8 +875,16 @@ async function renderCommentsForCurrentItem(options = {}) {
     ninjaState.commentsRequestId = requestId;
 
     listEl.innerHTML = '';
-    setCommentsStatus('Зареждаме коментари...');
     updateCommentsAuthUi();
+
+    const authState = getAuthState();
+    if (!authState.isLoggedIn) {
+        setCommentsCount('');
+        setCommentsStatus('');
+        return;
+    }
+
+    setCommentsStatus('Зареждаме коментари...');
 
     if (!window.PedalComments) {
         setCommentsStatus('Коментарите временно не са налични.', { isError: true });
@@ -1004,6 +1047,14 @@ function handleAuthStateChange(authState = getAuthState()) {
 
     const viewerEl = document.getElementById('ninja-viewer');
     if (viewerEl?.classList.contains('is-open')) {
+        if (ninjaState.commentsPanelOpen) {
+            renderCommentsForCurrentItem({ forceRefresh: true });
+        } else if (authState.isLoggedIn) {
+            prefetchCommentsCountForCurrentItem({ forceRefresh: true });
+        } else {
+            resetCommentsPanel();
+        }
+
         if (!authState.isLoggedIn) {
             applyReactionSummary({
                 ...(ninjaState.reactionSummary || getEmptyReactionSummary(getCurrentViewerMediaKey())),

@@ -1082,7 +1082,7 @@
                             <div class="ninja-comments-title">
                                 <span class="material-icons-round">forum</span>
                                 <span>Коментари</span>
-                                <span id="ninja-comments-count" class="pedal-comments-count">0</span>
+                                <span id="ninja-comments-count" class="pedal-comments-count" hidden>0</span>
                             </div>
                             <div class="ninja-comments-actions">
                                 <button class="ninja-comments-login" type="button">Вход</button>
@@ -1092,7 +1092,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div id="ninja-comments-note" class="ninja-comments-note">Влезте с акаунта си в ПЕДАЛ, за да коментирате.</div>
+                        <div id="ninja-comments-note" class="ninja-comments-note">Коментарите са видими само за влезли потребители.</div>
                         <div id="ninja-comments-session" class="pedal-comments-session" hidden></div>
                         <form id="ninja-comments-form" class="pedal-comments-compose" hidden>
                             <label class="pedal-comments-compose-label" for="ninja-comment-input">Напиши коментар</label>
@@ -1109,7 +1109,7 @@
                 <button id="ninja-comments-toggle" class="ninja-comments-toggle" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="ninja-comments-layer">
                     <span class="material-icons-round">forum</span>
                     <span>Коментари</span>
-                    <span id="ninja-comments-toggle-count" class="pedal-comments-count">0</span>
+                    <span id="ninja-comments-toggle-count" class="pedal-comments-count" hidden>0</span>
                 </button>
                 <button id="ninja-viewer-next" class="ninja-viewer-nav ninja-viewer-nav-next" type="button" aria-label="Следваща снимка">
                     <span class="material-icons-round">chevron_right</span>
@@ -1123,12 +1123,12 @@
                     <button id="ninja-reaction-like" class="pedal-reaction-button like" type="button" aria-pressed="false">
                         <span id="ninja-reaction-like-icon" class="material-icons-round">thumb_up_off_alt</span>
                         <span class="pedal-reaction-label">Харесвам</span>
-                        <span id="ninja-reaction-like-count" class="pedal-reaction-count">0</span>
+                        <span id="ninja-reaction-like-count" class="pedal-reaction-count" hidden>0</span>
                     </button>
                     <button id="ninja-reaction-dislike" class="pedal-reaction-button dislike" type="button" aria-pressed="false">
                         <span id="ninja-reaction-dislike-icon" class="material-icons-round">thumb_down_off_alt</span>
                         <span class="pedal-reaction-label">Не</span>
-                        <span id="ninja-reaction-dislike-count" class="pedal-reaction-count">0</span>
+                        <span id="ninja-reaction-dislike-count" class="pedal-reaction-count" hidden>0</span>
                     </button>
                 </div>
                 <div id="ninja-viewer-reaction-status" class="pedal-reaction-status" hidden></div>

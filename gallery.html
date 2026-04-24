@@ -1700,7 +1700,7 @@
                             <div class="gallery-comments-title">
                                 <span class="material-icons-round">forum</span>
                                 <span>Коментари</span>
-                                <span id="gallery-comments-count" class="pedal-comments-count">0</span>
+                                <span id="gallery-comments-count" class="pedal-comments-count" hidden>0</span>
                             </div>
                             <div class="gallery-comments-actions">
                                 <button class="gallery-comments-login" type="button">Вход</button>
@@ -1710,7 +1710,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div id="gallery-comments-note" class="gallery-comments-note">Влезте с акаунта си в ПЕДАЛ, за да коментирате.</div>
+                        <div id="gallery-comments-note" class="gallery-comments-note">Коментарите са видими само за влезли потребители.</div>
                         <div id="gallery-comments-session" class="pedal-comments-session" hidden></div>
                         <form id="gallery-comments-form" class="pedal-comments-compose" hidden>
                             <label class="pedal-comments-compose-label" for="gallery-comment-input">Напиши коментар</label>
@@ -1727,7 +1727,7 @@
                 <button id="gallery-comments-toggle" class="gallery-comments-toggle" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="gallery-comments-layer">
                     <span class="material-icons-round">forum</span>
                     <span>Коментари</span>
-                    <span id="gallery-comments-toggle-count" class="pedal-comments-count">0</span>
+                    <span id="gallery-comments-toggle-count" class="pedal-comments-count" hidden>0</span>
                 </button>
                 <button id="gallery-viewer-next" class="gallery-viewer-nav gallery-viewer-nav-next" type="button" aria-label="Следваща снимка или видео">
                     <span class="material-icons-round">chevron_right</span>
@@ -1755,12 +1755,12 @@
                         <button id="gallery-reaction-like" class="pedal-reaction-button like" type="button" aria-pressed="false">
                             <span id="gallery-reaction-like-icon" class="material-icons-round">thumb_up_off_alt</span>
                             <span class="pedal-reaction-label">Харесвам</span>
-                            <span id="gallery-reaction-like-count" class="pedal-reaction-count">0</span>
+                            <span id="gallery-reaction-like-count" class="pedal-reaction-count" hidden>0</span>
                         </button>
                         <button id="gallery-reaction-dislike" class="pedal-reaction-button dislike" type="button" aria-pressed="false">
                             <span id="gallery-reaction-dislike-icon" class="material-icons-round">thumb_down_off_alt</span>
                             <span class="pedal-reaction-label">Не</span>
-                            <span id="gallery-reaction-dislike-count" class="pedal-reaction-count">0</span>
+                            <span id="gallery-reaction-dislike-count" class="pedal-reaction-count" hidden>0</span>
                         </button>
                     </div>
                 </div>
