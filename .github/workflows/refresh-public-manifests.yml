@@ -14,6 +14,7 @@ concurrency:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   refresh:
@@ -53,13 +54,25 @@ jobs:
           PEDAL_AWS_REGION: eu-central-1
         run: node scripts/generate_public_manifests.mjs
 
-      - name: Commit changes
+      - name: Detect generated changes
+        id: changes
         run: |
           if git diff --quiet -- data share scripts/location-cache.json; then
-            echo "No manifest changes detected."
-            exit 0
+            echo "any_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "any_changes=true" >> "$GITHUB_OUTPUT"
           fi
 
+          if git diff --quiet -- data/gallery-manifest.json; then
+            echo "gallery_manifest_changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "gallery_manifest_changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit changes
+        if: steps.changes.outputs.any_changes == 'true'
+        id: commit_changes
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data share scripts/location-cache.json
@@ -72,6 +85,7 @@ jobs:
 
             if git push origin "HEAD:$BRANCH_NAME"; then
               echo "Push succeeded on attempt $attempt."
+              echo "pushed=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
 
@@ -83,3 +97,37 @@ jobs:
             echo "Push rejected on attempt $attempt. Retrying after remote updates..."
             sleep $((attempt * 5))
           done
+
+      - name: No generated changes
+        if: steps.changes.outputs.any_changes != 'true'
+        run: echo "No manifest changes detected."
+
+      - name: Configure AWS credentials for manifest upload (OIDC)
+        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN != ''
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-central-1
+          role-to-assume: ${{ secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN }}
+
+      - name: Configure AWS credentials for manifest upload (static secrets fallback)
+        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN == '' && secrets.PEDAL_AWS_ACCESS_KEY_ID != '' && secrets.PEDAL_AWS_SECRET_ACCESS_KEY != ''
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-central-1
+          aws-access-key-id: ${{ secrets.PEDAL_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PEDAL_AWS_SECRET_ACCESS_KEY }}
+
+      - name: Upload gallery manifest to S3
+        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && (secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN != '' || (secrets.PEDAL_AWS_ACCESS_KEY_ID != '' && secrets.PEDAL_AWS_SECRET_ACCESS_KEY != ''))
+        run: |
+          aws s3 cp \
+            data/gallery-manifest.json \
+            "s3://${{ secrets.PEDAL_S3_BUCKET }}/public/gallery-manifest.json" \
+            --content-type application/json \
+            --cache-control "public,max-age=300,s-maxage=300,must-revalidate"
+
+      - name: Missing manifest upload credentials
+        if: steps.changes.outputs.gallery_manifest_changed == 'true' && steps.commit_changes.outputs.pushed == 'true' && secrets.PEDAL_MANIFEST_UPLOAD_ROLE_ARN == '' && (secrets.PEDAL_AWS_ACCESS_KEY_ID == '' || secrets.PEDAL_AWS_SECRET_ACCESS_KEY == '')
+        run: |
+          echo "::warning::Gallery manifest was refreshed in GitHub, but S3 upload was skipped because no upload credentials are configured."
+          echo "::warning::Add PEDAL_MANIFEST_UPLOAD_ROLE_ARN (recommended) or PEDAL_AWS_ACCESS_KEY_ID / PEDAL_AWS_SECRET_ACCESS_KEY."

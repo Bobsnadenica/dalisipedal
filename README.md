@@ -22,6 +22,12 @@ Generated public data now includes:
 
 `media-reaction-summaries.json` is used by the website for public like/dislike counts, so anonymous visitors do not need live AppSync reads for reactions.
 
+Optional S3 upload for backend automations:
+
+- If you add `PEDAL_MANIFEST_UPLOAD_ROLE_ARN` as a repository secret, the workflow will also upload `data/gallery-manifest.json` to `s3://$PEDAL_S3_BUCKET/public/gallery-manifest.json` after a successful push.
+- This is the recommended setup for backend automations that should react to new public media without scraping GitHub.
+- If OIDC is not available yet, the workflow also supports `PEDAL_AWS_ACCESS_KEY_ID` and `PEDAL_AWS_SECRET_ACCESS_KEY` as a fallback, but the role-based path is preferred.
+
 ## Black map snapshot refresh
 
 `Черна Карта` uses `data/black-map-snapshot.json`, which is generated from the public CloudFront file at `public/statistics.json`.
