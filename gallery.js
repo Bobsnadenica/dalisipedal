@@ -73,7 +73,20 @@ const RANKING_COPY = Object.freeze({
 });
 
 function isVideoFile(item) {
-    return Boolean(item?.isVideo);
+    if (!item) {
+        return false;
+    }
+
+    if (item.isVideo === true) {
+        return true;
+    }
+
+    if (item.isVideo === false) {
+        return false;
+    }
+
+    const candidate = String(item.key || item.url || '').trim().toLowerCase();
+    return /\.(mp4|mov|m4v|webm)(?:$|[?#])/.test(candidate);
 }
 
 function shuffle(items) {
@@ -1359,11 +1372,16 @@ function syncShareButtons() {
     if (facebookBtn) {
         facebookBtn.hidden = !hasShareableMedia;
         facebookBtn.disabled = !hasShareableMedia;
+        facebookBtn.style.display = hasShareableMedia ? '' : 'none';
+        facebookBtn.setAttribute('aria-hidden', hasShareableMedia ? 'false' : 'true');
     }
 
     if (tiktokBtn) {
-        tiktokBtn.hidden = !hasShareableMedia || !isVideo;
-        tiktokBtn.disabled = !hasShareableMedia || !isVideo;
+        const showTikTok = hasShareableMedia && isVideo;
+        tiktokBtn.hidden = !showTikTok;
+        tiktokBtn.disabled = !showTikTok;
+        tiktokBtn.style.display = showTikTok ? '' : 'none';
+        tiktokBtn.setAttribute('aria-hidden', showTikTok ? 'false' : 'true');
     }
 }
 
