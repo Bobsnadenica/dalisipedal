@@ -1,22 +1,202 @@
 {
   "version": 1,
-  "generatedAt": "2026-04-23T11:27:27.881Z",
-  "itemCount": 514,
+  "generatedAt": "2026-04-26T08:02:09.884Z",
+  "itemCount": 535,
   "featured": {
     "week": {
-      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1775381185024.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1775381185024.jpg",
-      "lastModified": "2026-04-05T09:26:26.000Z",
+      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1777061846798.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1777061846798.jpg",
+      "lastModified": "2026-04-24T20:17:28.000Z",
       "isVideo": false
     },
     "month": {
-      "key": "pedal_of_the_month/pedal_1775381235327.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1775381235327.jpg",
-      "lastModified": "2026-04-05T09:27:16.000Z",
+      "key": "pedal_of_the_month/pedal_1777061812596.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1777061812596.jpg",
+      "lastModified": "2026-04-24T20:16:54.000Z",
       "isVideo": false
     }
   },
   "items": [
+    {
+      "key": "approved/CB/3112HE/POD_1777061846798_e25769.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3112HE/POD_1777061846798_e25769.jpg",
+      "timestamp": "2026-04-24T20:15:43.541020000Z",
+      "location": "42.728519, 23.248012",
+      "locationLabel": "Георги Икономов, ж.к. Люлин 2, София",
+      "latitude": 42.72851933355837,
+      "longitude": 23.248011650008625,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/8968MT/POM_1777061812596_ae918a.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/8968MT/POM_1777061812596_ae918a.jpg",
+      "timestamp": "2026-04-24T20:15:17.389517000Z",
+      "location": "42.697715, 23.321918",
+      "locationLabel": "бул. Княз Александър Дондуков, Център, София",
+      "latitude": 42.69771482736136,
+      "longitude": 23.32191845124908,
+      "isVideo": false
+    },
+    {
+      "key": "approved/DB/1049BH/DB1049BH_872d00257984.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/DB/1049BH/DB1049BH_872d00257984.jpg",
+      "timestamp": "2026-04-24T16:34:55.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PA/1689KK/PA1689KK_ead990dcbbfe.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PA/1689KK/PA1689KK_ead990dcbbfe.jpg",
+      "timestamp": "2026-04-24T16:34:54.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CO/1432CM/CO1432CM_b4d4cec9e73b.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CO/1432CM/CO1432CM_b4d4cec9e73b.jpg",
+      "timestamp": "2026-04-24T16:34:54.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/9717HT/CB9717HT_a6bf40847139.jpeg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/9717HT/CB9717HT_a6bf40847139.jpeg",
+      "timestamp": "2026-04-24T16:34:54.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/4893EO/CB4893EO_db63ae23a456.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/4893EO/CB4893EO_db63ae23a456.jpg",
+      "timestamp": "2026-04-24T16:34:53.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/8886AO/CB8886AO_a15c2042733b.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/8886AO/CB8886AO_a15c2042733b.jpg",
+      "timestamp": "2026-04-24T16:34:53.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/4440KM/CB4440KM_5d38824a7086.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/4440KM/CB4440KM_5d38824a7086.jpg",
+      "timestamp": "2026-04-24T16:34:53.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/3538BA/CB3538BA_8cdcd3f1e952.jpeg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3538BA/CB3538BA_8cdcd3f1e952.jpeg",
+      "timestamp": "2026-04-24T16:34:52.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/4351CO2/CB4351CO2_19ceb203471d.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/4351CO2/CB4351CO2_19ceb203471d.jpg",
+      "timestamp": "2026-04-24T16:34:52.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/4351CO/CB4351CO_70e21713993b.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/4351CO/CB4351CO_70e21713993b.jpg",
+      "timestamp": "2026-04-24T16:34:52.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/2243MX/CB2243MX_b108d7551eec.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/2243MX/CB2243MX_b108d7551eec.jpg",
+      "timestamp": "2026-04-24T16:34:51.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/0456MO/CB0456MO_7c06e63b5b03.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/0456MO/CB0456MO_7c06e63b5b03.jpg",
+      "timestamp": "2026-04-24T16:34:50.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/2186CH/CB2186CH_66f9fec6b0d3.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/2186CH/CB2186CH_66f9fec6b0d3.jpg",
+      "timestamp": "2026-04-24T16:34:50.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1221MX/CB1221MX_840a97720c78.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1221MX/CB1221MX_840a97720c78.jpg",
+      "timestamp": "2026-04-24T16:34:50.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/BP/6476CH/BP6476CH_08e70a512545.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/BP/6476CH/BP6476CH_08e70a512545.jpg",
+      "timestamp": "2026-04-24T16:34:50.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PB/3949HE/PB3949HE_46ea3ee0b10e.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/3949HE/PB3949HE_46ea3ee0b10e.jpg",
+      "timestamp": "2026-04-23T12:07:54.000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 0,
+      "longitude": 0,
+      "isVideo": false
+    },
     {
       "key": "approved/BP/6476CH/BP6476CH_292f0ff383f8.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/BP/6476CH/BP6476CH_292f0ff383f8.jpg",
@@ -108,6 +288,26 @@
       "isVideo": false
     },
     {
+      "key": "approved/CB/8854PC/20260424_20145_1d6ac5.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/8854PC/20260424_20145_1d6ac5.jpg",
+      "timestamp": "2026-04-17T12:51:51.117266000Z",
+      "location": "42.72198, 23.25764",
+      "locationLabel": "Гоце Делчев 57, ж.к. Люлин, София",
+      "latitude": 42.72197979097276,
+      "longitude": 23.257640119298216,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/8854PC/20260424_174631_5fd5e6.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/8854PC/20260424_174631_5fd5e6.jpg",
+      "timestamp": "2026-04-17T12:51:15.391014000Z",
+      "location": "42.72201, 23.25756",
+      "locationLabel": "3011-та 1, ж.к. Люлин, София",
+      "latitude": 42.72200830193323,
+      "longitude": 23.257558049874195,
+      "isVideo": false
+    },
+    {
       "key": "approved/CB/2240HC/20260421_102638_12796a.mp4",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/2240HC/20260421_102638_12796a.mp4",
       "timestamp": "2026-04-16T14:35:19.499684000Z",
@@ -165,6 +365,16 @@
       "locationLabel": "бл. 220, ж.к. Младост 2, София",
       "latitude": 42.642063515293394,
       "longitude": 23.372310835033907,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CA/1033XM/20260424_174155_312823.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CA/1033XM/20260424_174155_312823.jpg",
+      "timestamp": "2026-04-15T18:37:46.153131000Z",
+      "location": "42.64811, 23.40773",
+      "locationLabel": "ж.к. Дружба, София",
+      "latitude": 42.6481084336486,
+      "longitude": 23.40773378201306,
       "isVideo": false
     },
     {
