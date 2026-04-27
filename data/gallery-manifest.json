@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-04-26T08:02:09.884Z",
-  "itemCount": 535,
+  "generatedAt": "2026-04-27T09:04:42.613Z",
+  "itemCount": 536,
   "featured": {
     "week": {
       "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1777061846798.jpg",
@@ -225,6 +225,16 @@
       "locationLabel": "",
       "latitude": 0,
       "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/6269PE/20260426_202440_fd7745.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/6269PE/20260426_202440_fd7745.jpg",
+      "timestamp": "2026-04-21T06:20:38.434523000Z",
+      "location": "42.66447, 23.29558",
+      "locationLabel": "ж.к. Гоце Делчев, София",
+      "latitude": 42.66447280494497,
+      "longitude": 23.295583117747743,
       "isVideo": false
     },
     {
