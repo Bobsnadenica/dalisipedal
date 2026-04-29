@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-04-28T08:43:42.749Z",
-  "itemCount": 536,
+  "generatedAt": "2026-04-29T08:37:59.469Z",
+  "itemCount": 537,
   "featured": {
     "week": {
       "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1777061846798.jpg",
@@ -315,6 +315,16 @@
       "locationLabel": "3011-та 1, ж.к. Люлин, София",
       "latitude": 42.72200830193323,
       "longitude": 23.257558049874195,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/5150TO/20260429_54216_f59fc8.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/5150TO/20260429_54216_f59fc8.jpg",
+      "timestamp": "2026-04-16T14:49:03.161216000Z",
+      "location": "42.66990, 23.25641",
+      "locationLabel": "Любляна, кв. Овча купел, София",
+      "latitude": 42.66990479794419,
+      "longitude": 23.256410990973094,
       "isVideo": false
     },
     {
