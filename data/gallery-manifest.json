@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-03T08:19:45.004Z",
-  "itemCount": 537,
+  "generatedAt": "2026-05-04T09:03:21.778Z",
+  "itemCount": 538,
   "featured": {
     "week": {
       "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1777061846798.jpg",
@@ -225,6 +225,16 @@
       "locationLabel": "",
       "latitude": 0,
       "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/8456TE/20260503_9459_be10d7.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/8456TE/20260503_9459_be10d7.jpg",
+      "timestamp": "2026-04-21T12:00:38.430796000Z",
+      "location": "42.63988, 23.36857",
+      "locationLabel": "бл. 208, ж.к. Младост 2, София",
+      "latitude": 42.63987993192843,
+      "longitude": 23.368567728786225,
       "isVideo": false
     },
     {
