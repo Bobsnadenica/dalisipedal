@@ -1,22 +1,32 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-04T09:03:21.778Z",
-  "itemCount": 538,
+  "generatedAt": "2026-05-05T08:32:30.537Z",
+  "itemCount": 553,
   "featured": {
     "week": {
-      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1777061846798.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1777061846798.jpg",
-      "lastModified": "2026-04-24T20:17:28.000Z",
+      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1777919268839.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1777919268839.jpg",
+      "lastModified": "2026-05-04T18:28:04.000Z",
       "isVideo": false
     },
     "month": {
-      "key": "pedal_of_the_month/pedal_1777061812596.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1777061812596.jpg",
-      "lastModified": "2026-04-24T20:16:54.000Z",
+      "key": "pedal_of_the_month/pedal_1777919560357.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1777919560357.jpg",
+      "lastModified": "2026-05-04T18:33:02.000Z",
       "isVideo": false
     }
   },
   "items": [
+    {
+      "key": "approved/A/7548KM/POM_1777919560357_f87678.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/A/7548KM/POM_1777919560357_f87678.jpg",
+      "timestamp": "2026-05-01T11:52:04.023604000Z",
+      "location": "42.49298, 27.46201",
+      "locationLabel": "Св. Климент Охридски, ЖП Фондови жилища, Бургас",
+      "latitude": 42.49298124562033,
+      "longitude": 27.46201190193761,
+      "isVideo": false
+    },
     {
       "key": "approved/CB/3112HE/POD_1777061846798_e25769.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3112HE/POD_1777061846798_e25769.jpg",
@@ -228,6 +238,86 @@
       "isVideo": false
     },
     {
+      "key": "approved/CB/7944XT/20260504_182940_fe24f9.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/7944XT/20260504_182940_fe24f9.jpg",
+      "timestamp": "2026-04-23T07:41:47.399595000Z",
+      "location": "42.66445, 23.29557",
+      "locationLabel": "ж.к. Гоце Делчев, София",
+      "latitude": 42.664450026418606,
+      "longitude": 23.295565319293914,
+      "isVideo": false
+    },
+    {
+      "key": "approved/A/3865PM/20260504_182913_99dd6e.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/A/3865PM/20260504_182913_99dd6e.jpg",
+      "timestamp": "2026-04-23T06:13:33.303209000Z",
+      "location": "42.50004, 27.46574",
+      "locationLabel": "Св. Патриарх Евтимий, ж.к. Възраждане, Бургас",
+      "latitude": 42.50003670783287,
+      "longitude": 27.465736055075126,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/2167CT/POD_1777919268839_5ac47d.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/2167CT/POD_1777919268839_5ac47d.jpg",
+      "timestamp": "2026-04-23T04:12:21.938030000Z",
+      "location": "42.15574, 24.71445",
+      "locationLabel": "бул. България 123, Марица гардънс, Пловдив",
+      "latitude": 42.155742700000005,
+      "longitude": 24.714454366666672,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1693XC/20260504_182715_5920ca.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1693XC/20260504_182715_5920ca.jpg",
+      "timestamp": "2026-04-22T17:08:51.089977000Z",
+      "location": "42.66444, 23.29557",
+      "locationLabel": "ж.к. Гоце Делчев, София",
+      "latitude": 42.66443750318707,
+      "longitude": 23.295568736613898,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CA/1758XP/20260504_182841_1e843e.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CA/1758XP/20260504_182841_1e843e.jpg",
+      "timestamp": "2026-04-22T13:23:32.250141000Z",
+      "location": "42.72653, 23.26151",
+      "locationLabel": "бул. Панчо Владигеров, ж.к. Люлин, София",
+      "latitude": 42.726530421062144,
+      "longitude": 23.261511692540093,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/3983HC/20260504_182626_59ec9e.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3983HC/20260504_182626_59ec9e.jpg",
+      "timestamp": "2026-04-22T13:22:22.817095000Z",
+      "location": "42.72643, 23.26249",
+      "locationLabel": "бул. Сливница 94, кв. Модерно предградие, София",
+      "latitude": 42.726434844542595,
+      "longitude": 23.262492778031103,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CA/5303TC/20260504_182557_125bde.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CA/5303TC/20260504_182557_125bde.jpg",
+      "timestamp": "2026-04-22T06:54:46.946584000Z",
+      "location": "42.72209, 23.25744",
+      "locationLabel": "Гоце Делчев 57, ж.к. Люлин, София",
+      "latitude": 42.722091847353596,
+      "longitude": 23.257438312609853,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/9500TB/20260504_182518_d1c92a.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/9500TB/20260504_182518_d1c92a.jpg",
+      "timestamp": "2026-04-22T06:54:06.007456000Z",
+      "location": "42.72217, 23.25752",
+      "locationLabel": "Гоце Делчев 57, ж.к. Люлин, София",
+      "latitude": 42.72216910763823,
+      "longitude": 23.257520352914014,
+      "isVideo": false
+    },
+    {
       "key": "approved/CB/8456TE/20260503_9459_be10d7.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/8456TE/20260503_9459_be10d7.jpg",
       "timestamp": "2026-04-21T12:00:38.430796000Z",
@@ -238,6 +328,16 @@
       "isVideo": false
     },
     {
+      "key": "approved/CB/3968AK/20260504_182356_35c225.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3968AK/20260504_182356_35c225.jpg",
+      "timestamp": "2026-04-21T08:59:47.057805000Z",
+      "location": "42.14838, 24.75267",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1483794,
+      "longitude": 24.752665,
+      "isVideo": false
+    },
+    {
       "key": "approved/CB/6269PE/20260426_202440_fd7745.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/6269PE/20260426_202440_fd7745.jpg",
       "timestamp": "2026-04-21T06:20:38.434523000Z",
@@ -245,6 +345,16 @@
       "locationLabel": "ж.к. Гоце Делчев, София",
       "latitude": 42.66447280494497,
       "longitude": 23.295583117747743,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/8196KO/20260504_182324_a63c46.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/8196KO/20260504_182324_a63c46.jpg",
+      "timestamp": "2026-04-21T06:08:06.330951000Z",
+      "location": "42.66444, 23.29557",
+      "locationLabel": "ж.к. Гоце Делчев, София",
+      "latitude": 42.66444385521454,
+      "longitude": 23.295566784188917,
       "isVideo": false
     },
     {
@@ -278,6 +388,26 @@
       "isVideo": false
     },
     {
+      "key": "approved/CB/1484HH/20260504_182436_85a62e.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1484HH/20260504_182436_85a62e.jpg",
+      "timestamp": "2026-04-19T16:03:07.998936000Z",
+      "location": "42.67374, 23.31224",
+      "locationLabel": "Богатица, ж.к. Лозенец, София",
+      "latitude": 42.67373594653509,
+      "longitude": 23.312239567061,
+      "isVideo": false
+    },
+    {
+      "key": "approved/A/1276XP/20260504_182256_1697c9.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/A/1276XP/20260504_182256_1697c9.jpg",
+      "timestamp": "2026-04-19T14:01:45.079734000Z",
+      "location": "42.49886, 27.46659",
+      "locationLabel": "Любен Каравелов 41, ж.к. Възраждане, Бургас",
+      "latitude": 42.49885990060637,
+      "longitude": 27.466594846811972,
+      "isVideo": false
+    },
+    {
       "key": "approved/E/7715HK/20260420_175710_608f93.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/E/7715HK/20260420_175710_608f93.jpg",
       "timestamp": "2026-04-19T11:51:03.489526000Z",
@@ -306,6 +436,26 @@
       "latitude": 42.66162749809416,
       "longitude": 23.251144087194742,
       "isVideo": false
+    },
+    {
+      "key": "approved/CB/7544TE/20260504_18228_7af9e6.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/7544TE/20260504_18228_7af9e6.jpg",
+      "timestamp": "2026-04-17T17:53:07.141694000Z",
+      "location": "42.70060, 23.28636",
+      "locationLabel": "бл. 62, ж.к. Разсадник-Коньовица, София",
+      "latitude": 42.7006005765504,
+      "longitude": 23.286360850750203,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/9661ME/20260504_182152_643761.mp4",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/9661ME/20260504_182152_643761.mp4",
+      "timestamp": "2026-04-17T14:32:14.901938000Z",
+      "location": "42.69741, 23.28634",
+      "locationLabel": "бл. 34, ж.к. Красна поляна 1, София",
+      "latitude": 42.69741308140779,
+      "longitude": 23.286342138512754,
+      "isVideo": true
     },
     {
       "key": "approved/CB/8854PC/20260424_20145_1d6ac5.jpg",
