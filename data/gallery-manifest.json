@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-10T08:26:44.668Z",
-  "itemCount": 554,
+  "generatedAt": "2026-05-11T10:06:43.187Z",
+  "itemCount": 555,
   "featured": {
     "week": {
-      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1777919268839.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1777919268839.jpg",
-      "lastModified": "2026-05-04T18:28:04.000Z",
+      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1778433712714.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1778433712714.jpg",
+      "lastModified": "2026-05-10T17:22:10.000Z",
       "isVideo": false
     },
     "month": {
@@ -17,6 +17,16 @@
     }
   },
   "items": [
+    {
+      "key": "approved/CB/4000XM/POD_1778433712714_8a76a9.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/4000XM/POD_1778433712714_8a76a9.jpg",
+      "timestamp": "2026-05-10T17:21:13.003813000Z",
+      "location": "42.722040, 23.260018",
+      "locationLabel": "Златопласт, ж.к. Люлин, София",
+      "latitude": 42.722040379217525,
+      "longitude": 23.26001774426744,
+      "isVideo": false
+    },
     {
       "key": "approved/A/7548KM/POM_1777919560357_f87678.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/A/7548KM/POM_1777919560357_f87678.jpg",

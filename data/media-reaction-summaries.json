@@ -1,8 +1,14 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-10T08:27:31.598Z",
-  "itemCount": 606,
+  "generatedAt": "2026-05-11T10:07:18.031Z",
+  "itemCount": 607,
   "items": [
+    {
+      "mediaKey": "approved/CB/4000XM/POD_1778433712714_8a76a9.jpg",
+      "likes": 0,
+      "dislikes": 0,
+      "updatedAt": null
+    },
     {
       "mediaKey": "approved/A/7548KM/POM_1777919560357_f87678.jpg",
       "likes": 0,
@@ -3328,10 +3334,10 @@
       "updatedAt": null
     },
     {
-      "mediaKey": "pedal_of_the_month/pedal_of_the_day/pedal_day_1777919268839.jpg",
-      "likes": 2,
+      "mediaKey": "pedal_of_the_month/pedal_of_the_day/pedal_day_1778433712714.jpg",
+      "likes": 0,
       "dislikes": 0,
-      "updatedAt": "2026-05-09T14:57:04.927Z"
+      "updatedAt": null
     },
     {
       "mediaKey": "pedal_of_the_month/pedal_1777919560357.jpg",
