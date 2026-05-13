@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-12T09:19:12.747Z",
-  "itemCount": 555,
+  "generatedAt": "2026-05-13T09:25:16.995Z",
+  "itemCount": 563,
   "featured": {
     "week": {
       "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1778433712714.jpg",
@@ -10,9 +10,9 @@
       "isVideo": false
     },
     "month": {
-      "key": "pedal_of_the_month/pedal_1777919560357.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1777919560357.jpg",
-      "lastModified": "2026-05-04T18:33:02.000Z",
+      "key": "pedal_of_the_month/pedal_1778601024211.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1778601024211.jpg",
+      "lastModified": "2026-05-12T15:50:37.000Z",
       "isVideo": false
     }
   },
@@ -35,6 +35,56 @@
       "locationLabel": "Св. Климент Охридски, ЖП Фондови жилища, Бургас",
       "latitude": 42.49298124562033,
       "longitude": 27.46201190193761,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CO/7170KB/POM_1778601024211_eb18bf.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CO/7170KB/POM_1778601024211_eb18bf.jpg",
+      "timestamp": "2026-04-30T15:20:10.660113000Z",
+      "location": "42.66890, 23.27462",
+      "locationLabel": "Ген. Александър В. Суворов, ж.к. Бъкстон, София",
+      "latitude": 42.66890131876018,
+      "longitude": 23.27462467203222,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1309MK/20260512_154933_cbd26f.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1309MK/20260512_154933_cbd26f.jpg",
+      "timestamp": "2026-04-28T13:15:15.317829000Z",
+      "location": "42.14846, 24.75255",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1484558,
+      "longitude": 24.7525472,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/0958XO/20260512_15497_eb7df4.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/0958XO/20260512_15497_eb7df4.jpg",
+      "timestamp": "2026-04-27T18:35:04.560829000Z",
+      "location": "42.64538, 23.39305",
+      "locationLabel": "бул. Цариградско шосе, 7-ми 11-ти километър, София",
+      "latitude": 42.64537624934231,
+      "longitude": 23.393051503833494,
+      "isVideo": false
+    },
+    {
+      "key": "approved/A/7925HT/20260512_154844_13c2c2.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/A/7925HT/20260512_154844_13c2c2.jpg",
+      "timestamp": "2026-04-25T15:35:44.258747000Z",
+      "location": "42.14883, 24.75232",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.148828,
+      "longitude": 24.7523194,
+      "isVideo": false
+    },
+    {
+      "key": "approved/A/7629PC/20260512_154818_2a09db.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/A/7629PC/20260512_154818_2a09db.jpg",
+      "timestamp": "2026-04-25T12:45:04.339640000Z",
+      "location": "42.66067, 23.24768",
+      "locationLabel": "бул. Цар Борис III 268, кв. Княжево, София",
+      "latitude": 42.66067108424936,
+      "longitude": 23.247684517940627,
       "isVideo": false
     },
     {
@@ -205,6 +255,36 @@
       "locationLabel": "",
       "latitude": 0,
       "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PB/1621CE/20260512_154748_8fc588.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/1621CE/20260512_154748_8fc588.jpg",
+      "timestamp": "2026-04-24T16:26:49.515963000Z",
+      "location": "42.14840, 24.75263",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1484001,
+      "longitude": 24.7526277,
+      "isVideo": false
+    },
+    {
+      "key": "approved/B/3072TH/20260512_154724_ae7b65.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/B/3072TH/20260512_154724_ae7b65.jpg",
+      "timestamp": "2026-04-24T15:08:24.433676000Z",
+      "location": "42.148708, 24.752284",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.148708,
+      "longitude": 24.7522844,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/6682HA/20260512_15470_cbfc20.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/6682HA/20260512_15470_cbfc20.jpg",
+      "timestamp": "2026-04-24T14:06:35.290340000Z",
+      "location": "42.72109, 23.25299",
+      "locationLabel": "Ген. Михаил Савов, ж.к. Люлин, София",
+      "latitude": 42.721087555441024,
+      "longitude": 23.252990953645906,
       "isVideo": false
     },
     {
