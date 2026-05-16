@@ -1,22 +1,132 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-15T09:29:37.934Z",
-  "itemCount": 563,
+  "generatedAt": "2026-05-16T08:23:54.302Z",
+  "itemCount": 600,
   "featured": {
     "week": {
-      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1778433712714.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1778433712714.jpg",
-      "lastModified": "2026-05-10T17:22:10.000Z",
+      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1778851412932.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1778851412932.jpg",
+      "lastModified": "2026-05-15T13:24:13.000Z",
       "isVideo": false
     },
     "month": {
-      "key": "pedal_of_the_month/pedal_1778601024211.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1778601024211.jpg",
-      "lastModified": "2026-05-12T15:50:37.000Z",
+      "key": "pedal_of_the_month/pedal_1778855395661.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1778855395661.jpg",
+      "lastModified": "2026-05-15T14:30:13.000Z",
       "isVideo": false
     }
   },
   "items": [
+    {
+      "key": "approved/B/1414CA/20260515_144129_78a1bf.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/B/1414CA/20260515_144129_78a1bf.jpg",
+      "timestamp": "2026-05-15T04:57:46.032809000Z",
+      "location": "43.53320, 26.52694",
+      "locationLabel": "Васил Левски, ж. к. Васил Левски, Разград",
+      "latitude": 43.53319534858719,
+      "longitude": 26.526943724689396,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1309MK/20260515_144048_2cfd83.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1309MK/20260515_144048_2cfd83.jpg",
+      "timestamp": "2026-05-14T14:46:37.438511000Z",
+      "location": "42.14843, 24.75257",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.148433,
+      "longitude": 24.7525672,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PB/3407XC/20260515_14417_bde8a5.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/3407XC/20260515_14417_bde8a5.jpg",
+      "timestamp": "2026-05-14T13:58:49.138935000Z",
+      "location": "42.14839, 24.75264",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1483899,
+      "longitude": 24.7526363,
+      "isVideo": false
+    },
+    {
+      "key": "approved/00/000000/20260515_144013_fec26b.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/00/000000/20260515_144013_fec26b.jpg",
+      "timestamp": "2026-05-13T15:34:43.677316000Z",
+      "location": "",
+      "locationLabel": "",
+      "latitude": 42.69770106536237,
+      "longitude": 23.32191857418554,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/0271TM/20260515_143710_0e77be.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/0271TM/20260515_143710_0e77be.jpg",
+      "timestamp": "2026-05-13T13:54:59.734457000Z",
+      "location": "42.72214, 23.25739",
+      "locationLabel": "Гоце Делчев 57, ж.к. Люлин, София",
+      "latitude": 42.72213744961465,
+      "longitude": 23.257391592018497,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/8458ME/20260515_143622_f5bdb1.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/8458ME/20260515_143622_f5bdb1.jpg",
+      "timestamp": "2026-05-13T04:16:52.955928000Z",
+      "location": "42.69445, 23.31480",
+      "locationLabel": "бул. Македония, Център, София",
+      "latitude": 42.6944488,
+      "longitude": 23.3147995,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PB/3407XC/20260515_143554_cf4937.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/3407XC/20260515_143554_cf4937.jpg",
+      "timestamp": "2026-05-12T10:45:00.235015000Z",
+      "location": "42.14835, 24.75265",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.148353,
+      "longitude": 24.752651,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/7216HT/20260515_143532_b4235d.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/7216HT/20260515_143532_b4235d.jpg",
+      "timestamp": "2026-05-11T15:39:27.083858000Z",
+      "location": "42.72162, 23.26395",
+      "locationLabel": "Юмрукчал, ж.к. Люлин, София",
+      "latitude": 42.72162,
+      "longitude": 23.263949,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/7917MA/20260515_143448_244b6c.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/7917MA/20260515_143448_244b6c.jpg",
+      "timestamp": "2026-05-11T12:36:48.504909000Z",
+      "location": "42.66444, 23.29560",
+      "locationLabel": "ж.к. Гоце Делчев, София",
+      "latitude": 42.664438727198444,
+      "longitude": 23.29559793766312,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1108XE/20260515_143431_22229c.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1108XE/20260515_143431_22229c.jpg",
+      "timestamp": "2026-05-11T10:19:46.773030000Z",
+      "location": "42.66699, 23.27522",
+      "locationLabel": "бл. 17, ж.к. Бъкстон, София",
+      "latitude": 42.66698518215826,
+      "longitude": 23.27522148007081,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/9733MT/20260515_143414_7cb10f.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/9733MT/20260515_143414_7cb10f.jpg",
+      "timestamp": "2026-05-11T10:00:12.210742000Z",
+      "location": "42.66242, 23.28023",
+      "locationLabel": "Борис Димовски 6, кв. Манастирски ливади, София",
+      "latitude": 42.662421235549566,
+      "longitude": 23.28023158578886,
+      "isVideo": false
+    },
     {
       "key": "approved/CB/4000XM/POD_1778433712714_8a76a9.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/4000XM/POD_1778433712714_8a76a9.jpg",
@@ -25,6 +135,166 @@
       "locationLabel": "Златопласт, ж.к. Люлин, София",
       "latitude": 42.722040379217525,
       "longitude": 23.26001774426744,
+      "isVideo": false
+    },
+    {
+      "key": "approved/C/4152KT/20260515_143327_0c1712.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/C/4152KT/20260515_143327_0c1712.jpg",
+      "timestamp": "2026-05-10T06:05:21.800915000Z",
+      "location": "42.64838, 23.40514",
+      "locationLabel": "бул. Копенхаген, ж.к. Дружба, София",
+      "latitude": 42.6483815,
+      "longitude": 23.4051421,
+      "isVideo": false
+    },
+    {
+      "key": "approved/00/838M438/20260515_143252_fa1d6c.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/00/838M438/20260515_143252_fa1d6c.jpg",
+      "timestamp": "2026-05-09T15:52:31.488640000Z",
+      "location": "42.13390, 24.79414",
+      "locationLabel": "Шипка, Търговски, Пловдив",
+      "latitude": 42.133898854588345,
+      "longitude": 24.794139204368115,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/5286CO/20260515_143152_0a3394.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/5286CO/20260515_143152_0a3394.jpg",
+      "timestamp": "2026-05-08T18:01:45.274940000Z",
+      "location": "42.14850, 24.75252",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1484972,
+      "longitude": 24.7525182,
+      "isVideo": false
+    },
+    {
+      "key": "approved/B/4145TA/20260515_143130_584be3.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/B/4145TA/20260515_143130_584be3.jpg",
+      "timestamp": "2026-05-08T17:56:25.620474000Z",
+      "location": "42.148393, 24.752643",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1483927,
+      "longitude": 24.7526434,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/6863TP/20260515_143058_d58ebf.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/6863TP/20260515_143058_d58ebf.jpg",
+      "timestamp": "2026-05-08T08:05:04.594439000Z",
+      "location": "42.66163, 23.28303",
+      "locationLabel": "Борис Димовски 18, кв. Манастирски ливади, София",
+      "latitude": 42.66162964123206,
+      "longitude": 23.28302907084495,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1309MK/20260515_143025_3ad255.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1309MK/20260515_143025_3ad255.jpg",
+      "timestamp": "2026-05-07T15:00:33.677459000Z",
+      "location": "42.14840, 24.75264",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1483961,
+      "longitude": 24.7526389,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PB/2567CE/POM_1778855395661_263d08.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/2567CE/POM_1778855395661_263d08.jpg",
+      "timestamp": "2026-05-07T12:42:09.000000000Z",
+      "location": "Няма локация.",
+      "locationLabel": "Няма локация.",
+      "latitude": 42.6977,
+      "longitude": 23.3219,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PA/2139BC/20260515_142715_f41944.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PA/2139BC/20260515_142715_f41944.jpg",
+      "timestamp": "2026-05-07T09:28:53.362616000Z",
+      "location": "42.66548, 23.27787",
+      "locationLabel": "Ген. Стефан Тошев 76, кв. Манастирски ливади, София",
+      "latitude": 42.66548372758045,
+      "longitude": 23.277865784884522,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/5705MC/20260515_142628_63a6aa.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/5705MC/20260515_142628_63a6aa.jpg",
+      "timestamp": "2026-05-07T09:02:56.410798000Z",
+      "location": "42.66308, 23.27926",
+      "locationLabel": "Борис Димовски, кв. Манастирски ливади, София",
+      "latitude": 42.66308136767521,
+      "longitude": 23.27925641184091,
+      "isVideo": false
+    },
+    {
+      "key": "approved/A/1312HB/20260515_142559_32173e.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/A/1312HB/20260515_142559_32173e.jpg",
+      "timestamp": "2026-05-06T20:35:54.884861000Z",
+      "location": "42.50509, 27.47788",
+      "locationLabel": "бл. 87, ж.к. Лазур, Бургас",
+      "latitude": 42.50508662933817,
+      "longitude": 27.477877784394604,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PB/6491CE/20260515_142532_130aa7.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/6491CE/20260515_142532_130aa7.jpg",
+      "timestamp": "2026-05-06T12:45:18.209797000Z",
+      "location": "42.14854, 24.75249",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1485373,
+      "longitude": 24.7524864,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/0598HT/20260515_142514_b5f389.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/0598HT/20260515_142514_b5f389.jpg",
+      "timestamp": "2026-05-05T14:44:13.707062000Z",
+      "location": "42.66936, 23.27660",
+      "locationLabel": "бул. Братя Бъкстон 28, ж.к. Бъкстон, София",
+      "latitude": 42.6693604,
+      "longitude": 23.2765966,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PB/0557CE/20260515_13254_0334be.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/0557CE/20260515_13254_0334be.jpg",
+      "timestamp": "2026-05-05T14:21:47.642867000Z",
+      "location": "42.66641, 23.27860",
+      "locationLabel": "Пирин 26, кв. Манастирски ливади, София",
+      "latitude": 42.666405637766175,
+      "longitude": 23.278604143807687,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PB/5211KE/20260515_132423_3e426b.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/5211KE/20260515_132423_3e426b.jpg",
+      "timestamp": "2026-05-03T11:39:01.468691000Z",
+      "location": "42.14880, 24.75224",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1487953,
+      "longitude": 24.7522398,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1076XP/POD_1778851412932_8d3338.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1076XP/POD_1778851412932_8d3338.jpg",
+      "timestamp": "2026-05-03T09:04:24.981377000Z",
+      "location": "42.72210, 23.26006",
+      "locationLabel": "Златопласт, ж.к. Люлин, София",
+      "latitude": 42.722097,
+      "longitude": 23.260061,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1430TA/20260515_132255_0b8ca6.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1430TA/20260515_132255_0b8ca6.jpg",
+      "timestamp": "2026-05-01T16:14:40.890092000Z",
+      "location": "42.66206, 23.28157",
+      "locationLabel": "Паша Христова 13, кв. Манастирски ливади, София",
+      "latitude": 42.662062346665806,
+      "longitude": 23.28157274883508,
       "isVideo": false
     },
     {
@@ -48,6 +318,46 @@
       "isVideo": false
     },
     {
+      "key": "approved/C/3906MX/20260515_132237_083849.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/C/3906MX/20260515_132237_083849.jpg",
+      "timestamp": "2026-04-30T15:02:31.134321000Z",
+      "location": "42.66967, 23.27308",
+      "locationLabel": "Казбек 14А, ж.к. Бъкстон, София",
+      "latitude": 42.66966975049242,
+      "longitude": 23.27308276389125,
+      "isVideo": false
+    },
+    {
+      "key": "approved/BT/3566KM/20260515_132218_8e210f.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/BT/3566KM/20260515_132218_8e210f.jpg",
+      "timestamp": "2026-04-30T12:44:20.877646000Z",
+      "location": "43.22304, 27.92732",
+      "locationLabel": "Петър Райчев бл. 4, кв. Левски, Варна",
+      "latitude": 43.2230429,
+      "longitude": 27.9273185,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/9674XK/20260515_132131_be9909.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/9674XK/20260515_132131_be9909.jpg",
+      "timestamp": "2026-04-29T15:26:14.068868000Z",
+      "location": "42.14875, 24.75233",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1487506,
+      "longitude": 24.7523327,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CA/9475XK/20260515_13219_30b68a.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CA/9475XK/20260515_13219_30b68a.jpg",
+      "timestamp": "2026-04-29T10:25:09.273083000Z",
+      "location": "42.66890, 23.27459",
+      "locationLabel": "Ген. Александър В. Суворов, ж.к. Бъкстон, София",
+      "latitude": 42.66890079670696,
+      "longitude": 23.274590278888486,
+      "isVideo": false
+    },
+    {
       "key": "approved/CB/1309MK/20260512_154933_cbd26f.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1309MK/20260512_154933_cbd26f.jpg",
       "timestamp": "2026-04-28T13:15:15.317829000Z",
@@ -65,6 +375,16 @@
       "locationLabel": "бул. Цариградско шосе, 7-ми 11-ти километър, София",
       "latitude": 42.64537624934231,
       "longitude": 23.393051503833494,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/7172AP/20260515_132053_6adb9a.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/7172AP/20260515_132053_6adb9a.jpg",
+      "timestamp": "2026-04-26T05:40:18.621701000Z",
+      "location": "42.65017, 23.40841",
+      "locationLabel": "бул. Проф. Цветан Лазаров 140, ж.к. Дружба, София",
+      "latitude": 42.650167,
+      "longitude": 23.408412,
       "isVideo": false
     },
     {
@@ -105,6 +425,16 @@
       "locationLabel": "бул. Княз Александър Дондуков, Център, София",
       "latitude": 42.69771482736136,
       "longitude": 23.32191845124908,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/3723BA/20260515_132038_837538.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3723BA/20260515_132038_837538.jpg",
+      "timestamp": "2026-04-24T17:50:44.364302000Z",
+      "location": "42.64002, 23.36801",
+      "locationLabel": "бл. 208, ж.к. Младост 2, София",
+      "latitude": 42.64001528159761,
+      "longitude": 23.36800851488733,
       "isVideo": false
     },
     {
@@ -288,6 +618,36 @@
       "isVideo": false
     },
     {
+      "key": "approved/CB/3877BB/20260515_132015_39b181.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3877BB/20260515_132015_39b181.jpg",
+      "timestamp": "2026-04-24T13:48:23.162512000Z",
+      "location": "42.63270, 24.80939",
+      "locationLabel": "Хан Крум, Карлово",
+      "latitude": 42.632699936834626,
+      "longitude": 24.809392417989887,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PB/8714PA/20260515_13202_492567.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/8714PA/20260515_13202_492567.jpg",
+      "timestamp": "2026-04-24T13:45:48.448684000Z",
+      "location": "42.63268, 24.80938",
+      "locationLabel": "Хан Крум, Карлово",
+      "latitude": 42.63268153523136,
+      "longitude": 24.809376790262252,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1616PP/20260515_131946_cbcc6b.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1616PP/20260515_131946_cbcc6b.jpg",
+      "timestamp": "2026-04-24T09:57:23.011938000Z",
+      "location": "42.72491, 23.26069",
+      "locationLabel": "331-ва, ж.к. Люлин, София",
+      "latitude": 42.724908,
+      "longitude": 23.260695,
+      "isVideo": false
+    },
+    {
       "key": "approved/CB/5137PA/20260505_232052_c5f5a3.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/5137PA/20260505_232052_c5f5a3.jpg",
       "timestamp": "2026-04-24T06:16:43.421468000Z",
@@ -295,6 +655,16 @@
       "locationLabel": "ж.к. Гоце Делчев, София",
       "latitude": 42.664477729568645,
       "longitude": 23.295527292031093,
+      "isVideo": false
+    },
+    {
+      "key": "approved/PB/1621CE/20260515_131827_67de1a.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/1621CE/20260515_131827_67de1a.jpg",
+      "timestamp": "2026-04-23T17:16:24.463872000Z",
+      "location": "42.14844, 24.75259",
+      "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
+      "latitude": 42.1484425,
+      "longitude": 24.7525891,
       "isVideo": false
     },
     {
@@ -335,6 +705,16 @@
       "locationLabel": "",
       "latitude": 0,
       "longitude": 0,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/0794CA/20260515_131757_7a8c9f.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/0794CA/20260515_131757_7a8c9f.jpg",
+      "timestamp": "2026-04-23T07:45:13.119725000Z",
+      "location": "42.66446, 23.29552",
+      "locationLabel": "ж.к. Гоце Делчев, София",
+      "latitude": 42.66445774333505,
+      "longitude": 23.295516165129733,
       "isVideo": false
     },
     {
@@ -5635,16 +6015,6 @@
       "locationLabel": "бул. Свети Климент Охридски, ж.к. Студентски град, София",
       "latitude": 42.661687950664025,
       "longitude": 23.35860115195988,
-      "isVideo": false
-    },
-    {
-      "key": "approved/00/000000/20260109_19173_422d9c.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/00/000000/20260109_19173_422d9c.jpg",
-      "timestamp": "2026-01-09T19:17:03.214556000Z",
-      "location": "42.69680, 23.32122",
-      "locationLabel": "20, Център, София",
-      "latitude": 42.696799,
-      "longitude": 23.321221,
       "isVideo": false
     }
   ]
