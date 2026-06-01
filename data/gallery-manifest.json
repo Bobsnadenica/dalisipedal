@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-31T09:30:21.694Z",
+  "generatedAt": "2026-06-01T12:17:09.133Z",
   "itemCount": 600,
   "featured": {
     "week": {
@@ -138,6 +138,16 @@
       "isVideo": false
     },
     {
+      "key": "approved/PB/8855CM/20260601_6412_bae605.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/PB/8855CM/20260601_6412_bae605.jpg",
+      "timestamp": "2026-05-10T14:56:35.194729000Z",
+      "location": "42.49624, 27.47391",
+      "locationLabel": "пл. Св. Св. Кирил и Методий, Централна градска част, Бургас",
+      "latitude": 42.496241,
+      "longitude": 27.473914,
+      "isVideo": false
+    },
+    {
       "key": "approved/C/4152KT/20260515_143327_0c1712.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/C/4152KT/20260515_143327_0c1712.jpg",
       "timestamp": "2026-05-10T06:05:21.800915000Z",
@@ -265,6 +275,16 @@
       "locationLabel": "Пирин 26, кв. Манастирски ливади, София",
       "latitude": 42.666405637766175,
       "longitude": 23.278604143807687,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/5880PO/20260601_64010_01a7c4.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/5880PO/20260601_64010_01a7c4.jpg",
+      "timestamp": "2026-05-04T07:05:42.699825000Z",
+      "location": "42.66217, 23.28177",
+      "locationLabel": "Борис Димовски 14, кв. Манастирски ливади, София",
+      "latitude": 42.66217069298493,
+      "longitude": 23.281773741856025,
       "isVideo": false
     },
     {
@@ -5995,26 +6015,6 @@
       "locationLabel": "Преполац, ж.к. Люлин, София",
       "latitude": 42.722431,
       "longitude": 23.260103,
-      "isVideo": false
-    },
-    {
-      "key": "approved/CB/4613KE/20260109_205242_014d09.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/4613KE/20260109_205242_014d09.jpg",
-      "timestamp": "2026-01-09T20:52:42.851447000Z",
-      "location": "42.696721, 23.321351",
-      "locationLabel": "20, Център, София",
-      "latitude": 42.696721,
-      "longitude": 23.321351,
-      "isVideo": false
-    },
-    {
-      "key": "approved/00/000000/POM_1767991939774_15a89e.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/00/000000/POM_1767991939774_15a89e.jpg",
-      "timestamp": "2026-01-09T20:52:19.774916000Z",
-      "location": "42.66169, 23.35860",
-      "locationLabel": "бул. Свети Климент Охридски, ж.к. Студентски град, София",
-      "latitude": 42.661687950664025,
-      "longitude": 23.35860115195988,
       "isVideo": false
     }
   ]
