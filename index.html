@@ -299,6 +299,8 @@
 </head>
 <body>
 
+    <a class="skip-link" href="#main-content">Към основното съдържание</a>
+
     <div class="bg-glow-top"></div>
     <div class="bg-glow-bottom"></div>
     <div class="bg-grid"></div>
@@ -306,7 +308,7 @@
     
     <div id="terminal-bg"></div>
 
-    <nav class="navbar">
+    <nav class="navbar" aria-label="Основна навигация">
         <div class="container nav-container">
             <a href="index.html" class="logo">
                 <img src="app_icon.png" alt="П.Е.Д.А.Л.🤫" class="logo-icon-img">
@@ -333,6 +335,7 @@
         </div>
     </nav>
 
+    <main id="main-content">
     <header class="hero">
         <div class="container hero-layout">
             <div class="hero-text fade-in">
@@ -627,14 +630,18 @@
         <div class="container">
             <div class="download-box">
                 <h2>Готов ли си за действие?</h2>
+                <p class="download-copy">Избери версията за телефона си и отвори официалната страница на приложението.</p>
                 <div class="store-buttons">
-<a href="https://apps.apple.com/bg/app/п-е-д-а-л/id6757280043" target="_blank" rel="noopener noreferrer">
-  <button class="btn-store">🍏 App Store</button>
-</a>
-<a href="https://play.google.com/store/apps/details?id=com.privileged.pedal" target="_blank" rel="noopener noreferrer">
-                    <button class="btn-store">🤖 Google Play</button>
-</a>
+                    <a class="btn-store" href="https://apps.apple.com/bg/app/п-е-д-а-л/id6757280043" target="_blank" rel="noopener noreferrer">
+                        <span class="material-icons-round" aria-hidden="true">phone_iphone</span>
+                        Изтегли за iPhone
+                    </a>
+                    <a class="btn-store" href="https://play.google.com/store/apps/details?id=com.privileged.pedal" target="_blank" rel="noopener noreferrer">
+                        <span class="material-icons-round" aria-hidden="true">android</span>
+                        Изтегли за Android
+                    </a>
                 </div>
+                <p class="download-note">Връзките се отварят в App Store и Google Play.</p>
             </div>
         </div>
     </section>
@@ -674,6 +681,7 @@
             </div>
         </div>
     </section>
+    </main>
 
     <footer>
         <div class="container footer-content">

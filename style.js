@@ -1608,7 +1608,73 @@ function submitReport() {
     }, 1500);
 }
 
+function enhanceDemoAccessibility() {
+    const demo = document.querySelector('.phone-screen');
+    if (!demo) {
+        return;
+    }
+
+    const getControlLabel = (control) => {
+        const cardLabel = control.querySelector?.('.card-label');
+        if (cardLabel?.textContent.trim()) {
+            return cardLabel.textContent.trim();
+        }
+
+        const heading = control.querySelector?.('h5, h4, h3');
+        if (heading?.textContent.trim()) {
+            return heading.textContent.trim();
+        }
+
+        const iconName = control.textContent.trim();
+        const iconLabels = {
+            upgrade: 'Планове',
+            chat: 'Чат',
+            palette: 'Смени темата',
+            logout: 'Изход',
+            arrow_back: 'Назад',
+            camera_alt: 'Снимай нов сигнал',
+            backspace: 'Изтрий цифра',
+        };
+
+        return iconLabels[iconName] || iconName.replace(/_/g, ' ');
+    };
+
+    demo.querySelectorAll('[onclick]').forEach((control) => {
+        if (!control.matches('button, a, input, select, textarea')) {
+            control.setAttribute('role', 'button');
+            control.setAttribute('tabindex', '0');
+        }
+
+        if (!control.hasAttribute('aria-label')) {
+            const label = getControlLabel(control);
+            if (label) {
+                control.setAttribute('aria-label', label);
+            }
+        }
+    });
+
+    demo.querySelectorAll('.material-icons-round:not([role="button"])').forEach((icon) => {
+        icon.setAttribute('aria-hidden', 'true');
+    });
+
+    const chatSend = demo.querySelector('.chat-send');
+    if (chatSend) {
+        chatSend.setAttribute('aria-label', 'Изпрати съобщение');
+    }
+
+    demo.addEventListener('keydown', (event) => {
+        const control = event.target.closest('[role="button"]');
+        if (!control || (event.key !== 'Enter' && event.key !== ' ')) {
+            return;
+        }
+
+        event.preventDefault();
+        control.click();
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    enhanceDemoAccessibility();
     loadDemoEntries();
     updateDemoHeader();
     renderChatView();
