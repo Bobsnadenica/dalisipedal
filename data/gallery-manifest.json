@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-16T08:40:46.183Z",
+  "generatedAt": "2026-07-17T08:34:24.786Z",
   "itemCount": 600,
   "featured": {
     "week": {
@@ -45,6 +45,26 @@
       "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
       "latitude": 42.1483899,
       "longitude": 24.7526363,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/3615TM/20260716_185722_6121fc.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3615TM/20260716_185722_6121fc.jpg",
+      "timestamp": "2026-05-14T08:09:27.110189000Z",
+      "location": "42.719074, 23.261738",
+      "locationLabel": "Гоце Делчев, ж.к. Люлин, София",
+      "latitude": 42.71907379268271,
+      "longitude": 23.2617382800837,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/5283BO/20260716_18574_29f9ef.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/5283BO/20260716_18574_29f9ef.jpg",
+      "timestamp": "2026-05-13T19:24:30.896235000Z",
+      "location": "42.692556, 23.321743",
+      "locationLabel": "Солунска 12, Център, София",
+      "latitude": 42.6925563549655,
+      "longitude": 23.321742726940894,
       "isVideo": false
     },
     {
@@ -5995,26 +6015,6 @@
       "locationLabel": "Търново 48, ж.к. Люлин, София",
       "latitude": 42.723775,
       "longitude": 23.260519,
-      "isVideo": false
-    },
-    {
-      "key": "approved/CB/9339MO/20260110_02243_0f3356.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/9339MO/20260110_02243_0f3356.jpg",
-      "timestamp": "2026-01-10T00:22:43.696194000Z",
-      "location": "42.72375, 23.26057",
-      "locationLabel": "Търново 48, ж.к. Люлин, София",
-      "latitude": 42.72375330157948,
-      "longitude": 23.26056769401526,
-      "isVideo": false
-    },
-    {
-      "key": "approved/CB/7702XC/20260109_205315_9c41b4.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/7702XC/20260109_205315_9c41b4.jpg",
-      "timestamp": "2026-01-09T20:53:15.662383000Z",
-      "location": "42.72243, 23.26010",
-      "locationLabel": "Преполац, ж.к. Люлин, София",
-      "latitude": 42.722431,
-      "longitude": 23.260103,
       "isVideo": false
     }
   ]
