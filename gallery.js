@@ -398,7 +398,7 @@ function updateSummary(payload, source) {
         return;
     }
 
-    summaryEl.textContent = `Публичен manifest: ${itemCount} файла, обновен ${generatedAt}.`;
+    summaryEl.textContent = `Публична галерия: ${itemCount} файла, обновен ${generatedAt}.`;
 }
 
 function renderEmptyState(message) {
@@ -461,7 +461,7 @@ function buildCard(item, index) {
     card.setAttribute('role', 'button');
     card.addEventListener('click', () => openViewer(index));
     card.addEventListener('keydown', event => {
-        if (event.key === 'Enter' || event.key === ' ') {
+        if (event.target === card && (event.key === 'Enter' || event.key === ' ')) {
             event.preventDefault();
             openViewer(index);
         }
@@ -738,6 +738,7 @@ function normalizeRankingPayload(payload) {
 async function fetchRankingPayload(type) {
     const response = await fetch(GALLERY_CONFIG.rankingUrls[type], {
         cache: 'default',
+        signal: AbortSignal.timeout(8000),
     });
 
     if (!response.ok) {
@@ -996,6 +997,7 @@ function closeViewer() {
     resetReactionSummary();
     setShareStatus('');
     syncShareButtons();
+    window.PedalDialogFocus.close(viewerEl);
 }
 
 function getAuthState() {
@@ -1025,6 +1027,7 @@ function openLoginModal() {
 
     modalEl.classList.add('is-open');
     modalEl.setAttribute('aria-hidden', 'false');
+    window.PedalDialogFocus.open(modalEl);
     syncLoginModalUi(authState);
 
     const usernameInput = document.getElementById('gallery-login-username');
@@ -1041,6 +1044,7 @@ function closeLoginModal() {
 
     modalEl.classList.remove('is-open');
     modalEl.setAttribute('aria-hidden', 'true');
+    window.PedalDialogFocus.close(modalEl);
 
     const passwordInput = document.getElementById('gallery-login-password');
     if (passwordInput) {
@@ -1246,8 +1250,10 @@ function setCommentsOverlayOpen(isOpen, options = {}) {
     layerEl.classList.toggle('is-open', galleryState.commentsPanelOpen);
     layerEl.setAttribute('aria-hidden', galleryState.commentsPanelOpen ? 'false' : 'true');
     toggleBtn.setAttribute('aria-expanded', galleryState.commentsPanelOpen ? 'true' : 'false');
+    if (!galleryState.commentsPanelOpen) window.PedalDialogFocus.close(layerEl);
 
     if (galleryState.commentsPanelOpen) {
+        window.PedalDialogFocus.open(layerEl, document.getElementById('gallery-comments-close'));
         updateCommentsAuthUi();
         renderCommentsForCurrentItem(options);
     }
@@ -2006,6 +2012,7 @@ function openViewer(index, items = galleryState.currentBatch, options = {}) {
     viewerEl.classList.add('is-open');
     viewerEl.setAttribute('aria-hidden', 'false');
     document.body.classList.add('viewer-open');
+    window.PedalDialogFocus.open(viewerEl, document.getElementById('gallery-viewer-close'));
     setCommentsOverlayOpen(false, { syncUrl: false });
     renderViewerItem({
         forceRefresh: Boolean(options.forceRefresh),
@@ -2087,7 +2094,7 @@ async function loadManifest() {
         }
 
         renderFeaturedSection(null);
-        renderEmptyState('Не успяхме да заредим публичния manifest. Опитай пак след малко.');
+        renderEmptyState('Не успяхме да заредим галерията. Опитай пак след малко.');
         const summaryEl = document.getElementById('gallery-summary');
         if (summaryEl) {
             summaryEl.textContent = `Грешка при зареждане: ${error.message}`;
@@ -2217,9 +2224,14 @@ function bindViewerEvents() {
             } else {
                 closeViewer();
             }
+        } else if (loginModal?.classList.contains('is-open') || galleryState.commentsPanelOpen
+            || event.target.closest('input, textarea, select, [contenteditable]')) {
+            return;
         } else if (event.key === 'ArrowLeft') {
+            event.preventDefault();
             moveViewer(-1);
         } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
             moveViewer(1);
         }
     });
@@ -2234,7 +2246,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (window.PedalAuth?.subscribe) {
         window.PedalAuth.subscribe(handleAuthStateChange);
-        await window.PedalAuth.init();
+        window.PedalAuth.init().catch(error => console.warn('Sign-in is temporarily unavailable:', error));
     } else {
         handleAuthStateChange();
     }
@@ -2250,13 +2262,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     const manifestReady = await loadManifest();
-    await loadRankings();
-
     if (manifestReady) {
         renderRandomBatch();
     }
 
     maybeOpenInitialDeepLink();
+    void loadRankings();
 });
 
 window.PedalGallery = Object.freeze({

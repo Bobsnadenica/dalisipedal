@@ -265,6 +265,7 @@ function closeViewer() {
     setCommentsOverlayOpen(false);
     resetCommentsPanel();
     resetReactionSummary();
+    window.PedalDialogFocus.close(viewerEl);
 }
 
 function getAuthState() {
@@ -294,6 +295,7 @@ function openLoginModal() {
 
     modalEl.classList.add('is-open');
     modalEl.setAttribute('aria-hidden', 'false');
+    window.PedalDialogFocus.open(modalEl);
     syncLoginModalUi(authState);
 
     const usernameInput = document.getElementById('ninja-login-username');
@@ -310,6 +312,7 @@ function closeLoginModal() {
 
     modalEl.classList.remove('is-open');
     modalEl.setAttribute('aria-hidden', 'true');
+    window.PedalDialogFocus.close(modalEl);
 
     const passwordInput = document.getElementById('ninja-login-password');
     if (passwordInput) {
@@ -515,8 +518,10 @@ function setCommentsOverlayOpen(isOpen, options = {}) {
     layerEl.classList.toggle('is-open', ninjaState.commentsPanelOpen);
     layerEl.setAttribute('aria-hidden', ninjaState.commentsPanelOpen ? 'false' : 'true');
     toggleBtn.setAttribute('aria-expanded', ninjaState.commentsPanelOpen ? 'true' : 'false');
+    if (!ninjaState.commentsPanelOpen) window.PedalDialogFocus.close(layerEl);
 
     if (ninjaState.commentsPanelOpen) {
+        window.PedalDialogFocus.open(layerEl, document.getElementById('ninja-comments-close'));
         updateCommentsAuthUi();
         renderCommentsForCurrentItem(options);
     }
@@ -1124,6 +1129,7 @@ function openViewer(index) {
     viewerEl.classList.add('is-open');
     viewerEl.setAttribute('aria-hidden', 'false');
     document.body.classList.add('viewer-open');
+    window.PedalDialogFocus.open(viewerEl, document.getElementById('ninja-viewer-close'));
     setCommentsOverlayOpen(false);
     renderViewerItem();
 }
@@ -1238,9 +1244,14 @@ function bindViewerEvents() {
             } else {
                 closeViewer();
             }
+        } else if (loginModal?.classList.contains('is-open') || ninjaState.commentsPanelOpen
+            || event.target.closest('input, textarea, select, [contenteditable]')) {
+            return;
         } else if (event.key === 'ArrowLeft') {
+            event.preventDefault();
             moveViewer(-1);
         } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
             moveViewer(1);
         }
     });
@@ -1253,7 +1264,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (window.PedalAuth?.subscribe) {
         window.PedalAuth.subscribe(handleAuthStateChange);
-        await window.PedalAuth.init();
+        window.PedalAuth.init().catch(error => console.warn('Sign-in is temporarily unavailable:', error));
     } else {
         handleAuthStateChange();
     }

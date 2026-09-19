@@ -4,7 +4,7 @@ const DEMO_MANIFEST_CACHE_KEY = 'pedal_demo_manifest_v1';
 const DEMO_MANIFEST_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const FALLBACK_ENTRY = Object.freeze({
     id: 1,
-    img: 'app_icon.png',
+    img: 'images/app-icon-180.png',
     plate: 'Публичен сигнал',
     status: 'approved',
     date: 'Няма дата',
@@ -241,7 +241,10 @@ function showLoader(callback) {
     loader.classList.add('active');
     setTimeout(async () => {
         try {
+            document.getElementById('demo-status').hidden = true;
             await callback();
+        } catch (error) {
+            showDemoError(error);
         } finally {
             loader.classList.remove('active');
         }
@@ -731,7 +734,7 @@ function openMySignals() {
             const html = `
                 <div class="signal-item" onclick="openViewer(${item.id})">
                     <div class="signal-thumb">
-                        <img src="${safeImg}" alt="${safePlate}">
+                        <img src="${safeImg}" alt="${safePlate}" loading="lazy" decoding="async">
                     </div>
                     <div class="signal-info">
                         <div class="signal-top">
@@ -761,13 +764,56 @@ function openMySignals() {
 }
 
 
+let demoMapPromise = null;
+function loadDemoMap() {
+    if (demoMapPromise) return demoMapPromise;
+    demoMapPromise = new Promise((resolve, reject) => {
+        const css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        css.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+        css.crossOrigin = '';
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+        script.crossOrigin = '';
+        let loaded = 0;
+        const timer = setTimeout(fail, 10000);
+        function fail() {
+            clearTimeout(timer);
+            script.onload = css.onload = script.onerror = css.onerror = null;
+            script.remove();
+            css.remove();
+            demoMapPromise = null;
+            reject(new Error('Картата не се зареди. Опитай отново.'));
+        }
+        function ready() {
+            loaded += 1;
+            if (loaded === 2) {
+                clearTimeout(timer);
+                resolve();
+            }
+        }
+        css.onload = script.onload = ready;
+        css.onerror = script.onerror = fail;
+        document.head.append(css, script);
+    });
+    return demoMapPromise;
+}
+
+function showDemoError(error) {
+    const status = document.getElementById('demo-status');
+    status.textContent = error.message || 'Демото временно не е налично. Опитай отново.';
+    status.hidden = false;
+}
+
 function openMap() {
     if (!ensureDemoSession()) {
         return;
     }
 
     showLoader(async () => {
-        await loadDemoEntries();
+        await Promise.all([loadDemoEntries(), loadDemoMap()]);
         setView('map');
         
         setTimeout(() => {
@@ -990,8 +1036,16 @@ function openSecret() {
 }
 
 
-function openSpeedCams() {
+async function openSpeedCams() {
     if (!ensureDemoSession()) {
+        return;
+    }
+
+    try {
+        await loadDemoMap();
+        document.getElementById('demo-status').hidden = true;
+    } catch (error) {
+        showDemoError(error);
         return;
     }
 
@@ -1675,18 +1729,33 @@ function enhanceDemoAccessibility() {
 
 document.addEventListener('DOMContentLoaded', () => {
     enhanceDemoAccessibility();
-    loadDemoEntries();
+    const demo = document.getElementById('demo');
+    if (demo && 'IntersectionObserver' in window) {
+        const demoObserver = new IntersectionObserver(entries => {
+            if (entries.some(entry => entry.isIntersecting)) {
+                demoObserver.disconnect();
+                loadDemoEntries();
+            }
+        }, { rootMargin: '100px' });
+        demoObserver.observe(demo);
+    } else {
+        loadDemoEntries();
+    }
     updateDemoHeader();
     renderChatView();
     renderUpgradeView();
     resetParkingGame();
     resetEscapeGame();
 
-    setInterval(() => {
-        const now = new Date();
-        document.getElementById('clock').innerText = 
-            now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    }, 1000);
+    function updateClock() {
+        if (!document.hidden) {
+            document.getElementById('clock').textContent =
+                new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+    }
+    updateClock();
+    setInterval(updateClock, 60000);
+    document.addEventListener('visibilitychange', updateClock);
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -1695,5 +1764,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-    document.getElementById('year').textContent = new Date().getFullYear();
+    const year = document.getElementById('year');
+    if (year) year.textContent = new Date().getFullYear();
 });

@@ -31,18 +31,16 @@
     <meta name="apple-itunes-app" content="app-id=6757280043">
 
     <meta name="theme-color" content="#000000">
-    <link rel="icon" type="image/png" href="app_icon.png">
+    <link rel="icon" type="image/png" href="images/app-icon-180.png">
     <link rel="stylesheet" href="style.css">
     
-    <script src="background/mock_data.js"></script>
+    <script defer src="background/mock_data.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <script type="application/ld+json">
     {
@@ -54,7 +52,6 @@
           "url": "https://www.dalisipedal.com/",
           "logo": "https://www.dalisipedal.com/app_icon.png",
           "sameAs": [
-            "https://www.facebook.com/profile.php?id=61573169923288",
             "https://www.tiktok.com/@dalisipedal",
             "https://apps.apple.com/bg/app/%D0%BF-%D0%B5-%D0%B4-%D0%B0-%D0%BB/id6757280043",
             "https://play.google.com/store/apps/details?id=com.privileged.pedal"
@@ -97,60 +94,68 @@
     </script>
 
     <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
     {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Къде да подам сигнал за неправилно паркиране?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "П.Е.Д.А.Л.🤫 помага да документирате случай на неправилно паркиране със снимка и локация директно през мобилното приложение."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Как да подам сигнал срещу нагли шофьори и нарушители?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Отворете приложението, снимайте нарушението и изпратете сигнал с автоматично разпозната локация и регистрационен номер, когато е наличен."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Как работи приложението П.Е.Д.А.Л.?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Приложението позволява да заснемете нарушение, да добавите контекст и да подадете сигнал през дигитален процес, създаден за граждански контрол."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Къде има черна карта или карта на транспортните произшествия в България?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "В сайта на П.Е.Д.А.Л. има Черна Карта с визуализация на пътни инциденти и ПТП по официални публични данни за България."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Къде мога да направя проверка на ППС по VIN номер и технически преглед?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "В секцията Отворени данни на П.Е.Д.А.Л. има бързи връзки към публични справки за ППС по VIN номер, технически преглед и други полезни данни."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Има ли МВР или институционален контекст около сигналите и пътната среда?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "П.Е.Д.А.Л. помага с граждански сигнали, публична галерия, Черна Карта и отворени данни. За официални държавни проверки и регистри сайтът насочва и към полезни публични справки и институционален контекст."
-          }
-        }
-      ]
+      "@type": "Question",
+      "name": "Къде да подам сигнал за неправилно паркиране?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "С П.Е.Д.А.Л.🤫 можеш да документираш случая със снимка и локация. За официален сигнал приложението подготвя имейл, който преглеждаш и изпращаш от своята поща. Виж и как да подадеш сигнал стъпка по стъпка."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Какво да направя при нагли шофьори и системни нарушители?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Когато видиш блокиран тротоар, гараж или зелена площ, можеш да документираш случая и да го изпратиш за преглед в приложението. След това можеш да разгледаш и публичната галерия със сигнали."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Подходящо ли е приложението за сигнали за шофьори и неправилно паркиране в България?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Да, платформата е насочена към граждански контрол и сигнализиране за проблемно паркиране, нарушители и поведение на пътя в българска градска среда."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Къде има черна карта или карта на транспортните произшествия в България?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "В П.Е.Д.А.Л.🤫 има Черна Карта с визуализация на ПТП и пътни инциденти в България, ако търсиш карта на транспортните произшествия и рисковите зони."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Къде мога да проверя ППС по VIN номер и технически преглед?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "В секцията Отворени данни има полезни връзки за проверка на ППС по VIN номер, технически преглед, пътна мрежа и други публични справки."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Има ли МВР или институционален контекст около сигналите и пътната среда?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "П.Е.Д.А.Л.🤫 е насочен към граждански сигнали, публична видимост и контекст за пътната среда. За официални публични справки, ППС проверки и допълнителен институционален контекст можеш да ползваш и Отворени данни и Черна Карта."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Къде мога да намеря приложението и социалните канали?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "П.Е.Д.А.Л.🤫 е наличен за iPhone в App Store и за Android в Google Play. Можеш да ни следиш и в TikTok. Facebook — скоро."
+      }
     }
+  ]
+}
     </script>
 
     <style>
@@ -240,7 +245,6 @@
         .def-abbr { color: #ff4757; font-weight: 800; letter-spacing: 1px; }
         .def-text { color: #bdc3c7; font-size: 0.9em; }
         
-        .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
         .btn-outline { background: transparent; color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 14px 24px; border-radius: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
         .btn-outline:hover { border-color: white; background: rgba(255, 255, 255, 0.05); }
         
@@ -306,12 +310,12 @@
     <div class="bg-grid"></div>
     <div id="signal-heatmap-bg" aria-hidden="true"></div>
     
-    <div id="terminal-bg"></div>
+    <div id="terminal-bg" aria-hidden="true"></div>
 
     <nav class="navbar" aria-label="Основна навигация">
         <div class="container nav-container">
             <a href="index.html" class="logo">
-                <img src="app_icon.png" alt="П.Е.Д.А.Л.🤫" class="logo-icon-img">
+                <img src="images/app-icon-180.png" alt="П.Е.Д.А.Л.🤫" class="logo-icon-img" width="32" height="32">
                 <span class="logo-text">П.Е.Д.А.Л.🤫</span>
             </a>
             <div class="nav-links">
@@ -319,11 +323,12 @@
                 <a href="gallery.html" class="nav-pill nav-gallery">Галерия</a>
                 <a href="open_data.html" class="nav-pill nav-open-data">Отворени данни</a>
                 <a href="black_map.html" class="nav-pill nav-black-map">Черна Карта</a>
-                <a href="https://www.facebook.com/profile.php?id=61573169923288" class="nav-pill nav-fb nav-social" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+                <span class="nav-pill nav-fb nav-social nav-coming-soon" role="img" aria-label="Facebook — скоро" title="Facebook — скоро">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M13.5 21v-7h2.4l.4-3h-2.8V9.5c0-1 .3-1.8 1.9-1.8h1.1V4.6c-.5-.1-1.4-.2-2.5-.2-2.5 0-4.2 1.5-4.2 4.4V11H7v3h2.8v7h3.7z"/>
                     </svg>
-                </a>
+                    <span class="nav-soon-label" aria-hidden="true">Soon</span>
+                </span>
                 <a href="https://www.tiktok.com/@dalisipedal" class="nav-pill nav-tiktok nav-social" target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M14 3c.3 1.7 1.3 3.1 2.9 3.9 1 .5 2.1.7 3.2.7v3.1c-1.5 0-3-.4-4.3-1.1v5.4c0 3.5-2.8 6.3-6.3 6.3S3.2 18.5 3.2 15s2.8-6.3 6.3-6.3c.3 0 .6 0 .9.1v3.2c-.3-.1-.6-.2-.9-.2-1.8 0-3.2 1.4-3.2 3.2s1.4 3.2 3.2 3.2 3.2-1.4 3.2-3.2V3H14z"/>
@@ -341,7 +346,7 @@
             <div class="hero-text fade-in">
                 <div class="status-pill-live">
                     <span class="pulsing-dot"></span>
-                    <span>Системата е активна v2.6</span>
+                    <span>За iPhone и Android</span>
                 </div>
                 
                 <div class="system-definition">
@@ -351,17 +356,19 @@
 
                 <h1>Твоят град.<br><span class="text-gradient">Ред за всички.</span></h1>
                 <p>
-                    Ако се чудиш <strong>къде да подадеш сигнал за неправилно паркиране</strong>, П.Е.Д.А.Л.🤫 е създаден точно за това. Приложението помага да документираш <strong>нарушители, нагли шофьори и опасно паркиране</strong> със снимка и локация, за да има повече ред и по-безопасни улици.
+                    Снимай <strong>неправилното паркиране</strong>, добави локация и изпрати за преглед. Разгледай одобрените сигнали или подготви имейл до институция — ти избираш кога да го изпратиш.
                 </p>
                 
                 <div class="hero-actions">
-                    <a href="#download" class="btn-primary-hero">Свали</a>
-                    <a href="how_to.html" class="btn-outline">Как работи?</a>
+                    <a href="#download" class="btn-primary-hero">Изтегли приложението</a>
+                    <a href="gallery.html" class="btn-outline">Виж галерията</a>
                     <a href="how_to_use.html" class="btn-outline">Как се използва</a>
                 </div>
             </div>
 
-            <div id="demo" class="hero-phone fade-in delay-200">
+            <div id="demo" class="hero-phone fade-in delay-200" aria-label="Интерактивна демонстрация">
+                <p class="demo-notice"><strong>Пробвай демото</strong> · Без регистрация и без изпращане на сигнал.</p>
+                <p id="demo-status" class="demo-notice" role="status" hidden></p>
                 <div class="phone-wrapper">
                     <div class="phone-case">
                         <div class="phone-notch">
@@ -468,7 +475,7 @@
 
                                     <div class="widget-pod" onclick="openRandom()">
                                         <div class="widget-img-holder">
-                                            <img id="demo-day-img" src="app_icon.png" alt="П.Е.Д.А.Л. на деня">
+                                            <img loading="lazy" decoding="async" id="demo-day-img" src="images/app-icon-180.png" alt="П.Е.Д.А.Л. на деня">
                                             <div class="pod-badge">☀️ Днес</div>
                                         </div>
                                         <div class="widget-text">
@@ -479,7 +486,7 @@
 
                                     <div class="widget-pod" onclick="openPodMonth()">
                                         <div class="widget-img-holder">
-                                            <img id="demo-month-img" src="app_icon.png" alt="П.Е.Д.А.Л. на месеца">
+                                            <img loading="lazy" decoding="async" id="demo-month-img" src="images/app-icon-180.png" alt="П.Е.Д.А.Л. на месеца">
                                             <div class="pod-badge month">🏆 Месец</div>
                                         </div>
                                         <div class="widget-text">
@@ -572,7 +579,7 @@
                             <div class="app-view" id="view-login">
                                 <div class="login-screen">
                                     <div class="login-brand">
-                                        <img src="app_icon.png" alt="П.Е.Д.А.Л.🤫">
+                                        <img src="images/app-icon-180.png" alt="П.Е.Д.А.Л.🤫">
                                         <h3>Вход в П.Е.Д.А.Л.🤫</h3>
                                         <p>Логнете се отново, за да продължите с демонстрацията.</p>
                                     </div>
@@ -592,7 +599,7 @@
                                     <span class="material-icons-round">check</span>
                                 </div>
                                 <h3>Успешно!</h3>
-                                <p>Сигналът е изпратен.</p>
+                                <p>Демо: няма изпратен сигнал.</p>
                             </div>
                         </div>
                     </div>
@@ -614,13 +621,13 @@
                 </div>
                 <div class="feature-card">
                     <div class="f-icon amber"><span class="material-icons-round">cloud_upload</span></div>
-                    <h3>2. Изпрати</h3>
-                    <p>Нашата система автоматично разпознава локацията.</p>
+                    <h3>2. Изпрати за преглед</h3>
+                    <p>Добави локация и контекст. Одобрените снимки се показват в публичната галерия.</p>
                 </div>
                 <div class="feature-card">
                     <div class="f-icon cyan"><span class="material-icons-round">public</span></div>
-                    <h3>3. Накажи</h3>
-                    <p>Сигналът става публичен и се изпраща към компетентните органи.</p>
+                    <h3>3. Подай официален сигнал</h3>
+                    <p>Приложението подготвя имейл с доказателството. Прегледай го и го изпрати от своята поща.</p>
                 </div>
             </div>
         </div>
@@ -652,11 +659,11 @@
             <div class="faq-grid">
                 <article class="faq-item">
                     <h3 class="faq-question">Къде да подам сигнал за неправилно паркиране?</h3>
-                    <p class="faq-answer">С П.Е.Д.А.Л.🤫 можеш да снимаш случая директно през приложението и да подадеш сигнал с локация и контекст на нарушението. Виж и <a href="how_to_use.html">как да подадеш сигнал стъпка по стъпка</a>.</p>
+                    <p class="faq-answer">С П.Е.Д.А.Л.🤫 можеш да документираш случая със снимка и локация. За официален сигнал приложението подготвя имейл, който преглеждаш и изпращаш от своята поща. Виж и <a href="how_to_use.html">как да подадеш сигнал стъпка по стъпка</a>.</p>
                 </article>
                 <article class="faq-item">
                     <h3 class="faq-question">Какво да направя при нагли шофьори и системни нарушители?</h3>
-                    <p class="faq-answer">Когато видиш блокиран тротоар, гараж или зелена площ, можеш да документираш нарушението и да го изпратиш като сигнал през приложението. След това можеш да разгледаш и <a href="gallery.html">публичната галерия със сигнали</a>.</p>
+                    <p class="faq-answer">Когато видиш блокиран тротоар, гараж или зелена площ, можеш да документираш случая и да го изпратиш за преглед в приложението. След това можеш да разгледаш и <a href="gallery.html">публичната галерия със сигнали</a>.</p>
                 </article>
                 <article class="faq-item">
                     <h3 class="faq-question">Подходящо ли е приложението за сигнали за шофьори и неправилно паркиране в България?</h3>
@@ -675,8 +682,8 @@
                     <p class="faq-answer">П.Е.Д.А.Л.🤫 е насочен към граждански сигнали, публична видимост и контекст за пътната среда. За официални публични справки, ППС проверки и допълнителен институционален контекст можеш да ползваш и <a href="open_data.html">Отворени данни</a> и <a href="black_map.html">Черна Карта</a>.</p>
                 </article>
                 <article class="faq-item">
-                    <h3 class="faq-question">Има ли сайт и приложение, които са налични в Google Play, App Store, Facebook и TikTok?</h3>
-                    <p class="faq-answer">Да. П.Е.Д.А.Л.🤫 има уебсайт, мобилно приложение за iPhone и Android, както и активни канали във Facebook и TikTok.</p>
+                    <h3 class="faq-question">Къде мога да намеря приложението и социалните канали?</h3>
+                    <p class="faq-answer">П.Е.Д.А.Л.🤫 е наличен за iPhone в App Store и за Android в Google Play. Можеш да ни следиш и в TikTok. Facebook — скоро.</p>
                 </article>
             </div>
         </div>
@@ -875,7 +882,9 @@
             addLine("П.Е.Д.А.Л.🤫 SYSTEM CORE [ONLINE]");
             addLine("Server: aws-bg-sofia-01");
 
-            setInterval(() => {
+            const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
+            let terminalTimer;
+            function updateTerminal() {
                 const type = Math.random();
                 if (type > 0.4) {
                     const data = Generator.generateScanResult();
@@ -893,7 +902,16 @@
                     if (log.includes(" 404 ") || log.includes(" 500 ")) logHtml = `<span class="t-err">${log}</span>`;
                     addLine(`NET: ${logHtml}`);
                 }
-            }, 1800);
+            }
+            function syncTerminalAnimation() {
+                clearInterval(terminalTimer);
+                if (!document.hidden && !motionPreference.matches) {
+                    terminalTimer = setInterval(updateTerminal, 1800);
+                }
+            }
+            document.addEventListener("visibilitychange", syncTerminalAnimation);
+            motionPreference.addEventListener("change", syncTerminalAnimation);
+            syncTerminalAnimation();
         });
     </script>
 </body>

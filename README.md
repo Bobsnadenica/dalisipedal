@@ -1,5 +1,19 @@
 # dalisipedal
-A website for P.E.D.A.L. app
+The public website for the P.E.D.A.L. mobile app at [www.dalisipedal.com](https://www.dalisipedal.com/). This is a separate repository from the Flutter app and AWS backend in `pedal`.
+
+## Architecture and local preview
+
+Plain HTML, CSS and JavaScript; no package-manager build is required. From this folder, `python3 -m http.server 8000` serves a local preview.
+
+- `index.html` and `style.js`: marketing page and interactive phone demonstration.
+- `gallery.html` / `ninja.html`: public galleries with real Cognito sign-in, comments and reactions through the app's shared backend.
+- `black_map.html`: accident-statistics snapshot and map.
+- `open_data.html` / `test.js`: road datasets and public lookup links. `test.js` is application code.
+- `data/` and `share/`: generated snapshots and social-preview pages.
+
+The app reads this website's gallery manifest and shares links back to the gallery. Changes to media keys, auth configuration or generated data need to remain compatible with the app. See [WEBSITE_REVIEW.md](WEBSITE_REVIEW.md) for findings and verification boundaries from the 2026-09-19 review.
+
+The review includes static checks and local browser checks; authenticated production interactions and AWS authorization were not tested.
 
 ## Public manifest refresh
 
@@ -37,3 +51,7 @@ Optional S3 upload for backend automations:
 - It runs once per month and does not require any repository secrets
 
 This keeps the website on a lightweight cached snapshot instead of downloading the larger statistics source file on every page view.
+
+## Website performance and usability review
+
+See [WEBSITE_REVIEW.md](WEBSITE_REVIEW.md) for the latest improvements, measured asset reduction, browser checks and remaining priorities. Run the regression checks with `node --test scripts/tests/*.test.mjs`.
