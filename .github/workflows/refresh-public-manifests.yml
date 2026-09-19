@@ -5,6 +5,11 @@ env:
 
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Commit generated data and upload the gallery manifest to S3
+        type: boolean
+        default: true
   schedule:
     - cron: '35 6 * * *'
 
@@ -45,6 +50,9 @@ jobs:
             fi
           done
 
+      - name: Test reaction snapshot generation
+        run: node --test scripts/tests/*.test.mjs
+
       - name: Generate manifests
         env:
           PEDAL_APPSYNC_ENDPOINT: ${{ secrets.PEDAL_APPSYNC_ENDPOINT }}
@@ -70,7 +78,7 @@ jobs:
           fi
 
       - name: Commit changes
-        if: steps.changes.outputs.any_changes == 'true'
+        if: steps.changes.outputs.any_changes == 'true' && (github.event_name != 'workflow_dispatch' || inputs.publish)
         id: commit_changes
         run: |
           git config user.name "github-actions[bot]"
@@ -101,6 +109,10 @@ jobs:
       - name: No generated changes
         if: steps.changes.outputs.any_changes != 'true'
         run: echo "No manifest changes detected."
+
+      - name: Validation only
+        if: github.event_name == 'workflow_dispatch' && !inputs.publish
+        run: echo "Generation validated. Git push and S3 upload were skipped."
 
       - name: Detect manifest upload credentials
         id: upload_auth

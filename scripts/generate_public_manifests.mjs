@@ -27,7 +27,7 @@ const FEATURED_MONTH_PREFIX = 'pedal_of_the_month/';
 const FEATURED_WEEK_PREFIX = 'pedal_of_the_month/pedal_of_the_day/';
 const GEOCODE_DELAY_MS = 1100;
 const MANIFEST_VERSION = 1;
-const REACTION_FETCH_CONCURRENCY = 4;
+const REACTION_PAGE_SIZE = 1000;
 const REACTION_FETCH_MAX_ATTEMPTS = 6;
 const REACTION_FETCH_BASE_DELAY_MS = 1400;
 const APP_USER_AGENT =
@@ -573,15 +573,20 @@ async function fetchGraphQlPage({ endpoint, apiKey, nextToken }) {
     return payload.data.listPhotoMetadata;
 }
 
-async function fetchReactionSummary({ endpoint, apiKey, mediaKey }) {
+async function fetchReactionSummaryPage({ endpoint, apiKey, nextToken }) {
+    // Omit lastSync to read the full table, rather than an incremental delta.
+    // This existing public resolver reads DynamoDB directly without a Lambda.
     const query = `
-        query GetMediaReactionSummary($mediaKey: String!) {
-            getMediaReactionSummary(mediaKey: $mediaKey) {
-                mediaKey
-                likes
-                dislikes
-                viewerReaction
-                updatedAt
+        query SyncPublicReactionSummaries($limit: Int!, $nextToken: String) {
+            syncMediaReactionSummaries(limit: $limit, nextToken: $nextToken) {
+                items {
+                    mediaKey
+                    likes
+                    dislikes
+                    updatedAt
+                    _deleted
+                }
+                nextToken
             }
         }
     `;
@@ -594,9 +599,7 @@ async function fetchReactionSummary({ endpoint, apiKey, mediaKey }) {
         },
         body: JSON.stringify({
             query,
-            variables: {
-                mediaKey,
-            },
+            variables: { limit: REACTION_PAGE_SIZE, nextToken },
         }),
     });
 
@@ -609,7 +612,12 @@ async function fetchReactionSummary({ endpoint, apiKey, mediaKey }) {
         throw new Error(payload.errors[0].message || 'Reaction GraphQL error');
     }
 
-    return payload.data.getMediaReactionSummary || null;
+    const page = payload.data?.syncMediaReactionSummaries;
+    if (!Array.isArray(page?.items)
+        || (page.nextToken != null && typeof page.nextToken !== 'string')) {
+        throw new Error('Invalid reaction summary page from AppSync');
+    }
+    return page;
 }
 
 function isRetryableReactionError(error) {
@@ -621,12 +629,12 @@ function isRetryableReactionError(error) {
     );
 }
 
-async function fetchReactionSummaryWithRetry(config) {
+async function fetchReactionSummaryPageWithRetry(config) {
     let lastError = null;
 
     for (let attempt = 1; attempt <= REACTION_FETCH_MAX_ATTEMPTS; attempt += 1) {
         try {
-            return await fetchReactionSummary(config);
+            return await fetchReactionSummaryPage(config);
         } catch (error) {
             lastError = error;
 
@@ -640,32 +648,13 @@ async function fetchReactionSummaryWithRetry(config) {
                 + jitterMs;
 
             console.warn(
-                `Reaction summary throttled for ${config.mediaKey}; retry ${attempt}/${REACTION_FETCH_MAX_ATTEMPTS} in ${delayMs}ms.`
+                `Reaction summary page throttled; retry ${attempt}/${REACTION_FETCH_MAX_ATTEMPTS} in ${delayMs}ms.`
             );
             await sleep(delayMs);
         }
     }
 
     throw lastError;
-}
-
-async function mapWithConcurrency(items, concurrency, mapper) {
-    const results = new Array(items.length);
-    let nextIndex = 0;
-
-    const workers = Array.from(
-        { length: Math.max(1, Math.min(concurrency, items.length || 1)) },
-        async () => {
-            while (nextIndex < items.length) {
-                const currentIndex = nextIndex;
-                nextIndex += 1;
-                results[currentIndex] = await mapper(items[currentIndex], currentIndex);
-            }
-        }
-    );
-
-    await Promise.all(workers);
-    return results;
 }
 
 async function fetchAllPhotoMetadata(config) {
@@ -1064,31 +1053,46 @@ function collectReactionSnapshotKeys(galleryManifest, ninjaManifest) {
     return [...keys];
 }
 
-async function buildReactionSummariesSnapshot(config, galleryManifest, ninjaManifest) {
+export async function buildReactionSummariesSnapshot(config, galleryManifest, ninjaManifest) {
     const keys = collectReactionSnapshotKeys(galleryManifest, ninjaManifest);
+    const summaries = new Map();
+    const seenTokens = new Set();
+    let nextToken = null;
+    let pageCount = 0;
 
-    const items = await mapWithConcurrency(
-        keys,
-        REACTION_FETCH_CONCURRENCY,
-        async (mediaKey, index) => {
-            if (index > 0 && index % 100 === 0) {
-                console.log(`Fetched ${index} reaction summaries...`);
-            }
-
-            const payload = await fetchReactionSummaryWithRetry({
+    if (keys.length) {
+        do {
+            const page = await fetchReactionSummaryPageWithRetry({
                 endpoint: config.appsyncEndpoint,
                 apiKey: config.appsyncApiKey,
-                mediaKey,
+                nextToken,
             });
+            pageCount += 1;
+            for (const item of page.items) {
+                if (item?.mediaKey && !item._deleted) {
+                    summaries.set(item.mediaKey, item);
+                }
+            }
+            nextToken = page.nextToken || null;
+            if (nextToken && seenTokens.has(nextToken)) {
+                throw new Error('Repeated reaction summary pagination token');
+            }
+            if (nextToken) seenTokens.add(nextToken);
+        } while (nextToken);
+    }
 
-            return {
-                mediaKey,
-                likes: Number(payload?.likes || 0),
-                dislikes: Number(payload?.dislikes || 0),
-                updatedAt: payload?.updatedAt || null,
-            };
-        }
-    );
+    // Preserve the public snapshot format and manifest order. Media without a
+    // summary has no reactions; unrelated rows and internal fields stay private.
+    const items = keys.map(mediaKey => {
+        const summary = summaries.get(mediaKey);
+        return {
+            mediaKey,
+            likes: Math.max(0, Number(summary?.likes || 0)),
+            dislikes: Math.max(0, Number(summary?.dislikes || 0)),
+            updatedAt: summary?.updatedAt || null,
+        };
+    });
+    console.log(`Loaded reaction summaries in ${pageCount} AppSync page(s) for ${keys.length} media items.`);
 
     return {
         version: MANIFEST_VERSION,
@@ -1243,7 +1247,9 @@ async function main() {
     );
 }
 
-main().catch(error => {
-    console.error(error instanceof Error ? error.message : String(error));
-    process.exit(1);
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+    main().catch(error => {
+        console.error(error instanceof Error ? error.message : String(error));
+        process.exit(1);
+    });
+}
