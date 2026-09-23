@@ -1,22 +1,42 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-22T11:56:47.588Z",
+  "generatedAt": "2026-09-23T11:57:59.140Z",
   "itemCount": 600,
   "featured": {
     "week": {
-      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1778851412932.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1778851412932.jpg",
-      "lastModified": "2026-05-15T13:24:13.000Z",
+      "key": "pedal_of_the_month/pedal_of_the_day/pedal_day_1790101720254.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_of_the_day/pedal_day_1790101720254.jpg",
+      "lastModified": "2026-09-22T18:29:00.000Z",
       "isVideo": false
     },
     "month": {
-      "key": "pedal_of_the_month/pedal_1778855395661.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1778855395661.jpg",
-      "lastModified": "2026-05-15T14:30:13.000Z",
+      "key": "pedal_of_the_month/pedal_1790101812028.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/pedal_of_the_month/pedal_1790101812028.jpg",
+      "lastModified": "2026-09-22T18:30:21.000Z",
       "isVideo": false
     }
   },
   "items": [
+    {
+      "key": "approved/EA/5233AA/POM_1790101812028_27db6e.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/EA/5233AA/POM_1790101812028_27db6e.jpg",
+      "timestamp": "2026-05-21T13:14:03.000000000Z",
+      "location": "42.72169, 23.26375",
+      "locationLabel": "Юмрукчал, ж.к. Люлин, София",
+      "latitude": 42.72168808437451,
+      "longitude": 23.26375062526343,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/5293CK/POD_1790101720254_92b5a6.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/5293CK/POD_1790101720254_92b5a6.jpg",
+      "timestamp": "2026-05-15T10:17:47.829198000Z",
+      "location": "42.722657, 23.261925",
+      "locationLabel": "Търново, ж.к. Люлин, София",
+      "latitude": 42.72265720765565,
+      "longitude": 23.26192459403531,
+      "isVideo": false
+    },
     {
       "key": "approved/B/1414CA/20260515_144129_78a1bf.jpg",
       "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/B/1414CA/20260515_144129_78a1bf.jpg",
@@ -25,6 +45,26 @@
       "locationLabel": "Васил Левски, ж. к. Васил Левски, Разград",
       "latitude": 43.53319534858719,
       "longitude": 26.526943724689396,
+      "isVideo": false
+    },
+    {
+      "key": "approved/BU/CM4410BK/20260922_18289_607a0f.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/BU/CM4410BK/20260922_18289_607a0f.jpg",
+      "timestamp": "2026-05-14T16:07:04.314645000Z",
+      "location": "42.49368, 27.47712",
+      "locationLabel": "Славянска, Централна градска част, Бургас",
+      "latitude": 42.4936798,
+      "longitude": 27.4771181,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/3992MO/20260922_182737_447720.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/3992MO/20260922_182737_447720.jpg",
+      "timestamp": "2026-05-14T15:48:07.329160000Z",
+      "location": "42.70946, 23.30723",
+      "locationLabel": "Охрид, ж.к. Банишора, София",
+      "latitude": 42.70945958685754,
+      "longitude": 23.307227403326305,
       "isVideo": false
     },
     {
@@ -45,6 +85,46 @@
       "locationLabel": "Княз Церетелев, Старинен Пловдив, Пловдив",
       "latitude": 42.1483899,
       "longitude": 24.7526363,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/1826HM/20260922_182719_3e1473.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/1826HM/20260922_182719_3e1473.jpg",
+      "timestamp": "2026-05-14T10:10:00.293285000Z",
+      "location": "42.69585, 23.32086",
+      "locationLabel": "Позитано 8, Център, София",
+      "latitude": 42.6958458962423,
+      "longitude": 23.32086082086669,
+      "isVideo": false
+    },
+    {
+      "key": "approved/CB/5928MM/20260922_18270_9b840f.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/5928MM/20260922_18270_9b840f.jpg",
+      "timestamp": "2026-05-14T09:25:03.449338000Z",
+      "location": "42.66746, 23.27547",
+      "locationLabel": "бл. 16, ж.к. Бъкстон, София",
+      "latitude": 42.667463581029544,
+      "longitude": 23.27546654280623,
+      "isVideo": false
+    },
+    {
+      "key": "approved/E/3022HC/20260922_182645_0e1a63.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/E/3022HC/20260922_182645_0e1a63.jpg",
+      "timestamp": "2026-05-14T09:22:30.809386000Z",
+      "location": "42.66751, 23.27549",
+      "locationLabel": "бл. 16, ж.к. Бъкстон, София",
+      "latitude": 42.6675119217751,
+      "longitude": 23.275487599582075,
+      "isVideo": false
+    },
+    {
+      "key": "approved/B/8143CA/20260922_18262_5830fc.jpg",
+      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/B/8143CA/20260922_18262_5830fc.jpg",
+      "timestamp": "2026-05-14T09:17:29.922173000Z",
+      "location": "42.66900, 23.27458",
+      "locationLabel": "Казбек, ж.к. Бъкстон, София",
+      "latitude": 42.668997607278875,
+      "longitude": 23.274576283343563,
       "isVideo": false
     },
     {
@@ -5935,86 +6015,6 @@
       "locationLabel": "Бяла черква, София",
       "latitude": 42.674198,
       "longitude": 23.310927,
-      "isVideo": false
-    },
-    {
-      "key": "approved/CB/4161BO/20260110_10160_444057.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/4161BO/20260110_10160_444057.jpg",
-      "timestamp": "2026-01-10T10:16:00.614570000Z",
-      "location": "42.69673, 23.32136",
-      "locationLabel": "20, Център, София",
-      "latitude": 42.696732,
-      "longitude": 23.321362,
-      "isVideo": false
-    },
-    {
-      "key": "approved/CB/4816TM/20260110_1055_3726a5.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/4816TM/20260110_1055_3726a5.jpg",
-      "timestamp": "2026-01-10T10:05:05.221100000Z",
-      "location": "42.72082, 23.26268",
-      "locationLabel": "Златопласт, ж.к. Люлин, София",
-      "latitude": 42.72082205232092,
-      "longitude": 23.262677634061188,
-      "isVideo": false
-    },
-    {
-      "key": "approved/CA/3698XP/20260110_94454_8ca739.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CA/3698XP/20260110_94454_8ca739.jpg",
-      "timestamp": "2026-01-10T09:44:54.066357000Z",
-      "location": "42.72096, 23.26125",
-      "locationLabel": "Годеч, ж.к. Люлин, София",
-      "latitude": 42.72095658049637,
-      "longitude": 23.26125131427482,
-      "isVideo": false
-    },
-    {
-      "key": "approved/E/1762KT/20260110_92931_03fee0.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/E/1762KT/20260110_92931_03fee0.jpg",
-      "timestamp": "2026-01-10T09:29:31.547237000Z",
-      "location": "42.72243, 23.26022",
-      "locationLabel": "Преполац, ж.к. Люлин, София",
-      "latitude": 42.72242623318416,
-      "longitude": 23.260219675807807,
-      "isVideo": false
-    },
-    {
-      "key": "approved/EH/1676KH/20260110_92519_81d2b4.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/EH/1676KH/20260110_92519_81d2b4.jpg",
-      "timestamp": "2026-01-10T09:25:19.008452000Z",
-      "location": "42.72245, 23.26025",
-      "locationLabel": "Преполац, ж.к. Люлин, София",
-      "latitude": 42.72244854577629,
-      "longitude": 23.26024910604934,
-      "isVideo": false
-    },
-    {
-      "key": "approved/E/1762KT/20260110_9712_0d6903.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/E/1762KT/20260110_9712_0d6903.jpg",
-      "timestamp": "2026-01-10T09:07:12.082558000Z",
-      "location": "42.72256, 23.26030",
-      "locationLabel": "ж.к. Люлин, София",
-      "latitude": 42.72255549831495,
-      "longitude": 23.26030331067732,
-      "isVideo": false
-    },
-    {
-      "key": "approved/CB/6780CA/20260110_85820_a596af.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/6780CA/20260110_85820_a596af.jpg",
-      "timestamp": "2026-01-10T08:58:20.035453000Z",
-      "location": "42.72253, 23.26028",
-      "locationLabel": "ж.к. Люлин, София",
-      "latitude": 42.7225290249246,
-      "longitude": 23.260279293828415,
-      "isVideo": false
-    },
-    {
-      "key": "approved/CB/9339MO/20260110_02315_bb0737.jpg",
-      "url": "https://d3g9kruk81dvbk.cloudfront.net/approved/CB/9339MO/20260110_02315_bb0737.jpg",
-      "timestamp": "2026-01-10T00:23:15.390004000Z",
-      "location": "42.72378, 23.26052",
-      "locationLabel": "Търново 48, ж.к. Люлин, София",
-      "latitude": 42.723775,
-      "longitude": 23.260519,
       "isVideo": false
     }
   ]
